@@ -6,6 +6,7 @@ PortGroup           muniversal 1.0
 
 name                ghostscript
 version             9.20
+revision            1
 categories          print
 license             AGPL-3 BSD
 maintainers         nomaintainer
@@ -108,6 +109,15 @@ build.target        so
 
 destroot.target     soinstall
 post-destroot {
+    # Add dylib loading paths
+    exec install_name_tool -id ${prefix}/lib/libgs.${version}.dylib \
+         ${destroot}${prefix}/lib/libgs.${version}.dylib
+    foreach f {gsc gsx} {
+        exec install_name_tool -change \
+             libgs.${version}.dylib ${prefix}/lib/libgs.${version}.dylib \
+             ${destroot}${prefix}/bin/$f
+    }
+
     ln -s gsc ${destroot}${prefix}/bin/gs
 
     # std fonts - install into FontCache-compatible directory.
