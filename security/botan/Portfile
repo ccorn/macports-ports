@@ -1,11 +1,12 @@
 # $Id$
 
 PortSystem          1.0
+PortGroup           compilers 1.0
 PortGroup           muniversal 1.0
 
 name                botan
-version             1.10.9
-revision            1
+version             1.10.14
+revision            0
 categories          security devel
 platforms           darwin
 maintainers         mww
@@ -16,18 +17,30 @@ long_description    Botan is a C++ library implementing a variety of \
                     quite stable, and is suitable for use in a wide variety of \
                     programs.
 
-homepage            http://botan.randombit.net/
-master_sites        http://files.randombit.net/botan/
+homepage            https://botan.randombit.net/
+master_sites        https://botan.randombit.net/releases/
 distfiles           Botan-${version}.tgz
 worksrcdir          Botan-${version}
-checksums           rmd160  2412c33938442ffff6eca67c2db4c7a2a55b2a41 \
-                    sha256  487d27d3a081ae403cf87c0fc78c2a64183f001b48f9feb87e8de1e16fba8df2
+checksums           sha256  10ed0b394db165733ac9557d8656356b7e9744d38c61c2b9c44cba6d84ff4c1c
 
 depends_build       port:python27
 depends_lib         path:lib/libssl.dylib:openssl port:zlib port:bzip2
 
 worksrcdir          Botan-${version}
 
+# From 1.11 on, Botan requires C++11
+compilers.choose    cc cxx
+compilers.setup     -gcc44 -gcc45 -gcc46 \
+                    -clang33 -clang34 -clang35 \
+                    -llvm -dragonegg33 -dragonegg34
+# compiler.setup does not set configure.compiler, but we need it
+# for proper archflags and to avoid weird fallbacks when blacklisting.
+if {[info exists cdb([c_variant_name],compiler)]} {
+    configure.compiler.add_deps no
+    configure.compiler  $cdb([c_variant_name],compiler)
+    compiler.blacklist  gcc-3.3 gcc-4.0 gcc-4.2 llvm-gcc-4.2 clang \
+                        apple-gcc-4.0 apple-gcc-4.2 macports-llvm-gcc42
+}
 configure.cmd       ${prefix}/bin/python2.7 ./configure.py
 configure.args      --docdir=share/doc --with-openssl --with-zlib --with-bzip2
 
@@ -78,4 +91,4 @@ if {![variant_isset universal]} {
 configure.universal_args-delete --disable-dependency-tracking
 
 livecheck.regex     "Botan-(1.10.\[0-9\]+).tgz"
-livecheck.url       http://botan.randombit.net/download.html
+livecheck.url       https://botan.randombit.net/
