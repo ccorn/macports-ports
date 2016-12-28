@@ -6,7 +6,7 @@ PortGroup           compilers 1.0
 
 name                wcslib
 version             5.15
-revision            1
+revision            2
 categories          science
 license             LGPL-3+
 platforms           darwin
@@ -38,6 +38,15 @@ livecheck.regex     "WCSLIB version (\\d+\\.\\d+\(\\.\\d+\)?)"
 
 compilers.choose    fc f77 f90
 compilers.setup
+
+pre-destroot {
+    xinstall -d ${destroot}${prefix}/include/${name}-${version}
+}
+
+post-destroot {
+    move ${destroot}${prefix}/include/${name}-${version} \
+         ${destroot}${prefix}/include/${name}
+}
 
 if {[fortran_variant_isset]} {
     depends_lib-append      port:pgplot
