@@ -1,6 +1,7 @@
 # $Id$
 
 PortSystem 1.0
+PortGroup        compilers 1.0
 
 name             monotone
 version          1.1
@@ -35,6 +36,20 @@ depends_lib      port:zlib \
 
 # botan is not universal
 universal_variant no
+
+# From 1.11 on, Botan requires C++11
+compilers.choose    cc cxx
+compilers.setup     -gcc44 -gcc45 -gcc46 \
+                    -clang33 -clang34 -clang35 \
+                    -llvm -dragonegg33 -dragonegg34
+# compiler.setup does not set configure.compiler, but we need it
+# for proper archflags and to avoid weird fallbacks when blacklisting.
+if {[info exists cdb([c_variant_name],compiler)]} {
+    configure.compiler.add_deps no
+    configure.compiler  $cdb([c_variant_name],compiler)
+    compiler.blacklist  gcc-3.3 gcc-4.0 gcc-4.2 llvm-gcc-4.2 clang \
+                        apple-gcc-4.0 apple-gcc-4.2 macports-llvm-gcc42
+}
 
 configure.args   --with-libiconv-prefix=${prefix} \
                  --infodir=${prefix}/share/info \
