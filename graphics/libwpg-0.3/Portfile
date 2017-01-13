@@ -26,6 +26,7 @@ checksums               rmd160  5b7dd3623a4f8a091e25165f35e569b3c0d4ce59 \
                         sha256  620d888c10d7e1127d5123ff0065f1b62b86b91bac27d8ae10dcfbdb6bf4278f
 
 depends_build           port:pkgconfig
+depends_skip_archcheck  pkgconfig
 
 depends_lib             port:librevenge \
                         port:libwpd-0.10
@@ -40,6 +41,7 @@ configure.args          --without-docs \
 
 variant docs description {Build API documentation} {
     depends_build-append    port:doxygen
+    depends_skip_archcheck-append   doxygen
     configure.args-delete   --without-docs
 }
 

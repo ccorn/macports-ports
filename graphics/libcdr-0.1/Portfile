@@ -27,6 +27,7 @@ checksums           sha256  66e28e502abef7f6f494ce03de037d532f5e7888cfdee62c0120
 
 depends_build       port:pkgconfig \
                     port:cppunit
+depends_skip_archcheck  pkgconfig
 
 depends_lib         port:librevenge \
                     port:boost \
@@ -73,6 +74,7 @@ test.target         check
 
 variant docs description {Build API documentation} {
     depends_build-append  port:doxygen
+    depends_skip_archcheck-append   doxygen
     configure.args-replace --without-docs --with-docs
 }
 

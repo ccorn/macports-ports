@@ -27,6 +27,7 @@ checksums           sha256  430a067903660bb1b97daf4b045e408a1bb75ca45e615cf05fb1
                     rmd160  d2cb94bb055e61e2dd4a318de61fb69f1009f86a
 
 depends_build       port:pkgconfig
+depends_skip_archcheck  pkgconfig
 
 depends_lib         port:librevenge \
                     port:boost \
@@ -77,6 +78,7 @@ post-destroot {
 
 variant docs description {Build documentation using doxygen} {
     depends_build-append    port:doxygen
+    depends_skip_archcheck-append   doxygen
     configure.args-delete   --without-docs
 }
     

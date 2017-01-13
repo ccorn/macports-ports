@@ -25,6 +25,7 @@ checksums       sha1    a52219b12dbc8d33fc096468591170fda71316c0 \
                 rmd160  979f06096b7271d8713c1766e0ad5dfabb06c531
 
 depends_build   port:pkgconfig
+depends_skip_archcheck  pkgconfig
 depends_lib     port:gettext \
                 port:libiconv
 
@@ -39,5 +40,6 @@ test.target     check
 variant doc description {Install extra documentation} {
     depends_build-append    port:doxygen \
                             path:bin/dot:graphviz
+    depends_skip_archcheck-append   doxygen graphviz
     configure.args-delete   --disable-docs
 }

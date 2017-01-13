@@ -25,6 +25,7 @@ checksums       rmd160  d5727dfbed4cc83d81586bd7e154299c2b6983d5 \
                 sha256  09d3410bc770f9d9eedc8544b5c211771ea3322de3fee19b58ad7d40fb2984f6
 
 depends_build   port:pkgconfig
+depends_skip_archcheck  pkgconfig
 
 depends_lib     path:lib/pkgconfig/glib-2.0.pc:glib2 \
                 port:librevenge
@@ -40,6 +41,7 @@ configure.args  --without-docs --disable-werror
 
 variant docs description {Build API documentation} {
     depends_build-append    port:doxygen
+    depends_skip_archcheck-append   doxygen
     configure.args-delete   --without-docs
 }
 
