@@ -45,6 +45,7 @@ depends_build-append    bin:perl:perl5 \
                         port:flex \
                         port:bison
 license_noconflict      perl5 python27
+depends_skip_archcheck  perl5 python27 flex bison
 
 depends_lib             port:libpng \
                         port:libiconv
