@@ -23,6 +23,7 @@ checksums       rmd160  8ceccfb307533513b0f04f10c7a209063fb57017 \
 
 depends_build   port:pkgconfig \
                 port:cppunit
+depends_skip_archcheck  pkgconfig
 
 depends_lib     port:zlib \
                 port:boost
@@ -41,6 +42,7 @@ test.target     check
 
 variant docs description {Build API documentation} {
     depends_build-append    port:doxygen
+    depends_skip_archcheck-append   doxygen
     configure.args-delete   --without-docs
 }
 
