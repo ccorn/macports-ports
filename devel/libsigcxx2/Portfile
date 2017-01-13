@@ -32,6 +32,7 @@ depends_build       port:pkgconfig \
                     path:bin/dot:graphviz \
                     port:doxygen \
                     port:libxslt
+depends_skip_archcheck  pkgconfig m4 graphviz doxygen
 
 configure.perl      /usr/bin/perl
 configure.env-append \
