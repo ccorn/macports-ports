@@ -54,7 +54,8 @@ depends_lib         port:desktop-file-utils \
                     port:py27-numpy
 
 
-patchfiles          patch-use-configured-perl.diff
+patchfiles          patch-use-configured-perl.diff \
+                    patch-src-color-profile-cpp.diff
 
 post-patch {
     xinstall -m 755 ${filespath}/autogen.sh ${worksrcpath}
