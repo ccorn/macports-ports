@@ -1,0 +1,11 @@
+--- src/2geom/svg-path-writer.cpp.orig	2017-01-02 10:44:59.000000000 +0100
++++ src/2geom/svg-path-writer.cpp	2017-01-14 04:13:56.000000000 +0100
+@@ -180,7 +180,7 @@ void SVGPathWriter::flush()
+     if (_optimize) {
+         _s << _command;
+     } else {
+-        if (_s.tellp() != 0) {
++        if (_s.tellp()) {
+             _s << ' ';
+         }
+         _s << _command;

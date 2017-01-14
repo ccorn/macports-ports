@@ -1,0 +1,76 @@
+--- src/path-chemistry.cpp.orig	2017-01-14 03:33:25.000000000 +0100
++++ src/path-chemistry.cpp	2017-01-14 03:36:35.000000000 +0100
+@@ -42,6 +42,8 @@
+ #include "path-chemistry.h"
+ #include "verbs.h"
+ 
++#include "cxxutil.h"
++
+ using Inkscape::DocumentUndo;
+ 
+ 
+--- src/sp-switch.cpp.orig	2017-01-02 10:44:59.000000000 +0100
++++ src/sp-switch.cpp	2017-01-14 03:37:25.000000000 +0100
+@@ -21,6 +21,8 @@
+ #include <sigc++/functors/ptr_fun.h>
+ #include <sigc++/adaptors/bind.h>
+ 
++#include "cxxutil.h"
++
+ SPSwitch::SPSwitch() : SPGroup() {
+     this->_cached_item = 0;
+ }
+--- src/selection-chemistry.cpp.orig	2017-01-02 10:44:59.000000000 +0100
++++ src/selection-chemistry.cpp	2017-01-14 02:15:03.000000000 +0100
+@@ -119,6 +119,8 @@ SPCycleType SP_CYCLING = SP_CYCLE_FOCUS;
+ #include "ui/clipboard.h"
+ #include "verbs.h"
+ 
++#include "cxxutil.h"
++
+ using Inkscape::DocumentUndo;
+ using Geom::X;
+ using Geom::Y;
+--- src/unclump.cpp.orig	2017-01-02 10:44:59.000000000 +0100
++++ src/unclump.cpp	2017-01-14 03:55:30.000000000 +0100
+@@ -19,6 +19,8 @@
+ 
+ #include <glib.h>
+ 
++#include "cxxutil.h"
++
+ // Taking bbox of an item is an expensive operation, and we need to do it many times, so here we
+ // cache the centers, widths, and heights of items
+ 
+--- src/widgets/text-toolbar.cpp.orig	2017-01-02 10:44:59.000000000 +0100
++++ src/widgets/text-toolbar.cpp	2017-01-14 06:30:35.000000000 +0100
+@@ -58,6 +58,7 @@
+ #include "util/units.h"
+ #include "verbs.h"
+ #include "xml/repr.h"
++#include "cxxutil.h"
+ 
+ using Inkscape::DocumentUndo;
+ using Inkscape::UI::ToolboxFactory;
+--- src/ui/dialog/font-substitution.cpp.orig	2017-01-02 10:44:59.000000000 +0100
++++ src/ui/dialog/font-substitution.cpp	2017-01-14 06:41:15.000000000 +0100
+@@ -47,6 +47,8 @@
+ #include <glibmm/i18n.h>
+ #include <glibmm/regex.h>
+ 
++#include "cxxutil.h"
++
+ namespace Inkscape {
+ namespace UI {
+ namespace Dialog {
+--- src/ui/dialog/find.cpp.orig	2017-01-14 07:03:39.000000000 +0100
++++ src/ui/dialog/find.cpp	2017-01-14 07:06:29.000000000 +0100
+@@ -62,6 +62,8 @@
+ #include <glibmm/i18n.h>
+ #include <glibmm/regex.h>
+ 
++#include "cxxutil.h"
++
+ namespace Inkscape {
+ namespace UI {
+ namespace Dialog {
