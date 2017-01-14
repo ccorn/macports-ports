@@ -1,5 +1,3 @@
-# $Id$
-#
 # List of master site classes for use in Portfiles
 # Most of these are taken shamelessly from FreeBSD.
 #
@@ -309,7 +307,7 @@ set distfiles_scheme [expr {${os.platform} eq "darwin" && ${os.major} < 10 ? "ht
 
 set portfetch::mirror_sites::sites(macports_distfiles) "
     ${distfiles_scheme}://distfiles.macports.org/:mirror
-    http://aarnet.au.distfiles.macports.org/pub/macports/mpdistfiles/:mirror
+    http://aarnet.au.distfiles.macports.org/pub/macports/distfiles/:mirror
     http://cjj.kr.distfiles.macports.org/:mirror
     http://fco.it.distfiles.macports.org/mirrors/macports-distfiles/:mirror
     http://her.gr.distfiles.macports.org/:mirror

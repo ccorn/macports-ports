@@ -3,7 +3,7 @@ PortSystem	1.0
 name		swi-prolog-devel
 conflicts	swi-prolog swi-prolog-lite
 epoch		20051223
-version		7.3.32
+version		7.3.35
 
 categories	lang
 license		LGPL-2.1
@@ -28,8 +28,8 @@ master_sites	http://www.swi-prolog.org/download/devel/src/
 dist_subdir	swi-prolog
 
 checksums       \
-    rmd160  a33a07838967a1f28fcebb9f14172bdfc83781e3 \
-    sha256  932556e92946b3a05c0667914bd43039abd421fcb0cdb52f005cc20bde0a2c28
+    rmd160  98760003d823b7f002b7239c9581091db324ee35 \
+    sha256  d1a9f7ef77b6dddb08477055b6355a0f2f3a5018e1a027a2dc917a8e57b0cf70
 
 
 depends_build   \

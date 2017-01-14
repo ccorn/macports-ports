@@ -101,7 +101,7 @@ variant comments            description {Build comments -- ! broken } {
 default_variants            +raster +topology
 
 if {![variant_isset postgresql95] && ![variant_isset postgresql96]} {
-    default_variants        +postgresql95
+    default_variants        +postgresql96
 }
 
 # Port phases
@@ -111,6 +111,9 @@ configure.cflags-append \
 
 # JSON-C new version is incompatible with this version of PostGIS
 configure.args-append   -without-json
+
+# see https://trac.macports.org/wiki/UsingTheRightCompiler
+configure.env-append    CPPBIN=${configure.cpp}
 
 post-configure {
     if {[variant_isset universal]} {
