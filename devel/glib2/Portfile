@@ -1,6 +1,7 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem                  1.0
+PortGroup                   muniversal 1.0
 PortGroup                   compiler_blacklist_versions 1.0
 
 # Please keep the glib2 and glib2-devel ports as similar as possible.
@@ -9,6 +10,7 @@ name                        glib2
 conflicts                   glib2-devel
 set my_name                 glib
 version                     2.50.2
+revision                    1
 set branch                  [join [lrange [split ${version} .] 0 1] .]
 categories                  devel
 maintainers                 ryandesign openmaintainer
@@ -101,13 +103,31 @@ pre-configure {
 }
 
 post-configure {
-    system "ed - ${worksrcpath}/config.h < ${filespath}/config.h.ed"
+    if {[variant_isset universal]} {
+        foreach arch ${configure.universal_archs} {
+            system "ed - ${worksrcpath}-${arch}/config.h < ${filespath}/config.h.ed"
+        }
+    } else {
+        system "ed - ${worksrcpath}/config.h < ${filespath}/config.h.ed"
+    }
 }
 
 build.args                  V=1
 
 test.run                    yes
 test.target                 check
+
+merger-post-destroot {
+    # *.pyo files change on recompilation, must be forced equal for muniversal
+    if {[variant_isset universal]} {
+        set arch0 [lindex ${configure.universal_archs} 0]
+        foreach arch [lreplace ${configure.universal_archs} 0 0] {
+            eval copy -force [glob -directory \
+                ${destroot}-${arch0}${prefix}/share/glib-2.0/codegen *.pyo] \
+                ${destroot}-${arch}${prefix}/share/glib-2.0/codegen/
+        }
+    }
+}
 
 post-destroot {
     delete ${destroot}${prefix}/lib/charset.alias
