@@ -28,5 +28,6 @@ checksums           rmd160  71208e6cf2f8792e32199e7f49326b8bfeb1e476 \
 depends_build       bin:perl:perl5 \
                     port:texinfo \
                     port:texlive-basic
+depends_skip_archcheck  perl5 texinfo texlive-basic
 
 depends_lib         port:libiconv
