@@ -39,6 +39,7 @@ set perl_version        5.24
 depends_build           bin:makeinfo:texinfo \
                         port:perl${perl_version} \
                         port:pkgconfig
+depends_skip_archcheck  texinfo perl${perl_version} pkgconfig
 
 depends_lib \
     port:libidn \
