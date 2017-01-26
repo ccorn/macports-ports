@@ -3,7 +3,7 @@
 PortSystem          1.0
 
 name                dnscrypt-proxy
-version             1.9.1
+version             1.9.4
 categories          net
 license             ISC
 maintainers         mps openmaintainer
@@ -16,8 +16,8 @@ master_sites        https://download.dnscrypt.org/dnscrypt-proxy/
 platforms           darwin
 depends_lib         port:libsodium
 
-checksums           rmd160  ad1977f5a5825824a48cefcd2e35ffccf5319efb\
-                    sha256  3a319e8bfff5ac15a1c5a80af71755380b1fb869cb8fd86b33b7ed928db65195 
+checksums           rmd160  db5f4e3ad9923cd15491acaec7c8cdaa81061c1e\
+                    sha256  40543efbcd56033ac03a1edf4581305e8c9bed4579ac55e6279644f07c315307
 
 startupitem.create      yes
 startupitem.netchange   yes

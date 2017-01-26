@@ -7,7 +7,7 @@ PortGroup           github 1.0
 github.setup        dbcli pgcli 1.4.0 v
 
 categories          databases python
-maintainers         g5pw openmaintainer
+maintainers         g5pw gmail.com:xeron.oskom openmaintainer
 license             BSD
 platforms           darwin
 supported_archs     noarch
@@ -38,7 +38,6 @@ if {[variant_isset python34]} {
 depends_build       port:py${python.version}-setuptools
 depends_lib-append  port:py${python.version}-click \
                     port:py${python.version}-configobj \
-                    port:py${python.version}-crypto \
                     port:py${python.version}-humanize \
                     port:py${python.version}-pgspecial \
                     port:py${python.version}-prompt_toolkit \
