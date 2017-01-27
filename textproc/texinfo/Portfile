@@ -33,6 +33,7 @@ depends_lib         port:gettext \
                     port:libiconv \
                     port:ncurses \
                     port:perl${pbranch}
+depends_skip_archcheck  help2man perl${pbranch}
 
 master_sites        gnu
 use_xz              yes
