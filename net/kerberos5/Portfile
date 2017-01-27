@@ -30,6 +30,7 @@ checksums                   rmd160  6796140e811cda71cab7d6bd9e7fc8620421c6dd \
                             sha256  fd34752774c808ab4f6f864f935c49945f5a56b62240b1ad4ab1af7b4ded127c
 
 depends_build               port:python27
+depends_skip_archcheck      python27
 
 depends_lib                 port:gettext \
                             port:libcomerr \

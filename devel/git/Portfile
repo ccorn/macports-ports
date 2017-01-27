@@ -40,12 +40,21 @@ depends_lib-append  port:curl \
                     port:libiconv \
                     port:python27
 
-depends_run-append  port:p${perl5.major}-authen-sasl \
+depends_run-append  port:python27 port:perl${perl5.major} \
+                    port:p${perl5.major}-authen-sasl \
                     port:p${perl5.major}-error \
                     port:p${perl5.major}-net-smtp-ssl \
                     port:p${perl5.major}-term-readkey \
                     port:p${perl5.major}-cgi \
                     port:rsync
+
+depends_skip_archcheck-append   python27 perl${perl5.major} \
+                        p${perl5.major}-authen-sasl \
+                        p${perl5.major}-error \
+                        p${perl5.major}-net-smtp-ssl \
+                        p${perl5.major}-term-readkey \
+                        p${perl5.major}-cgi \
+                        rsync
 
 patchfiles          patch-Makefile.diff git-subtree.1.diff gitk-color-lime.diff
 patch.pre_args      -p1
@@ -175,6 +184,7 @@ variant doc description {Install HTML and plaintext documentation} {
 
 variant gitweb description {Install gitweb.cgi} {
     depends_run-append  port:lighttpd
+    depends_skip_archcheck-append   lighttpd
 
     build.target-append gitweb
 
@@ -199,6 +209,9 @@ variant svn description {Bi-directional subversion repository support} {
     depends_run-append  port:subversion \
                         port:p${perl5.major}-libwww-perl \
                         port:p${perl5.major}-svn-simple
+    depends_skip_archcheck-append   subversion \
+                                    p${perl5.major}-libwww-perl \
+                                    p${perl5.major}-svn-simple
 }
 
 variant credential_osxkeychain description {Install git credential-osxkeychain utility from contrib} {
