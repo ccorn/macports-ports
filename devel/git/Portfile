@@ -40,15 +40,14 @@ depends_lib-append  port:curl \
                     port:libiconv \
                     port:python27
 
-depends_run-append  port:python27 port:perl${perl5.major} \
-                    port:p${perl5.major}-authen-sasl \
+depends_run-append  port:p${perl5.major}-authen-sasl \
                     port:p${perl5.major}-error \
                     port:p${perl5.major}-net-smtp-ssl \
                     port:p${perl5.major}-term-readkey \
                     port:p${perl5.major}-cgi \
                     port:rsync
 
-depends_skip_archcheck-append   python27 perl${perl5.major} \
+depends_skip_archcheck  python27 perl${perl5.major} \
                         p${perl5.major}-authen-sasl \
                         p${perl5.major}-error \
                         p${perl5.major}-net-smtp-ssl \
