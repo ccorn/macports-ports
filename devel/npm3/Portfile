@@ -3,7 +3,8 @@
 PortSystem          1.0
 
 name                npm3
-version             3.10.9
+version             3.10.10
+revision            1
 
 categories          devel
 platforms           darwin
@@ -27,14 +28,18 @@ distname            npm-${version}
 
 extract.suffix      .tgz
 
-checksums           rmd160  8ffd8d88e10c40ccf79cdd61923200a4924e0d72 \
-                    sha256  fb0871b1aebf4b74717a72289fade356aedca83ee54e7386e38cb51874501dd6
-
-distname            npm-${version}
+checksums           rmd160  b6a6049f561d9e5f54578ca897a51b3db79fad68 \
+                    sha256  1a7cd203ac30fd1417326d576ca5c66ae2ae6a2bf1ada151bee2fc0d6965f99a
 
 worksrcdir          "package"
 
 depends_lib         path:bin/node:nodejs6
+
+platform darwin {
+    if {${os.major} < 11} {
+        depends_lib-replace path:bin/node:nodejs6 path:bin/node:nodejs4
+    }
+}
 
 use_configure       no
 
@@ -90,4 +95,4 @@ ${prefix}/lib/node_modules/ until you manually delete them.
 
 livecheck.type      regex
 livecheck.url       http://registry.npmjs.org/npm
-livecheck.regex     {"latest":"(.*?)"}
+livecheck.regex     {"latest-3":"(.*?)"}
