@@ -23,8 +23,6 @@ long_description        TigerVNC is an advanced VNC implementation. \
 
 homepage                http://www.tigervnc.com/
 
-#checksums               rmd160  7578bbb7ab3d3f261dcd8b3529a35937bfa75f1b \
-#                        sha256  3c021ec0bee4611020c0bcbab995b0ef2f6f1a46127a52b368827f3275527ccc
 checksums               rmd160  837aac1c72218cc7717cb9f0cfebdab8c5360ec5 \
                         sha256  fc9c7617c1500b815708912e78455c13d0c68e10a377cf6c83a05ca2cd951245
 

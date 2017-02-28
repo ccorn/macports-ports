@@ -21,20 +21,12 @@ long_description    \
     protocols and more.
 
 if {${name} eq ${subport}} {
-    github.setup        zeromq libzmq 4.2.0 v
+    github.setup        zeromq libzmq 4.2.2 v
 
-    checksums           rmd160  b966675b891c61e9a43e7b7615ea73fab3f33db2 \
-                        sha256  253fcc4ad33caef5de00f0ac9d9528038c39315c54da29cd2e7a8a0f4c40d588
+    checksums           rmd160 c9fa036418d8f0c6b7ea5d57714a9682a99fa920 \
+                        sha256 07b359be1f4929bf456708b0509f9de5648b78e78706fc8b128096b8e59b7b53
 
     conflicts           zmq-devel zmq22 zmq3
-
-    # special livecheck, because zmq keeps different repos for new
-    # versions; check the homepage instead
-
-    homepage            http://www.zeromq.org/
-    livecheck.type      regex
-    livecheck.url       ${homepage}intro:get-the-software
-    livecheck.regex     Current Stable Release (\[0-9.\]+)
 }
 
 # Legacy subport (no longer supported)
@@ -59,10 +51,10 @@ subport zmq22 {
 }
 
 subport zmq-devel {
-    github.setup        zeromq zeromq4-1 5853120c1fe0024993a94008255b039bf828760a
-    version             20161215
-    checksums           rmd160 d70aa7d6fc589e80f6a33c4ba5b3fdeb3ea768e7 \
-                        sha256 a7b65048b3e964b0083934873abc9437c30333027f1f9569fe8b1cfb6b0d00f9
+    github.setup        zeromq zeromq4-1 742e303c0d977876555b94eb1ca635f01fb7f216
+    version             20170127
+    checksums           rmd160 47acad17e7e09cf2694d1fe10b4a87073666b5ad \
+                        sha256 b56e339bc9b9b5a0c5db3e5488d7eb55f4f8dc74efb517777618dfc611261e80
 
     depends_lib-append  port:libsodium
 

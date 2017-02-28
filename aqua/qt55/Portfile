@@ -7,7 +7,9 @@ name                qt55
 categories          aqua
 platforms           macosx
 maintainers         mcalhoun openmaintainer
-license             {LGPL-2.1 LGPL-3 GPL-3}
+
+# for OpenSSLException, see source and header files in src/network/ssl of qtbase
+license             {LGPL-2.1 LGPL-3 GPL-3 OpenSSLException}
 
 homepage            http://qt.io
 
@@ -22,6 +24,9 @@ unset just_want_qt5_variables
 # get Qt's version numbers
 set branch          [join [lrange [split ${version} .] 0 1] .]
 set qt_major        [lindex [split ${version} .] 0]
+
+# Qt builds differently when it detects C++-11
+PortGroup           cxx11 1.1
 
 master_sites        \
     http://download.qt.io/archive/qt/${branch}/${version}/submodules
@@ -42,9 +47,6 @@ foreach test_qt_name ${available_qt_versions} {
         }
     }
 }
-
-# see https://trac.macports.org/ticket/51358
-conflicts-append libressl libressl-devel
 
 ############################################################################### Modules Not Considered
 #
@@ -107,6 +109,7 @@ conflicts-append libressl libressl-devel
 #     included in "standard" installation of Qt (empty string is no, explanation string is yes)
 #     variant overrides
 #     revision number
+#     license replacement
 # }
 #
 # module info found at https://doc.qt.io/qt-5/qtmodules.html
@@ -122,18 +125,20 @@ array set modules {
         {"Qt3D Core" "Qt3D Input" "Qt3D Logic" "Qt3D Renderer"}
         "technology preview modules"
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtbase {
         ce4bccd0703aaf8d904fbecd1f334ef13d698a44
         dfa4e8a4d7e4c6b69285e7e8833eeecd819987e1bdbe5baa6b6facd4420de916
         ""
-        "port:zlib port:libpng port:jpeg port:fontconfig port:freetype path:bin/dbus-daemon:dbus path:lib/libssl.dylib:openssl port:tiff port:libmng path:lib/pkgconfig/glib-2.0.pc:glib2 port:icu port:pcre port:libiconv port:harfbuzz"
+        "port:zlib port:libpng port:jpeg port:fontconfig port:freetype path:bin/dbus-daemon:dbus port:tiff port:libmng path:lib/pkgconfig/glib-2.0.pc:glib2 port:icu port:pcre port:libiconv port:harfbuzz"
         ""
         {"Qt Gui" "Qt Widgets" "Qt Print Support" "Qt OpenGL" "Qt Core" "Qt XML" "Qt SQL" "Qt Network" "Qt Test" "Qt D-Bus" "Qt Concurrent" "Qt Platform Headers"}
         ""
         "variant overrides: ~docs"
-        "revision 0"
+        "revision 4"
+        "License: "
     }
     qtcanvas3d {
         ed68d3c61b0c67818626595a7bba14a627f5120b
@@ -144,7 +149,8 @@ array set modules {
         {"Qt Canvas 3D"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtconnectivity {
         ff138deaf87850b047c1e472188a2455b2e0ff54
@@ -155,7 +161,8 @@ array set modules {
         {"Qt Bluetooth" "Qt NFC"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtenginio {
         5b23212c3da401b9c74f33a6486ba18166f129f6
@@ -166,7 +173,8 @@ array set modules {
         {"Enginio"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtdeclarative {
         1d8939c42f4b510443365479ffe8bc525e0faac6
@@ -177,7 +185,8 @@ array set modules {
         {"Qt QML" "Qt Quick" "Qt Quick Widgets"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtdoc {
         907fc8eefba4e2c836143474f9abd99c0b0bf79f
@@ -188,7 +197,8 @@ array set modules {
         {"Qt Reference Documentation"}
         "requires all documentation"
         "variant overrides: ~examples ~tests ~debug noarch ~docs"
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtgraphicaleffects {
         43f6a91f75863f8333fc6b70456f1b0d175b55e4
@@ -199,7 +209,8 @@ array set modules {
         {"Qt Graphical Effects"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtimageformats {
         75000000ddfbb83b960b73c07d2083b85dcd81fa
@@ -210,7 +221,8 @@ array set modules {
         {"Qt Image Formats"}
         ""
         "variant overrides: "
-        "revision 1"
+        "revision 3"
+        "License: "
     }
     qtlocation {
         3792eedc159db6bf15eef706ee218f3cc5759a51
@@ -221,7 +233,8 @@ array set modules {
         {"Qt Location" "Qt Positioning"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtmacextras {
         e31be686e79c1cf4a70357921f0caad4cd496c79
@@ -232,7 +245,8 @@ array set modules {
         {"Qt Mac Extras"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtmultimedia {
         68049da5e203e484de766c17d683a34a888e0603
@@ -243,7 +257,8 @@ array set modules {
         {"Qt Multimedia" "Qt Multimedia Widgets"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtquick1 {
         dd1c71468426a5b9fe4f5297a6f2b04c9caddc78
@@ -254,7 +269,8 @@ array set modules {
         {"Qt Declarative"}
         "deprecated"
         "variant overrides: ~docs"
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtquickcontrols {
         3975fbb34a74d55f88f47b436b6fca6ce3f7c078
@@ -265,7 +281,8 @@ array set modules {
         {"Qt Quick Controls" "Qt Quick Dialogs" "Qt Quick Layouts" "Qt Quick Extras"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtscript {
         7d8ff8c4462b21b83212dd780030a01bd00b8ca9
@@ -276,7 +293,8 @@ array set modules {
         {"Qt Script" "Qt Script Tools"}
         "deprecated in favor QJS* in Qt QML"
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtsensors {
         9a3eaad761efaefc0a56258c0bd64e01d0889cba
@@ -287,7 +305,8 @@ array set modules {
         {"Qt Sensors"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtserialport {
         00c53b307fd6ad509aedc6ed0b3a464ac3d8e809
@@ -298,7 +317,8 @@ array set modules {
         {"Qt Serial Port"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtsvg {
         db1dd37355a1e4b40a37decc1df60d574ab14088
@@ -309,7 +329,8 @@ array set modules {
         {"Qt SVG"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qttools {
         279aacc94f7fa583a59d3fe005ecb3e598e92b32
@@ -320,7 +341,8 @@ array set modules {
         {"Qt Help" "Qt UI Tools" "Qt Designer"}
         ""
         "variant overrides: "
-        "revision 1"
+        "revision 2"
+        "License: "
     }
     qttranslations {
         f9c956935768cea5c935a10493963f7e411dc255
@@ -331,7 +353,8 @@ array set modules {
         {"translation files"}
         ""
         "variant overrides: ~examples ~tests ~debug noarch ~docs"
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtwebchannel {
         fca861f785f9d718aa17853bf7a3c072efcd53b7
@@ -342,7 +365,8 @@ array set modules {
         {"Qt WebChannel"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtwebengine {
         0c24bb89cc72a18c06e2fd613db1eb879ada2a2a
@@ -353,7 +377,8 @@ array set modules {
         {"Qt WebEngine" "Qt WebEngine Widgets"}
         "very large and relatively new; requires newer version of OS X"
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtwebkit {
         0594ec1150f7899d72f57d8ff2f108f3f75faaf9
@@ -364,7 +389,8 @@ array set modules {
         {"Qt WebKit" "Qt WebKit Widgets"}
         "community support only (use Qt WebEngine)"
         "variant overrides: "
-        "revision 0"
+        "revision 2"
+        "License: "
     }
     qtwebkit-examples {
         6d2a3aee163e419fbc6ec56a941c4354e8e93b7d
@@ -375,7 +401,8 @@ array set modules {
         {"examples for Qt WebKit"}
         "deprecated in favor of Qt WebEngine; doen't provide functionality"
         "variant overrides: ++examples ~docs"
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtwebsockets {
         83dcc5d07dca6c1cccfaed13cd16fde940ad0b94
@@ -386,7 +413,8 @@ array set modules {
         {"Qt WebSockets"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
     qtxmlpatterns {
         403a3b2377728629b6a3f1073b24af3f3360adf7
@@ -397,7 +425,8 @@ array set modules {
         {"Qt XML Patterns"}
         ""
         "variant overrides: "
-        "revision 0"
+        "revision 1"
+        "License: "
     }
 }
 
@@ -413,7 +442,7 @@ array set modules {
 #
 ###############################################################################
 array set sql_plugins {
-    {sqlite SQLite "revision 0"} {
+    {sqlite SQLite "revision 1"} {
         {
             "sqlite3"
             "port:sqlite3"
@@ -422,7 +451,7 @@ array set sql_plugins {
             ""
         }
     }
-    {psql PostgreSQL "revision 0"} {
+    {psql PostgreSQL "revision 1"} {
         {
             "postgresql95"
             "port:postgresql95"
@@ -445,7 +474,7 @@ array set sql_plugins {
             ""
         }
     }
-    {mysql MySQL "revision 0"} {
+    {mysql MySQL "revision 1"} {
         {
             "mariadb55"
             "port:mariadb"
@@ -489,6 +518,14 @@ foreach {module module_info} [array get modules] {
         checksums                              \
             rmd160  [lindex ${module_info} 0]  \
             sha256  [lindex ${module_info} 1]
+
+        set license_string [lindex ${module_info} 9]
+        set license_string [string range ${license_string} 1+[string first ":" ${license_string}] end]
+        set license_string [string trim  ${license_string}]
+
+        if { ${license_string} ne "" } {
+            eval license ${license_string}
+        }
 
         foreach deps [lindex ${module_info} 2] {
             depends_build-append [subst ${deps}]
@@ -543,6 +580,26 @@ foreach {module module_info} [array get modules] {
                         ui_warn "32-bit mode is not a Reference Configuration for Qt."
                         ui_warn "See http://doc.qt.io/qt-5/supported-platforms.html#reference-configurations"
                     }
+                }
+            }
+
+            # Qt uses CFRunLoopTimerCreateWithHandler, which was not introduced until Mac OS X 10.7
+            # see https://developer.apple.com/reference/corefoundation/1542555-cfrunlooptimercreatewithhandler?language=objc
+            if { ${os.major} < 11 } {
+                pre-fetch {
+                    ui_error "${subport} requires OS X 10.7 or later"
+                    return -code error "incompatible OS version"
+                }
+            }
+
+            # Qt uses TLS protocols introduced in OS X 10.8
+            # see https://developer.apple.com/reference/security/sslprotocol/ktlsprotocol11
+            # see https://developer.apple.com/reference/security/sslprotocol?language=objc
+            pre-fetch {
+                if { ${os.major} == 11 && ![variant_isset openssl] } {
+                    ui_error "using Secure Transport requires OS X 10.8 or later"
+                    ui_error "please use openssl variant"
+                    return -code error "incompatible variant choice"
                 }
             }
 
@@ -644,8 +701,19 @@ foreach {module module_info} [array get modules] {
             patchfiles-append patch-mkspecs.diff
             post-patch {
 
+                if {${cxx_stdlib} eq "libc++"} {
+                    set replace_cxx_stdlib ${cxx_stdlib}
+                } else {
+                    # see cxx11 PortGroup
+                    if {${os.major} < 13} {
+                        set replace_cxx_stdlib "macports-libstdc++ -D_GLIBCXX_USE_CXX11_ABI=0"
+                    } else {
+                        set replace_cxx_stdlib "macports-libstdc++"
+                    }
+                }
+
                 reinplace \
-                    "s|__MACPORTS__CXX_STDLIB__|${cxx_stdlib}|g" \
+                    "s|__MACPORTS__CXX_STDLIB__|${replace_cxx_stdlib}|g" \
                     ${worksrcpath}/mkspecs/common/clang-mac.conf
 
                 foreach spec {macx-clang macx-clang-32 macx-g++ macx-g++-32 macx-g++40 macx-g++42 macx-icc macx-llvm} {
@@ -655,11 +723,30 @@ foreach {module module_info} [array get modules] {
                 }
             }
 
+            if { [vercmp ${xcodeversion} "7.0"] >= 0 } {
+                # starting with Xcode 7.0, the SDK for build OS version might not be available
+                # see https://trac.macports.org/ticket/53597
+
+                set sdks_dir ${developer_dir}/Platforms/MacOSX.platform/Developer/SDKs
+                if { ![file exists ${sdks_dir}/MacOSX${configure.sdk_version}.sdk] } {
+                    configure.sdk_version
+                }
+            }
+
+            # respect configure.sdk_version value
+            patchfiles-append patch-macx.conf.diff
+            post-patch {
+                reinplace \
+                    "s|__MACPORTS_MAC_SDK__|macosx${configure.sdk_version}|g" \
+                    ${worksrcpath}/mkspecs/common/macx.conf
+            }
+
             # return modified spec files to the default values
             post-build {
                 if { [variant_exists universal] && [variant_isset universal] } {
                     foreach arch ${universal_archs_to_use} {
                         move -force ${worksrcpath}-${arch}/mkspecs-save/common/clang-mac.conf ${worksrcpath}-${arch}/mkspecs/common/clang-mac.conf
+                        move -force ${worksrcpath}-${arch}/mkspecs-save/common/macx.conf      ${worksrcpath}-${arch}/mkspecs/common/macx.conf
 
                         foreach spec {macx-clang macx-clang-32 macx-g++ macx-g++-32 macx-g++40 macx-g++42 macx-icc macx-llvm} {
                             move -force ${worksrcpath}-${arch}/mkspecs-save/${spec}/qmake.conf ${worksrcpath}-${arch}/mkspecs/${spec}/qmake.conf
@@ -667,6 +754,7 @@ foreach {module module_info} [array get modules] {
                     }
                 } else {
                     move -force ${worksrcpath}/mkspecs-save/common/clang-mac.conf ${worksrcpath}/mkspecs/common/clang-mac.conf
+                    move -force ${worksrcpath}/mkspecs-save/common/macx.conf      ${worksrcpath}/mkspecs/common/macx.conf
 
                     foreach spec {macx-clang macx-clang-32 macx-g++ macx-g++-32 macx-g++40 macx-g++42 macx-icc macx-llvm} {
                         move -force ${worksrcpath}/mkspecs-save/${spec}/qmake.conf ${worksrcpath}/mkspecs/${spec}/qmake.conf
@@ -739,7 +827,7 @@ foreach {module module_info} [array get modules] {
                 -system-libjpeg     \
                 -system-freetype    \
                 -system-harfbuzz    \
-                -openssl-linked     \
+                -no-openssl         \
                 -no-libproxy        \
                 -system-pcre        \
                 --disable-xcb       \
@@ -788,12 +876,11 @@ foreach {module module_info} [array get modules] {
 
             # MacOS/iOS options:
             configure.args-append    \
-                -framework
+                -framework           \
+                -securetransport
 
-            if {${configure.sdkroot} ne ""} {
-                configure.args-append \
-                    -sdk [string tolower [join [lrange [split [lindex [split ${configure.sdkroot} "/"] end] "."] 0 end-1] "."]]
-            }
+            configure.args-append \
+                -sdk macosx${configure.sdk_version}
 
             # configure options that don't show up in configure --help
             configure.args-append \
@@ -872,6 +959,16 @@ foreach {module module_info} [array get modules] {
                 depends_lib-append port:gstreamer1 port:gstreamer1-gst-plugins-base
                 configure.args-replace -no-gstreamer {-gstreamer 1.0}
             }
+
+            variant openssl description {Use OpenSSL instead of Secure Transport} {
+                configure.args-delete -securetransport -no-openssl
+                configure.args-append -openssl-linked
+
+                # see https://trac.macports.org/ticket/51358
+                #     why not a path dependency
+                depends_lib-append port:openssl
+            }
+            default_variants-append +openssl
 
         } else {
             # these subports use qmake
@@ -984,7 +1081,9 @@ foreach {module module_info} [array get modules] {
                 #    requires qtdoc depend on all the documentation modules
                 foreach {module_doc module_doc_info} [array get modules] {
                     if { [lsearch -exact [lindex ${module_doc_info} 7] "~docs"] == -1 } {
-                        depends_lib-append port:${name}-${module_doc}-docs
+                        if { ${os.major} >= 12 || (${module_doc} ne "qtwebengine") } {
+                            depends_lib-append port:${name}-${module_doc}-docs
+                        }
                     }
                 }
             }
@@ -1004,8 +1103,6 @@ foreach {module module_info} [array get modules] {
 
             # special case
             if { ${module} eq "qtwebkit" } {
-
-                PortGroup cxx11 1.0
 
                 # use MacPorts icu
                 #
@@ -1083,6 +1180,12 @@ foreach {module module_info} [array get modules] {
                 # see http://doc.qt.io/qt-5/qtwebengine-platform-notes.html
                 PortGroup           xcodeversion 1.0
                 minimum_xcodeversions   {12 5.1}
+                if { ${os.major} < 12 } {
+                    pre-fetch {
+                        ui_error "${subport} requires OS X 10.8 or later"
+                        return -code error "incompatible OS version"
+                    }
+                }
 
                 # UsingTheRightCompiler (https://trac.macports.org/wiki/UsingTheRightCompiler)
                 build.env-append      CXX=${configure.cxx}
@@ -1201,6 +1304,16 @@ foreach {module module_info} [array get modules] {
 
                 }
             } elseif { ${module} eq "qtwebengine" } {
+                # see http://doc.qt.io/qt-5/qtwebengine-platform-notes.html
+                PortGroup           xcodeversion 1.0
+                minimum_xcodeversions   {12 5.1}
+                if { ${os.major} < 12 } {
+                    pre-fetch {
+                        ui_error "${subport} requires OS X 10.8 or later"
+                        return -code error "incompatible OS version"
+                    }
+                }
+
                 depends_build-append \
                     port:python27 \
                     port:${name}-qtwebchannel

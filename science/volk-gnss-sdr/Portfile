@@ -5,6 +5,7 @@ PortSystem          1.0
 PortGroup           cmake 1.0
 PortGroup           github 1.0
 PortGroup           active_variants 1.1
+PortGroup           cxx11 1.1
 
 name                volk-gnss-sdr
 maintainers         michaelld gmail.com:carlesfernandez openmaintainer
@@ -20,9 +21,9 @@ if {${subport} eq "volk-gnss-sdr"} {
     long_description    ${description}: \
         This port is kept up with the VOLK-GNSS-SDR release, which is typically updated every few months. This version compiles against the gnss-sdr and gnuradio ports.
 
-    github.setup        gnss-sdr gnss-sdr 0.0.8 v
-    checksums           rmd160 ee50b1eee8a806822b576e7b41960f3e169f0961 \
-                        sha256 4b38041f5fdf12a167e868fc9965e2e77e47eb3f2897059cf0238fcfee4c9c49
+    github.setup        gnss-sdr gnss-sdr 0.0.9 v
+    checksums           rmd160 a9efa4d553a081fd9b3211236f3a574841578899 \
+                        sha256 1ef41491ba9a427a4961dc35a7ea6c5886c06ce1d94695861b6df2035646a178
     github.tarball_from tags
 
     conflicts           volk-gnss-sdr-devel volk-gnss-sdr-next
@@ -35,10 +36,10 @@ subport volk-gnss-sdr-devel {
         This port is kept up with the VOLK-GNSS-SDR GIT master branch, which is typically updated daily to weekly.  This version of VOLK-GNSS-SDR generally contains fixes and new features that will be incorporated in an upcoming release, and compiles against the gnss-sdr-devel and gnuradio-devel ports.  This port may or not compile or function correctly, as it represents a work in progress.  If it does not work, check back in a few days.  Or try deactivating the currently active gnss-sdr and gnuradio ports, cleaning any current builds, and trying again.
 
     name                volk-gnss-sdr-devel
-    github.setup        gnss-sdr gnss-sdr c8a09834ac84cfda3a94a0ee3f5eebe70f482374
-    version             20160923
-    checksums           rmd160 c4a79f744bdc491afd2d14ce1e8a5aa988b3cc9c \
-                        sha256 0f5611f71078d071c4d1971ab49efddef0f8512114566e863e4ccc65fb000c36
+    github.setup        gnss-sdr gnss-sdr 32e4d227af032365cfd7f9291d9f2c2fca57d99d
+    version             20170225
+    checksums           rmd160 a9efa4d553a081fd9b3211236f3a574841578899 \
+                        sha256 1ef41491ba9a427a4961dc35a7ea6c5886c06ce1d94695861b6df2035646a178
 
     conflicts           volk-gnss-sdr volk-gnss-sdr-next
 
@@ -49,13 +50,10 @@ subport volk-gnss-sdr-next {
         This port is kept up with the VOLK-GNSS-SDR GIT next branch, which is typically updated daily to weekly.  This version of VOLK-GNSS-SDR generally contains fixes and new features that will be incorporated in an upcoming release, and compiles against the gnss-sdr-next and gnuradio-next ports.  This port may or not compile or function correctly, as it represents a work in progress.  If it does not work, check back in a few days.  Or try deactivating the currently active gnss-sdr and gnuradio ports, cleaning any current builds, and trying again.
 
     name                volk-gnss-sdr-next
-    github.setup        gnss-sdr gnss-sdr d9a315fd521407f9c8785e3ce1cc0c367bab8652
-    version             20170116
-    checksums           rmd160 9a1801b5b19c9b22777f509db2263f64f0f369ae \
-                        sha256 d7be7806ec0353324399bdb02352224bdb41f1f2e8195c6458e28583f454ddc0
-
-    depends_lib-append  port:py27-mako \
-                        port:py27-six
+    github.setup        gnss-sdr gnss-sdr d5656e65a86e782f4a14edd814d0aa94dff55331
+    version             20170225
+    checksums           rmd160 f226d22275c29b793b39d39b882e928f1be94711 \
+                        sha256 2ec5006d7d01d883b83daba48e25e06dcc70a7eaf936820a06a31835fad4fbcd
 
     conflicts           volk-gnss-sdr volk-gnss-sdr-devel
 
@@ -65,7 +63,7 @@ subport volk-gnss-sdr-next {
 
 }
 
-# override githib PortGroup homepage setting
+# override github PortGroup homepage setting
 
 homepage            http://gnss-sdr.org
 
@@ -77,7 +75,8 @@ depends_lib-append \
     path:lib/libvolk.dylib:volk \
     port:orc \
     port:python27 \
-    port:py27-cheetah \
+    port:py27-mako \
+    port:py27-six \
     port:boost
 
 # do VPATH (out of source tree) build
@@ -102,32 +101,3 @@ configure.args-append \
 
 configure.args-append \
     -DCMAKE_MODULES_DIR=${prefix}/share/cmake
-
-# require c++11
-
-if {${configure.cxx_stdlib} eq "libstdc++"} {
-
-    # *clang* when using libstdc++ do not seem to support C++11;
-    # C++11 support seems to need GCC 4.7+ when using libstdc++;
-    # could use C++0x support on GCC4.[56], but just ignore it since
-    # there are newer compilers already in place as defaults.
-
-    # Blacklist GCC compilers not supporting C++11 and all CLANG.
-    # This is probably not necessary, but it's good practice.
-
-    compiler.blacklist-append *clang* {*gcc-3*} {*gcc-4.[0-6]}
-
-    # and whitelist those we do want to use. wish there were a better way.
-    # these will be used in the order provided.
-
-    compiler.whitelist macports-gcc-4.9 macports-gcc-4.8 macports-gcc-4.7
-
-} else {
-
-    # using libc++;
-    # Blacklist Clang not supporting C++11 in some form and all GCC.
-    # Just use the cxx11 PortGroup for this specific case.
-
-    PortGroup cxx11 1.0
-
-}

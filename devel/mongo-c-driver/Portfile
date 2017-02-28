@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        mongodb mongo-c-driver 1.5.3
+github.setup        mongodb mongo-c-driver 1.6.0
 categories          devel databases
 platforms           darwin
 maintainers         ryandesign openmaintainer
@@ -15,14 +15,16 @@ long_description    ${name} is a ${description}.
 
 github.tarball_from releases
 
-checksums           rmd160  994ff303bf64d91320646d4a8c6a9e19197e7383 \
-                    sha256  c617775b42ad3cd90f9f417bdf1fd141aef930d0b0f11ec1a1da1eeb7bc158e7
+checksums           rmd160  8b500a85fddc6db5d6256d04a8c7eca9e039ebf1 \
+                    sha256  d15fe571fb6b0331ceb9139ad724429fef0fdc0444900d7ebd6841590f4f8783
 
 depends_build       port:pkgconfig
 
 depends_lib         port:cyrus-sasl2 \
                     port:libbson \
                     path:lib/libssl.dylib:openssl
+
+patchfiles          yosemite-libtool.patch
 
 configure.args      --disable-silent-rules \
                     --enable-sasl \

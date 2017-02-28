@@ -44,7 +44,7 @@ dist_subdir         ${name}/${version}_1
 
 livecheck.type      regex
 livecheck.url       http://litecoin.org
-livecheck.regex     "macosx/Litecoin-Qt-(0\\.\\d+\\.\\d+\\.\\d+)\\.dmg"
+livecheck.regex     "osx/litecoin-(\\d+(?:\\.\\d+)*)-osx\\.dmg"
 
 use_parallel_build  yes
 
@@ -58,13 +58,4 @@ if {$subport == $name} {
         xinstall -m 0755 -d ${destroot}${qt_apps_dir}
         file copy ${worksrcpath}/Litecoin-Qt.app ${destroot}${qt_apps_dir}
     }
-}
-
-subport litecoind {
-    replaced_by      litecoin
-    PortGroup        obsolete 1.0
-    revision         1
-
-    description      Litecoin's mining daemon litecoind alone. (Not recommended for installation anymore!)
-    long_description $description
 }

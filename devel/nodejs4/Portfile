@@ -4,12 +4,11 @@ PortSystem              1.0
 PortGroup               compiler_blacklist_versions 1.0
 
 name                    nodejs4
-version                 4.7.2
-
+version                 4.8.0
 categories              devel net
 platforms               darwin
 license                 {MIT BSD}
-maintainers             ciserlohn
+maintainers             {ciserlohn @ci42}
 
 description             Evented I/O for V8 JavaScript
 
@@ -22,9 +21,10 @@ conflicts               nodejs5 nodejs6 nodejs7
 
 homepage                http://nodejs.org/
 master_sites            ${homepage}dist/v${version}
+use_xz                  yes
 
-checksums               rmd160  3891474d4d3f4817d245e0dfa8619446253f8ef5 \
-                        sha256  771e9f4ef946f8f13452039c5bd1eb3edb9e4a0937b7a5f328dbd8e529a09284
+checksums               rmd160  e6d4a423bfe731fce22a8e3790c7b184eec8551c \
+                        sha256  67ea720419f902bd47e5c45a16ed45f8083c38ccd307b206a1dc53e862fad965
 
 distname                node-v${version}
 
@@ -45,12 +45,8 @@ proc rec_glob {basedir pattern} {
 configure.python ${prefix}/bin/python2.7
 
 patchfiles              patch-common.gypi.diff \
+                        patch-src-util.h.diff \
                         patch-tools-gyp-pylib-gyp-generator-make.py.diff
-
-if {${os.major} > 12} {
-    patchfiles-append   patch-src-util.h.diff
-}
-
 
 post-patch {
     foreach f [concat ${worksrcpath}/configure \

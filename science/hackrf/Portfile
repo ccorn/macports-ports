@@ -4,11 +4,7 @@ PortSystem          1.0
 PortGroup           cmake 1.0
 PortGroup           github 1.0
 
-github.setup        mossmann hackrf b3c56f58e6f325b46922b2b50ee080ce46fbc430
-version             20170123
-checksums           rmd160 55607ed8a03a04eaace029cbdea49540e0f485d4 \
-                    sha256 25d4e4cbf8720cbd156d9f16347bdd9a3e36707df72914a41fc00eff5739a88a
-
+name                hackrf
 maintainers         michaelld openmaintainer
 
 description         ${name} is a project to build a low cost software radio (SDR) platform.
@@ -18,6 +14,28 @@ license             GPL-3
 platforms           darwin macosx
 
 long_description    ${description}
+
+subport hackrf-devel {}
+
+if {${subport} eq ${name}} {
+
+    # release
+    github.setup        mossmann hackrf 2017.02.1 v
+    checksums           rmd160 8437d618c974f507550ec526c037c6b08d0af9f4 \
+                        sha256 74c7a046f076feb18f4996de8856020d683a2ca9ef07df34c6f1542f3601a461
+
+    # bump the epoch because I moved the version from 20170219 to 2017.02.1
+    epoch               1
+
+} else {
+
+    # devel
+    github.setup        mossmann hackrf c4d7d308a44befa333804515c0b8210d387f25c7
+    version             20170219
+    checksums           rmd160 a84e41d2349632bc53de0895314734adbc6745d8 \
+                        sha256 3267aee0e3784d5eb2bb4a3666927e44501f53dee393108e8140207ebcfde7cc
+
+}
 
 depends_build-append port:pkgconfig
 depends_lib-append   path:lib/libusb-1.0.dylib:libusb \

@@ -5,7 +5,7 @@ PortGroup           compiler_blacklist_versions 1.0
 
 name                lilypond-devel
 set my_name         lilypond
-version             2.19.54
+version             2.19.56
 set branch          [join [lrange [split ${version} .] 0 1] .]
 categories          textproc
 maintainers         snc openmaintainer
@@ -22,8 +22,8 @@ conflicts           lilypond
 platforms           darwin
 master_sites        http://download.linuxaudio.org/lilypond/sources/v${branch}/
 distname            ${my_name}-${version}
-checksums           rmd160  f05599a22ebc4090e3c8c308c30d32072a36cb00 \
-                    sha256  0ee709f1e58caf13cf5abea9bb74179ba5c7a4f2dc470ec48d9aefb553e68a58
+checksums           rmd160  8daa574a8b13675b7f4bc2a8fd46054c47025136 \
+                    sha256  71e53cb4a7c1fe33f383be1af186b40a9b42d81784f6fb5e605c29be5359265c
 
 depends_build       port:t1utils \
                     port:bison \

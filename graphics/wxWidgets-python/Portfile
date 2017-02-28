@@ -3,7 +3,6 @@
 PortSystem      1.0
 
 name            wxWidgets-python
-conflicts       wxgtk wxWidgets
 version         2.8.12.0
 revision        4
 categories      graphics devel
@@ -134,5 +133,5 @@ post-destroot {
 }
 
 livecheck.type      regex
-livecheck.url       ${homepage}/downloads/
-livecheck.regex     Current Stable Release.*(2\\.\[0-9\]\\.\[0-9\]+)
+livecheck.url       ${homepage}downloads/
+livecheck.regex     Previous Stable Release.*(2\\.\[0-9\]\\.\[0-9\]+)

@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-notebook
-version             4.3.1
+version             4.4.1
 revision            0
 categories-append   devel science
 platforms           darwin
@@ -23,8 +23,8 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  fd6262b49d24c2de3ac733b0e80ca779676b9cba \
-                    sha256  922b911f3cd1b20cf37d5ac365521586678fca4b8d20476fc369907b4a0ae1af
+checksums           rmd160  04ea3d6b62b8df7fa7f3bffd18f1a3750181cff0 \
+                    sha256  dfadef2babd7c04c6c257df7d07d7ba587e503dbb4e4c95305f9a95b8d3a9765
 
 if {${name} ne ${subport}} {
     depends_lib-append  port:py${python.version}-setuptools \

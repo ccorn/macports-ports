@@ -5,10 +5,10 @@ PortGroup           python 1.0
 PortGroup           select 1.0
 
 name                py-sphinx
-version             1.5.1
+version             1.5.3
 categories-append   textproc devel
 license             BSD
-maintainers         jmr gmail.com:michel.sylvan openmaintainer
+maintainers         {jmr @jmroot} gmail.com:michel.sylvan openmaintainer
 description         Python documentation generator
 long_description \
     Sphinx is a tool that makes it easy to create intelligent and beautiful \
@@ -24,9 +24,9 @@ homepage            http://sphinx-doc.org/
 master_sites        pypi:S/Sphinx/
 distname            Sphinx-${version}
 
-checksums           md5 1abb725861037e13cbc49eb84cd8cef3 \
-                    rmd160 a938285fc310e86ded124fce309222b9423e2a7f \
-                    sha256 8e6a77a20b2df950de322fc32f3b508697d9d654fe984e3cc88f446a5b4c17c5
+checksums           md5 6a9522761bde569a3d50cc4509e313d9 \
+                    rmd160 135582efe24e01e1c888e951c8910e56f56211a7 \
+                    sha256 4f6b257bea61ee6454538dcdb9e8cf56470b4dc6c4f9f750de4aedc57557814f
 
 python.versions     27 34 35 36
 
@@ -56,5 +56,5 @@ port select --set ${select.group} [file tail ${select.file}]
     livecheck.type  none
 } else {
     livecheck.type  regex
-    livecheck.regex {<p>Current version: <b>([0-9.]+).?</b></p>}
+    livecheck.regex {Current version:.*>([0-9.]+)<}
 }

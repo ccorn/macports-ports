@@ -4,20 +4,18 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           cmake 1.0
 
-github.setup        openSUSE libsolv 0.6.20
-checksums           rmd160  2bfcc74688ab30cece371db0da92d5b9ea297a2e \
-                    sha256  7f9f866d3d14af7c0922fef8d7bbbb42f8342398322225f0137f394bd4829f58
+github.setup        openSUSE libsolv 0.6.26
 
-maintainers         cal openmaintainer
+checksums           rmd160  07e43f8adccb19b2921f24c843a6e3dd81378bc7 \
+                    sha256  119310c16152f063aca5c9219b74922fd3af1ca367621077c89d25aeb732d259
+
+maintainers         cal {ijackson @JacksonIsaac} openmaintainer
 categories          devel math
 platforms           darwin
 
 license             BSD
 description         Library for solving packages and reading repositories
 long_description    ${description}
-
-patch.pre_args      -p1
-patchfiles          0001-Fix-manpage-install-dir.patch
 
 cmake.out_of_source yes
 configure.args-append \

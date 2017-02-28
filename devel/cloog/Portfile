@@ -8,6 +8,7 @@ PortGroup           muniversal 1.0
 name                cloog
 epoch               1
 version             0.18.4
+revision            1
 categories          devel math
 platforms           darwin
 license             LGPL-2.1+
@@ -52,7 +53,9 @@ configure.args-append   --disable-silent-rules \
 
 subport cloog {
 variant osl description {Build with OpenScop support (causes tests to fail)} {
-    ui_warn "This variant causes tests to fail"
+    pre-test {
+        ui_warn "osl variant causes tests to fail"
+    }
     depends_lib-append      port:openscop
     configure.args-replace  --with-osl=no --with-osl=system
 }

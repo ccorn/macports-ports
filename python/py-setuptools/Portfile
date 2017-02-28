@@ -4,10 +4,10 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-setuptools
-version             32.3.1
+version             34.2.0
 categories-append   devel
 license             {PSF ZPL}
-maintainers         jmr openmaintainer
+maintainers         {jmr @jmroot} openmaintainer
 description         distutils enhancement for build and distribution
 long_description \
     setuptools is a collection of enhancements to the Python distutils that \
@@ -22,14 +22,21 @@ master_sites        pypi:s/setuptools/
 distname            setuptools-${version}
 use_zip             yes
 
-checksums           md5    efa64884dd41d2b0456e19745bb29fdc \
-                    rmd160 7b7f9e9464e263ca3e3b1e47c900809ff99806cd \
-                    sha256 806bae0840429c13f6e6e44499f7c0b87f3b269fdfbd815d769569c1daa7c351
+checksums           md5    41b630da4ea6cfa5894d9eb3142922be \
+                    rmd160 a06bb16b5565d9b415447597a8340ad7b9504d24 \
+                    sha256 7b551f5070f9414d48c08dda58bcb879c8d9276199283a99dc8e1362e2f378a2
 
 python.versions     26 27 33 34 35 36
 python.link_binaries no
 
 if {$subport ne $name} {
+    depends_lib-append  port:py${python.version}-appdirs \
+                        port:py${python.version}-certifi \
+                        port:py${python.version}-packaging \
+                        port:py${python.version}-six
+
+    build.env-append    SETUPTOOLS_INSTALL_WINDOWS_SPECIFIC_FILES=0
+    destroot.env-append SETUPTOOLS_INSTALL_WINDOWS_SPECIFIC_FILES=0
     post-destroot {
        xinstall -m 755 -d ${destroot}${prefix}/share/doc/${subport}
        xinstall -m 644 -W ${worksrcpath} CHANGES.rst README.rst \

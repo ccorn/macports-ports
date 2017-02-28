@@ -3,10 +3,12 @@
 PortSystem          1.0
 
 name                pcb
-version             20140316
+epoch               1
+version             4.0.0
+revision            1
 
 categories          x11 graphics
-maintainers         nomaintainer
+maintainers         @technobauble
 license             GPL-2+
 
 description         Printed Circuit Board Layout Tool
@@ -18,21 +20,17 @@ long_description    PCB is an interactive printed circuit board editor for the \
                     high end features such as an autorouter and trace optimizer \
                     which can tremendously reduce layout time.
 
-homepage            http://pcb.sourceforge.net
+homepage            http://pcb.geda-project.org/index.html
 master_sites        sourceforge
 platforms           darwin
 
-checksums           md5     d3bc42a703aed651f1e7011b235be467 \
-                    rmd160  70ef878227ad52c83ce4499373550e7a8d807dd4 \
-                    sha1    ec714ff136d1817e500e1a9e654e786883b9501e \
-                    sha256  82c4f39438ee4e278196a3b67ef021145dcfbb00519508ccf51aa7832121c950
-                    
+checksums           rmd160  27302f64fb9f8e980285235b10b9d7ab9170f68f \
+                    sha256  8ede13acd0bdc1bc3c347b603718a92c5420b63f80724182ae5b25881e9adac4
 
 depends_build       port:intltool \
                     port:pkgconfig
 depends_run         bin:wish:tk
-depends_lib         port:dbus \
-                    port:gd2 \
+depends_lib         port:gd2 \
                     port:gtk2 \
                     port:gtkglext \
                     port:libGLU \
@@ -41,7 +39,7 @@ depends_lib         port:dbus \
 configure.args      --mandir=${prefix}/share/man \
                     --infodir=${prefix}/share/info \
                     --disable-update-desktop-database \
-                    --enable-dbus \
+                    --disable-dbus \
                     --disable-update-mime-database
 
 post-extract {
@@ -63,3 +61,8 @@ post-configure {
 }
 
 build.env           LC_CTYPE=en_US.ISO8859-1
+
+variant dbus description {Enable dbus support} {
+    depends_lib-append      port:dbus
+    configure.args-replace  --disable-dbus --enable-dbus
+}

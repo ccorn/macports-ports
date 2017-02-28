@@ -4,11 +4,12 @@ PortSystem          1.0
 PortGroup           cmake 1.0
 PortGroup           github 1.0
 PortGroup           active_variants 1.1
+PortGroup           cxx11 1.1
 
-github.setup        bastibl gr-ieee802-11 0f5215d921582b1bf2c3c75c9d5027eb2ed98a70
-version             20161011
-checksums           rmd160 0d6a84b1bd11bddbf68a2a683ed2c6ce283aaa23 \
-                    sha256 b46102ce45af982f6baadbe32927a28a85557d918c3fb3781c9b0dad66570d86
+github.setup        bastibl gr-ieee802-11 691cf04a8fe898a0fe6bca57e19a4ee0dc7ed79b
+version             20170222
+checksums           rmd160 ee050294f5e2cd3c7f5ab1f8b9540307c567b35e \
+                    sha256 47b55d911f4f3ae41cad4c8ae70adaa48293cefbb38e1673e94452f4df7c581d
 
 # allow gr-ieee802-11 to work with both gnuradio and gnuradio-devel ...
 
@@ -59,31 +60,4 @@ configure.args-append \
 
 post-patch {
     reinplace "s/c++0x/c++11/" ${worksrcpath}/CMakeLists.txt
-}
-
-if {${configure.cxx_stdlib} eq "libstdc++"} {
-
-    # *clang* when using libstdc++ do not seem to support C++11;
-    # C++11 support seems to need GCC 4.7+ when using libstdc++;
-    # could use C++0x support on GCC4.[56], but just ignore it since
-    # there are newer compilers already in place as defaults.
-
-    # Blacklist GCC compilers not supporting C++11 and all CLANG.
-    # This is probably not necessary, but it's good practice.
-
-    compiler.blacklist-append *clang* {*gcc-3*} {*gcc-4.[0-6]}
-
-    # and whitelist those we do want to use. wish there were a better way.
-    # these will be used in the order provided.
-
-    compiler.whitelist macports-gcc-4.9 macports-gcc-4.8 macports-gcc-4.7
-
-} else {
-
-    # using libc++;
-    # Blacklist Clang not supporting C++11 in some form and all GCC.
-    # Just use the cxx11 PortGroup for this specific case.
-
-    PortGroup cxx11 1.0
-
 }

@@ -2,6 +2,7 @@
 
 PortSystem          1.0
 PortGroup           muniversal 1.0
+PortGroup           compiler_blacklist_versions 1.0
 
 name                cmake
 
@@ -53,12 +54,12 @@ if {${subport} eq ${name}} {
 
     # devel
 
-    version         20170123
-    set dist_branch 3.7
-    set dist_date   20170123
-    set dist_hash   gca3a4f
-    checksums       rmd160 21e02e231ddf26baee272a9677dd3f87ac8daf3b \
-                    sha256 f199a7db77376bf7047b504562f4a82b1f68dcb0caf22cd0af68014950fbb5b3
+    version         20170221
+    set dist_branch 3.8
+    set dist_date   20170221
+    set dist_hash   gaa1fd
+    checksums       rmd160 3c7685e213b72fb590d31cf1e6a2c87f466fbc60 \
+                    sha256 22f2cc6b7a06f4aa7ae7f556caff0db238508db22056575c576bcb21699a7953
 
     master_sites    http://www.cmake.org/files/dev/
     distname        ${name}-${dist_branch}.${dist_date}-${dist_hash}
@@ -104,6 +105,14 @@ configure.env-append \
                     CMAKE_PREFIX_PATH=${prefix} \
                     CMAKE_INCLUDE_PATH=${prefix}/include/ncurses \
                     CMAKE_LIBRARY_PATH=${prefix}/lib
+
+# when using libc++, require Clang 3.4 or newer; Clang 3.3 produces
+# bad stream reading code. See also MP ticket #44129:
+# < https://trac.macports.org/ticket/44129 >
+
+if {${configure.cxx_stdlib} eq "libc++"} {
+    compiler.blacklist-append *gcc* {clang < 500} macports-clang-3.3
+}
 
 platform darwin {
     configure.env-append \
@@ -211,7 +220,7 @@ variant gui description {Build Qt-based cmake-gui} {
 
     # when building the GUI with Qt, CMake uses C++11. So, make sure
     # the compiler used is c++11 compliant.
-    
+
     if {${configure.cxx_stdlib} eq "libstdc++"} {
 
         # *clang* when using libstdc++ do not seem to support C++11;

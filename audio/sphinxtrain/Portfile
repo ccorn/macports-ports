@@ -36,8 +36,8 @@ post-build {
 }
 
 destroot {
-    eval xinstall -m 755 [glob ${worksrcpath}/bin.*/*] ${destroot}${prefix}/bin
-    eval xinstall -m 644 [glob ${worksrcpath}/lib.*/*] ${destroot}${prefix}/lib
+    xinstall -m 755 {*}[glob ${worksrcpath}/bin.*/*] ${destroot}${prefix}/bin
+    xinstall -m 644 {*}[glob ${worksrcpath}/lib.*/*] ${destroot}${prefix}/lib
     
     system "cd ${worksrcpath}/python && ${python.bin} setup.py --no-user-cfg install --prefix=${python.prefix} --root=${destroot}"
     
@@ -48,5 +48,5 @@ destroot {
 }
 
 livecheck.type  regex
-livecheck.url   http://sourceforge.net/projects/cmusphinx/files
-livecheck.regex /${real_name}-(\[0-9.\]+)${extract.suffix}
+livecheck.url   https://sourceforge.net/projects/cmusphinx/files/sphinxtrain/
+livecheck.regex "/${name}/(\[0-9.\]+)/\""

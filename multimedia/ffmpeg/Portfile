@@ -10,10 +10,10 @@ name                ffmpeg
 conflicts           ffmpeg-devel
 epoch               1
 version             3.2.2
-revision            3
+revision            4
 license             LGPL-2.1+
 categories          multimedia
-maintainers         devans jeremyhu openmaintainer
+maintainers         devans {jeremyhu @jeremyhu} openmaintainer
 
 description         FFmpeg is a complete solution to play, record, convert and \
                     stream audio and video.
@@ -92,7 +92,8 @@ depends_lib         port:lame \
                     port:xz \
                     port:zlib
 
-patchfiles          patch-libavcodec-audiotoolboxenc.c.diff
+patchfiles          patch-libavcodec-audiotoolboxenc.c.diff \
+                    patch-configure-no-static-libopenjpeg.diff
 
 #
 # enable auto configure of asm optimizations

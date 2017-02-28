@@ -1,0 +1,34 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           github 1.0
+
+github.setup        dvorka hstr 1.22
+categories          shells
+platforms           darwin
+license             Apache-2
+maintainers         ryandesign openmaintainer
+
+description         Bash and Zsh shell history suggest box
+
+long_description    HSTR is a command line utility that brings improved \
+                    Bash command completion from the history. \
+                    It aims to make completion easier and more efficient than Ctrl-r. \
+                    Apart to the completion, history can be managed (you can remove \
+                    commands that e.g. contain sensitive information like passwords) \
+                    and bookmark your favorite commands.
+
+homepage            http://www.mindforger.com/projects/hh.html
+github.tarball_from releases
+distname            hh-${version}-src
+extract.suffix      .tgz
+worksrcdir          ${name}
+
+checksums           rmd160  ea0c8a5735464aa39df49f9894ba6fc075251c2c \
+                    sha256  17c720e22a155f19b9a0ac79ad8aab780dc6d35e5f7d67ef928561d441283027
+
+depends_build-append \
+                    port:pkgconfig
+
+depends_lib-append  port:ncurses \
+                    port:readline

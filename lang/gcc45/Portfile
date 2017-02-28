@@ -11,7 +11,7 @@ version             4.5.4
 revision            12
 platforms           darwin
 categories          lang
-maintainers         mww openmaintainer
+maintainers         nomaintainer
 # an exception in the license allows dependents to not be GPL
 license             {GPL-3+ Permissive}
 description         The GNU compiler collection
@@ -238,7 +238,7 @@ post-destroot {
 
     # darwin-sections.def gets missed on install for some reason
     if {${os.arch} ne "powerpc"} {
-        eval file copy ${worksrcpath}/../gcc-${version}/gcc/config/darwin-sections.def [glob ${destroot}${prefix}/lib/${name}/gcc/*/${version}/plugin/include/config]
+        file copy ${worksrcpath}/../gcc-${version}/gcc/config/darwin-sections.def {*}[glob ${destroot}${prefix}/lib/${name}/gcc/*/${version}/plugin/include/config]
     }
 
     file delete ${destroot}${prefix}/share/info/dir

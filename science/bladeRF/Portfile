@@ -4,10 +4,10 @@ PortSystem          1.0
 PortGroup           cmake 1.0
 PortGroup           github 1.0
 
-github.setup        Nuand bladeRF fcd775f2b92bcb3cb70781df5824ca7ddfc3e00f
-version             20160824
-checksums           rmd160 4591bb30945e4c403b701678dd6a07e6c0c398d4 \
-                    sha256 3109a44cc97d0d2dc9e200d74717fde981a10c86edd35016aee6d085e48edd5f
+github.setup        Nuand bladeRF 096984a4cba5fb1486df542e2d29a8af7a5cb692
+version             20170221
+checksums           rmd160 9efb3066302e96663a91e56d9dcaab0742d01217 \
+                    sha256 0d83155da63f1f27cb8f0ce0ccfa040eb1de0bf8d3cc62ce46db97bd95be0d4a
 
 categories          science comms
 maintainers         michaelld openmaintainer
@@ -19,9 +19,11 @@ platforms           darwin
 depends_build-append port:pkgconfig
 depends_lib-append  path:lib/libusb-1.0.dylib:libusb
 
-# temporary patch to fix use of clock_gettime
+# temporary patches to fix use of clock_gettime
 
-patchfiles-append   patch-clock_gettime.diff
+patchfiles-append   \
+    patch-reverse_b6f62672.diff \
+    patch-clock_gettime.diff
 
 # do VPATH (out of source tree) build
 
@@ -38,7 +40,6 @@ configure.ldflags-delete -L${prefix}/lib
 configure.args-append -DVERSION_INFO_OVERRIDE="MacPorts-${version}"
 
 # do not treat compiler warnings as errors
-
 configure.args-append -DTREAT_WARNINGS_AS_ERRORS=OFF
 
 # do not use 'pandoc' even if it is installed

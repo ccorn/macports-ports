@@ -23,7 +23,7 @@ subport                 ${name}-gcc-4.7 {
     set gcc_version_no_dot 47
 }
 subport                 ${name}-gcc-4.8 {
-    revision            14
+    revision            15
     set gcc_version     4.8
     set gcc_version_no_dot 48
     #Fixing issue with TARGET_CPU_DEFAULT_max.
@@ -34,7 +34,7 @@ subport                 ${name}-gcc-4.8 {
 dist_subdir             llvm
 categories              lang
 platforms               darwin
-maintainers             jeremyhu openmaintainer
+maintainers             {jeremyhu @jeremyhu} openmaintainer
 license                 GPL-2
 
 description             DragonEgg is a LLVM plug-in for GCC

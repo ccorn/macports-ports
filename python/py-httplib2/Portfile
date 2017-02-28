@@ -4,13 +4,12 @@ PortSystem        1.0
 PortGroup         python 1.0
 
 name              py-httplib2
-set realversion   0.9.2
+set realversion   0.10.3
 version           2-${realversion}
-revision          1
 categories-append devel net
 license           MIT
 platforms         darwin
-maintainers       ram aronnax openmaintainer
+maintainers       {ram @skymoo} aronnax openmaintainer
 
 description       A comprehensive HTTP client library in Python
 long_description  A comprehensive HTTP client library that supports \
@@ -20,11 +19,10 @@ homepage          http://pypi.python.org/pypi/${python.rootname}/
 master_sites      pypi:[string index ${python.rootname} 0]/${python.rootname}
 distname          ${python.rootname}-${realversion}
 
-python.versions   26 27 33 34 35
+python.versions   26 27 33 34 35 36
 
-checksums         md5    bd1b1445b3b2dfa7276b09b1a07b7f0e \
-                  rmd160 305916f7a3f9ff7a262d770b7cf19e808ea11105 \
-                  sha256 c3aba1c9539711551f4d83e857b316b5134a1c4ddce98a875b7027be7dd6d988
+checksums         rmd160 11438da47881a68c5b22cfa772e89c19565c894a \
+                  sha256 e404d3b7bd86c1bc931906098e7c1305d6a3a6dcef141b8bb1059903abb3ceeb
 
 if {${name} ne ${subport}} {
   # Extracted files do not have correct 'group' and 'other' permissions.

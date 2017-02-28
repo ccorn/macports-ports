@@ -1,5 +1,5 @@
---- qwtconfig.pri.orig	2015-11-24 16:17:25.000000000 +0100
-+++ qwtconfig.pri	2015-11-24 16:22:51.000000000 +0100
+--- qwtconfig.pri.orig
++++ qwtconfig.pri
 @@ -16,20 +16,10 @@
  # Install paths
  ######################################################################
@@ -52,6 +52,15 @@
  
  ######################################################################
  # If you want to build the Qwt designer plugin, 
+@@ -141,7 +130,7 @@
+ # Otherwise you have to build them from the examples directory.
+ ######################################################################
+ 
+-#QWT_CONFIG     += QwtExamples
++QWT_CONFIG     += QwtExamples
+ 
+ ######################################################################
+ # The playground is primarily intended for the Qwt development 
 @@ -161,8 +150,11 @@
  
  macx:!static:CONFIG(qt_framework, qt_framework|qt_no_framework) {

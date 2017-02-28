@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.24
-perl5.setup         libwww-perl 6.16 ../by-authors/id/O/OA/OALDERS
+perl5.setup         libwww-perl 6.21 ../by-authors/id/O/OA/OALDERS
 maintainers         nomaintainer
 license             {Artistic-1 GPL}
 supported_archs     noarch
@@ -22,8 +22,8 @@ long_description    The libwww-perl collection is a set of Perl \
                     and even classes that help you implement \
                     simple HTTP servers.
 
-checksums           rmd160  c1dd908b81e59203000f9e002a16a804e705ef36 \
-                    sha256  daffd268000f92d241f8ae5508ae5616dbd02f15a587b4fbcd14998ccc15ce22
+checksums           rmd160  56fada7232dbbe0120ff3dc06f906ebeb3120875 \
+                    sha256  d727ce7bc4926cc3d4dfe8aed8efcf252fcd06ac90fe3fdb39192a635e7a7eee
 
 platforms           darwin
 
@@ -51,16 +51,14 @@ if {${perl5.major} != ""} {
     post-destroot {
         # Install miscellaneous doc files
         file mkdir ${destroot}${prefix}/share/doc/${subport}
-        file copy ${worksrcpath}/AUTHORS \
-            ${worksrcpath}/Changes \
-            ${worksrcpath}/README \
+        file copy ${worksrcpath}/Changes \
             ${worksrcpath}/README.SSL \
             ${destroot}${prefix}/share/doc/${subport}
     }
 }
 
 notes "
-As of version 6.00, libwww-perl has been broken up into multiple packages. If\
+As of version 6.00, libwww-perl has been split into multiple packages. If\
 you were using ${subport} for just one or two of its modules before, you may\
 be able to pare down your installation to just those modules now. Other\
 important changes have been made that may affect your code\; for details,\

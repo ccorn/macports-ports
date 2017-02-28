@@ -18,7 +18,7 @@ dist_subdir             llvm
 categories              lang
 platforms               darwin
 license                 NCSA
-maintainers             jeremyhu larryv
+maintainers             {jeremyhu @jeremyhu} larryv
 
 if {${subport} eq "llvm-${llvm_version}"} {
     homepage            http://llvm.org/
@@ -30,7 +30,7 @@ if {${subport} eq "llvm-${llvm_version}"} {
                         around a well specified code representation known as \
                         the LLVM intermediate representation ("LLVM IR").
 
-    depends_lib         port:libedit port:libffi port:ncurses port:xar port:zlib
+    depends_lib         port:libedit port:libffi port:ncurses path:lib/libxar.dylib:xar port:zlib
     depends_run         bin:perl:perl5 port:llvm_select
 } elseif {${subport} eq "clang-${llvm_version}"} {
     homepage            http://clang.llvm.org/
@@ -430,6 +430,22 @@ if {${subport} eq "llvm-${llvm_version}"} {
                 ${worksrcpath}/tools/clang/tools/scan-view/bin/scan-view
         }
     }
+
+    variant libstdcxx description {-stdlib=macports-libstdc++ searches for MacPorts libstdc++} {
+        depends_lib-append port:gcc6
+
+        patchfiles-append 9001-macports-libstdcxx.diff
+
+        post-patch {
+            reinplace "s|@@MACPORTS_GCC_INCLUDE_DIR@@|${prefix}/include/gcc6/c++|g" \
+                ${worksrcpath}/tools/clang/lib/Frontend/InitHeaderSearch.cpp
+            reinplace "s|@@MACPORTS_HOST_NAME@@|${build_arch}-apple-darwin${os.major}|g" \
+                ${worksrcpath}/tools/clang/lib/Frontend/InitHeaderSearch.cpp
+            reinplace "s|@@MACPORTS_libstdc++@@|${prefix}/lib/libgcc/libstdc++.6.dylib|g" \
+                ${worksrcpath}/tools/clang/lib/Driver/ToolChains.cpp
+        }
+    }
+    #default_variants +libstdcxx
 
     post-patch {
         reinplace "s|@@PREFIX@@|${prefix}|" \

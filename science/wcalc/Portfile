@@ -50,10 +50,10 @@ post-destroot {
     xinstall -d -m 755 ${destroot}${prefix}/share/doc
     file rename ${destroot}${prefix}/share/${distname} \
                 ${destroot}${prefix}/share/doc/${name}
-    eval move  [glob ${destroot}${prefix}/share/${name}/*] \
+    move  {*}[glob ${destroot}${prefix}/share/${name}/*] \
                 ${destroot}${prefix}/share/doc/${name}
 }
 
 livecheck.type  regex
-livecheck.url   http://sourceforge.net/projects/${name}/files/
-livecheck.regex "${name}-(\\d+)${extract.suffix}"
+livecheck.url   http://sourceforge.net/projects/${name}/files/${name}/
+livecheck.regex "${name}-(\\d+(?:\\.\\d+)*)"

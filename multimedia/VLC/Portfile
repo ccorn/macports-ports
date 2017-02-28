@@ -45,7 +45,7 @@ supported_archs         x86_64
 ##
 if {(${subport} eq ${name}) || (${subport} eq "lib${name}")} {
     version             2.2.4
-    revision            4
+    revision            5
     license             GPL-2
 
     platforms           darwin
@@ -700,7 +700,7 @@ if {${subport} eq "ffmpeg-VLC"} {
 
     livecheck.type      regex
     livecheck.url       ${master_sites}
-    livecheck.regex     "${name}-(\\d+(?:\\.\\d+)*)${extract.suffix}"
+    livecheck.regex     "ffmpeg-(\\d+(?:\\.\\d+)*)${extract.suffix}"
 
 }
 
