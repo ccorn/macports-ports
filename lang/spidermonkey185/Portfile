@@ -5,6 +5,7 @@ PortSystem 1.0
 set js_version      1.8.5
 name                spidermonkey[strsed ${js_version} {g/\.//}]
 version             1.0.0
+revision            3
 categories          lang
 platforms           darwin
 maintainers         nomaintainer
@@ -43,6 +44,7 @@ post-destroot {
     # anyway: https://developer.mozilla.org/en/SpiderMonkey/1.8.5#js-config
     # Programs should use "pkg-config mozjs185" instead of js-config.
     delete ${destroot}${prefix}/bin/js-config
+    copy ${worksrcpath}/shell/js ${destroot}${prefix}/bin/js185
 }
 
 universal_variant   no
