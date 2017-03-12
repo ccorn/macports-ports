@@ -1,0 +1,23 @@
+--- asmrun/power-rhapsody.S.orig	2014-04-12 12:17:02.000000000 +0200
++++ asmrun/power-rhapsody.S	2017-02-28 23:00:47.000000000 +0100
+@@ -56,7 +56,7 @@ _caml_system__code_begin:
+ _caml_call_gc:
+     /* Set up stack frame */
+ #define FRAMESIZE (32*WORD + 32*8 + 32)
+-        stwu    r1, -FRAMESIZE(r1)
++        stgu    r1, -FRAMESIZE(r1)
+     /* Record return address into OCaml code */
+         mflr    r0
+         Storeglobal r0, _caml_last_return_address, r11
+@@ -65,9 +65,9 @@ _caml_call_gc:
+         Storeglobal r0, _caml_bottom_of_stack, r11
+     /* Touch the stack to trigger a recoverable segfault
+        if insufficient space remains */
+-        addi    r1, r1, -4096*WORD
++        addi    r1, r1, -16384
+         stg     r0, 0(r1)
+-        addi    r1, r1, 4096*WORD
++        addi    r1, r1, 16384
+     /* Record pointer to register array */
+         addi    r0, r1, 8*32 + 32
+         Storeglobal r0, _caml_gc_regs, r11

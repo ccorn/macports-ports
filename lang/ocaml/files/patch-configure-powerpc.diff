@@ -1,0 +1,28 @@
+--- configure.orig	2015-05-12 16:46:37.000000000 +0200
++++ configure	2017-02-28 22:24:01.000000000 +0100
+@@ -337,7 +337,7 @@ case "$bytecc,$target" in
+   *,*-*-darwin*)
+     bytecccompopts="$gcc_warnings"
+     mathlib=""
+-    mkexe="$mkexe -Wl,-no_compact_unwind"
++    #mkexe="$mkexe -Wl,-no_compact_unwind"
+     # Tell gcc that we can use 32-bit code addresses for threaded code
+     # unless we are compiled for a shared library (-fPIC option)
+     echo "#ifndef __PIC__" >> m.h
+@@ -749,7 +749,7 @@ if test $with_sharedlibs = "yes"; then
+       dl_needs_underscore=false
+       shared_libraries_supported=true;;
+     *-apple-darwin*)
+-      mksharedlib="$bytecc -bundle -flat_namespace -undefined suppress -Wl,-no_compact_unwind"
++      mksharedlib="$bytecc -bundle -flat_namespace -undefined suppress"
+       bytecccompopts="$dl_defs $bytecccompopts"
+       dl_needs_underscore=false
+       shared_libraries_supported=true;;
+@@ -789,6 +789,7 @@ if test $with_sharedlibs = "yes"; then
+         natdynlink=true
+       fi;;
+     x86_64-*-darwin*)             natdynlink=true;;
++    powerpc*-*-darwin*)           natdynlink=true;;
+     powerpc*-*-linux*)            natdynlink=true;;
+     sparc*-*-linux*)              natdynlink=true;;
+     i686-*-kfreebsd*)             natdynlink=true;;

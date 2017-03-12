@@ -24,6 +24,11 @@ long_description \
 
 use_xz              yes
 
+platform darwin powerpc {
+    patchfiles-append   patch-configure-powerpc.diff \
+                        patch-power-rhapsody.S.diff
+}
+
 depends_lib         port:ncurses
 
 use_parallel_build  no
@@ -54,7 +59,7 @@ post-destroot {
 
 # Variants.
 variant profile description {Enable profiling} {
-    configure.env-append CC="gcc -pg"
+    configure.env-append CC="${configure.cc} -pg"
 }
 
 livecheck.type      regex
