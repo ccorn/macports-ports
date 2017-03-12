@@ -13,7 +13,7 @@ if {${os.platform} eq "darwin" && ${os.major} < 10} {
     version             1.6.1
 }
 categories          multimedia
-maintainers         devans openmaintainer
+maintainers         {devans @dbevans} openmaintainer
 platforms           darwin
 license             Permissive
 

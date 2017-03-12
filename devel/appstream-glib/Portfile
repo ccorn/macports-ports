@@ -4,11 +4,11 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           gobject_introspection 1.0
 
-github.setup        hughsie appstream-glib 0_6_7 appstream_glib_
+github.setup        hughsie appstream-glib 0_6_10 appstream_glib_
 version             [string map {_ .} ${version}]
 license             LGPL-2+
 categories          devel
-maintainers         devans openmaintainer
+maintainers         {devans @dbevans} openmaintainer
 platforms           darwin
 homepage            https://people.freedesktop.org/~hughsient/appdata/
 
@@ -17,8 +17,8 @@ description         This library provides objects and helper methods to help \
 
 long_description    ${description}
 
-checksums           rmd160  854a77b6a788301b049143af980f3418b9b62989 \
-                    sha256  c5c98640b5c17f8cf1a1da1f83015e859c105b5cb6d62943b5414301f5893ca3
+checksums           rmd160  0685a28d787193e5d3228d25f5b1e782a7e8a1b1 \
+                    sha256  bb4e7461e91b3820e37b310a93232ca10513a562d7f08742d793415a4df83fe2
 
 depends_build       port:pkgconfig \
                     port:gtk-doc \
@@ -38,8 +38,7 @@ depends_lib         path:lib/pkgconfig/glib-2.0.pc:glib2 \
                     port:freetype \
                     port:json-glib
 
-patchfiles          patch-data-tests-Makefile.am.diff \
-                    patch-libappstream-glib-as-store.c.diff
+patchfiles          patch-data-tests-Makefile.am.diff
 
 gobject_introspection yes
 

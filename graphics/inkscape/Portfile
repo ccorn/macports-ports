@@ -5,9 +5,9 @@ PortSystem          1.0
 name                inkscape
 conflicts           inkscape-devel
 version             0.92.0
-revision            3
+revision            4
 license             GPL-2 LGPL-2.1
-maintainers         devans
+maintainers         {devans @dbevans}
 categories          graphics gnome
 platforms           darwin
 
@@ -72,6 +72,14 @@ post-patch {
 
 universal_variant no
 
+platform darwin {
+# on Sierra, building with clang optimization enabled causes crash at startup
+# issue effects both +x11 and +quartz builds
+    if {${os.major} > 15} {
+        configure.optflags  -O0
+    }
+}
+
 configure.cmd       ./autogen.sh && ./configure
 
 configure.python    ${prefix}/bin/python2.7
@@ -135,4 +143,4 @@ if {[variant_isset gtk3]} {
 
 livecheck.type      regex
 livecheck.url       https://inkscape.org/en/download/source/
-livecheck.regex     "${name}-(\\d+(?:\\.\\d+)*)${extract.suffix}"
+livecheck.regex     "${name}-(\\d+(?:\\.\\d+)*).tar"

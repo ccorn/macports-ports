@@ -8,7 +8,7 @@ github.setup        cjdelisle cjdns 19.1 cjdns-v
 name                cjdns
 categories          net
 platforms           darwin
-maintainers         icloud.com:l2dy openmaintainer
+maintainers         {l2dy @l2dy} openmaintainer
 license             GPL-3
 
 description         Cjdns implements an encrypted IPv6 network.
@@ -26,6 +26,8 @@ depends_build       bin:node:nodejs6
 use_configure       no
 
 build.cmd           "./do"
+build.target
+build.env-append    CC=${configure.cc}
 
 destroot {
         xinstall -m 755 -d ${destroot}${prefix}/bin

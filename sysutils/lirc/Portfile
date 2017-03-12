@@ -3,7 +3,7 @@ PortGroup           cxx11 1.0
 
 name                lirc
 version             0.9.4d
-
+revision            2
 categories          sysutils net
 license             {GPL-2+ OpenSSLException}
 maintainers         ctreleaven openmaintainer
@@ -50,17 +50,7 @@ depends_lib         port:libusb \
                     port:libftdi1 \
                     port:portaudio
 
-depends_run         port:gtk3 \
-                    port:${pymodver}-gobject3 \
-                    port:${pymodver}-yaml \
-                    port:vte
-
-# first 3 patches will be dealt with upstream in 0.9.4d release
-#patchfiles          patch-lirc_options.diff \
-#                    patch-ftdi_support.diff \
-#                    patch-curl_poll.diff \
-
-patchfiles                    patch-commandir_support.diff
+patchfiles          patch-commandir_support.diff
 
 post-patch {
     reinplace -locale C "s|@PREFIX@|${prefix}|g" ${worksrcpath}/lirc_options.conf
@@ -83,12 +73,16 @@ configure.env-append \
 configure.args      --without-x --disable-silent-rules
 
 post-destroot {
-    xinstall -m 755 -d ${destroot}${prefix}/var/log
-    xinstall -m 755 -d ${destroot}${prefix}/var/run/lirc
-    destroot.keepdirs ${destroot}${prefix}/var/log \
-        ${destroot}${prefix}/var/run/lirc
+    xinstall -m 777 -d ${destroot}${prefix}/var/log/${name}
+    xinstall -m 777 -d ${destroot}${prefix}/var/run/${name}
+    destroot.keepdirs ${destroot}${prefix}/var/log/${name} \
+        ${destroot}${prefix}/var/run/${name}
     move ${destroot}${prefix}/etc/lirc/lirc_options.conf \
         ${destroot}${prefix}/etc/lirc/lirc_options.conf.template
+    if {![variant_isset gui]} {
+        delete ${destroot}${prefix}/bin/lirc-setup
+        delete ${destroot}${prefix}/lib/python3.4
+    }
 }
 
 post-activate {
@@ -98,11 +92,20 @@ post-activate {
     }
 }
 
+variant gui description { include experimental gui tools } {
+    depends_run-append  port:gtk3 \
+                        port:${pymodver}-gobject3 \
+                        port:${pymodver}-yaml \
+                        port:vte
+    configure.args-replace --without-x --with-x
+}
+
 add_users ${lircuser} group=${lircuser} realname=LIRC\ user
 
 startupitem.create        yes
 startupitem.executable    ${prefix}/sbin/lircd \
-                          --nodaemon --effective-user=${lircuser}
+                          --nodaemon --logfile=${prefix}/var/log/${name}/lircd.log \
+                          --effective-user=${lircuser}
 
 notes "
 Before starting the lircd background process, two configuration steps need to be\

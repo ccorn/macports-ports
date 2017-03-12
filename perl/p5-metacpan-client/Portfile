@@ -4,16 +4,16 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.24
-perl5.setup         MetaCPAN-Client 2.004000 ../by-authors/id/M/MI/MICKEY
+perl5.setup         MetaCPAN-Client 2.007000 ../by-authors/id/M/MI/MICKEY
 license             {Artistic-1 GPL}
-maintainers         devans openmaintainer
+maintainers         {devans @dbevans} openmaintainer
 description         MetaCPAN::Client - A comprehensive, DWIM-featured client to the MetaCPAN API
 long_description    ${description}
 
 platforms           darwin
 
-checksums           rmd160  979a04cc690110b4c52933a7ef61c06b091ec01d \
-                    sha256  200cdc25e2270cf2112ba6779b3d42a0c610503ae1251c5aefc21f4676cef7e7
+checksums           rmd160  778297ac7141c26c6c142438beec415c51d21ad6 \
+                    sha256  228fbb75d61a2508d8e40526baec8d58403d2f39fffb5391c0b30e195feecee6
 
 if {${perl5.major} != ""} {
 # requires ExtUtils::MakeMaker version 7.1101, perl 5.24.0 core version is 7.10_01

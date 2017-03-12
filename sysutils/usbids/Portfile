@@ -1,9 +1,11 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
+PortGroup           github 1.0
 
+github.setup        usbids usbids 899c63a175a1f4899c2fc4a242e52948e4bdd85a
 name                usbids
-version             2016.11.14
+version             2017.02.12
 categories          sysutils
 platforms           darwin
 license             {GPL-2+ BSD}
@@ -19,20 +21,14 @@ long_description    This is a public repository of all known ID's used \
                     cryptic numeric codes.
 homepage            http://www.linux-usb.org/usb-ids.html
 
-master_sites        http://www.linux-usb.org
-dist_subdir         ${name}/${version}
-distname            usb.ids
-extract.suffix      .gz
-checksums           rmd160  78323e491c373ca7a8cfcc265588fcf80b44ec0f \
-                    sha256  371d2bd09d34c1d36ab4b276a92c23686c29f38d67c6cdde31b6b1053b6cb10d
+checksums           rmd160  438ba9fdbf45ef18e9896357286decede7c002bb \
+                    sha256  1e101a1848c7b8f57c516e7e508bb7046959c9f14fbe26c852481d8579ff71f6
 
-# Just download and install the database.
-extract.only
 use_configure       no
 build {}
 destroot {
-    xinstall -m 644 ${distpath}/[lindex ${distfiles} 0] \
-        ${destroot}${prefix}/share
+    exec /usr/bin/gzip -9 ${worksrcpath}/usb.ids
+    xinstall -m 644 ${worksrcpath}/usb.ids.gz ${destroot}${prefix}/share
 }
 
 # Remove after 2017-11-28.
@@ -48,5 +44,5 @@ pre-activate {
 }
 
 livecheck.type      regex
-livecheck.url       [lindex ${master_sites} 0]/usb.ids
+livecheck.url       http://www.linux-usb.org/usb.ids
 livecheck.regex     {Version: (\d{4}\.\d{2}\.\d{2})}
