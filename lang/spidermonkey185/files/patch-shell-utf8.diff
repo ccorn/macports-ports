@@ -1,0 +1,10 @@
+--- shell/js.cpp.orig	2011-03-31 21:08:36.000000000 +0200
++++ shell/js.cpp	2017-03-14 13:23:33.000000000 +0100
+@@ -5789,6 +5789,7 @@ main(int argc, char **argv, char **envp)
+     CALIBRATION_DELAY_COUNT = 0;
+ #endif
+ 
++    JS_SetCStringsAreUTF8();
+     rt = JS_NewRuntime(160L * 1024L * 1024L);
+     if (!rt)
+         return 1;

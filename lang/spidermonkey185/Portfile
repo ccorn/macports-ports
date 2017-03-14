@@ -5,7 +5,7 @@ PortSystem 1.0
 set js_version      1.8.5
 name                spidermonkey[strsed ${js_version} {g/\.//}]
 version             1.0.0
-revision            3
+revision            4
 categories          lang
 platforms           darwin
 maintainers         nomaintainer
@@ -29,6 +29,12 @@ worksrcdir          js-${js_version}/js/src
 
 patchfiles          patch-DESTDIR.diff \
                     patch-includedir.diff
+
+variant utf8 description {make the shell I/O use UTF-8 (except for scripts)} {
+    patchfiles-append   patch-shell-utf8.diff
+}
+
+default_variants    +utf8
 
 configure.args      --enable-readline \
                     --enable-threadsafe \
