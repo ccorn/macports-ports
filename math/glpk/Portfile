@@ -1,5 +1,6 @@
 PortSystem      1.0
 PortGroup       muniversal 1.0
+PortGroup       compilers 1.0
 
 name            glpk
 epoch           1
@@ -24,6 +25,20 @@ checksums       rmd160  763b558b32b91fbf36a52cf539e11b7897bf7507 \
                 sha256  9866de41777782d4ce21da11b88573b66bb7858574f89c28be6967ac22dfaba9
 
 depends_lib     port:gmp
+
+# glpk requires thread-local storage support
+compilers.choose    cc cxx
+compilers.setup     -gcc44 -gcc45 -gcc46 \
+                    -clang33 -clang34 -clang35 \
+                    -llvm -dragonegg33 -dragonegg34
+# compiler.setup does not set configure.compiler, but we need it
+# for proper archflags and to avoid weird fallbacks when blacklisting.
+if {[info exists cdb([c_variant_name],compiler)]} {
+    configure.compiler.add_deps no
+    configure.compiler  $cdb([c_variant_name],compiler)
+    compiler.blacklist  gcc-3.3 gcc-4.0 gcc-4.2 llvm-gcc-4.2 clang \
+                        apple-gcc-4.0 apple-gcc-4.2 macports-llvm-gcc42
+}
 
 configure.args  --with-gmp
 
