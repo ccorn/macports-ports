@@ -43,6 +43,8 @@ depends_lib         port:cctools \
 depends_skip_archcheck-append gcc_select ld64 cctools
 license_noconflict  gmp mpfr ppl libmpc
 
+patchfiles-append   force-static-gcc.patch
+
 # Handle OS X deployment targets correctly (GCC PR target/63810
 # <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63810>).
 patchfiles-append   macosx-version-min.patch
@@ -181,7 +183,8 @@ configure.env-append \
 build.env-append \
     CPP="${configure.cc} -E" \
     CXXCPP="${configure.cxx} -E"
-configure.cc-append [get_canonical_archflags]
+# Do not add multi-archflags to the stage1 compiler, that breaks the build
+#configure.cc-append [get_canonical_archflags]
 configure.cc_archflags
 configure.cxx-append ${configure.cxx_archflags}
 configure.cxx_archflags
