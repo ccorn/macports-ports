@@ -6,7 +6,6 @@ PortGroup           muniversal 1.0
 PortGroup           compiler_blacklist_versions 1.0
 PortGroup           linear_algebra 1.0
 # see https://lists.gnu.org/archive/html/octave-maintainers/2016-05/msg00286.html
-PortGroup           cxx11 1.1
 # See https://trac.macports.org/ticket/53044 for restricting versions further than the cxx11 PortGroup
 compiler.blacklist-append   {*gcc-4.6} {clang < 700}
 
@@ -29,6 +28,9 @@ master_sites        gnu:octave
 
 checksums           rmd160  7bcefebcbcb644b4527ca97501a4e05b15c04d94 \
                     sha256  80c28f6398576b50faca0e602defb9598d6f7308b0903724442c2a35a605333b
+
+# math namespace fixes
+patchfiles-append patch-cmath.diff
 
 # see http://savannah.gnu.org/bugs/?48773
 patchfiles-append patch-qscintilla2.diff
@@ -120,12 +122,14 @@ configure.env-append RANLIB=/usr/bin/ranlib
 # main octave port lists as a depends_lib
 # configure.ac list it among the "[p]rograms used in Makefiles"
 depends_build-append port:gawk
+depends_skip_archcheck-append   gawk
 configure.awk ${prefix}/bin/gawk
 
 # in configure.ac, said to be "[p]rograms used to generate icons file formats
 depends_build-append \
     port:icoutils    \
     port:librsvg
+depends_skip_archcheck-append   icoutils librsvg
 configure.env-append              \
     ICOTOOL=${prefix}/bin/icotool \
     RSVG_CONVERT=${prefix}/bin/rsvg-convert
@@ -148,38 +152,45 @@ license_noconflict  \
 # main octave port lists as a depends_lib
 # configure.ac list it among the "[p]rograms used in Makefiles"
 depends_build-append port:grep
+depends_skip_archcheck-append   grep
 configure.env-append  GREP=${prefix}/bin/grep
 configure.env-append EGREP=${prefix}/bin/egrep
 configure.env-append FGREP=${prefix}/bin/fgrep
 
 # configure.ac list it among the "[p]rograms used in Makefiles"
 depends_build-append port:findutils
+depends_skip_archcheck-append   findutils
 configure.env-append FIND=${prefix}/bin/gfind
 
 # main octave port lists as a depends_lib
 # configure.ac list it among the "[p]rograms used in Makefiles"
 depends_build-append port:gsed
+depends_skip_archcheck-append   gsed
 configure.env-append SED=${prefix}/bin/gsed
 
 depends_build-append port:flex
+depends_skip_archcheck-append   flex
 configure.env-append LEX=${prefix}/bin/flex
 
 depends_build-append port:bison
+depends_skip_archcheck-append   bison
 configure.env-append YACC="${prefix}/bin/bison -y"
 
 depends_build-append port:gperf
+depends_skip_archcheck-append   gperf
 configure.env-append GPERF=/usr/bin/gperf
 
 # configure.ac list it among the "[p]rograms used in Makefiles"
 depends_build-append port:perl5
+depends_skip_archcheck-append   perl5
 configure.perl ${prefix}/bin/perl5
 
 # avoid depends_build-append port:desktop-file-utils
 #configure.env-append DESKTOP_FILE_INSTALL=""
 configure.env-append ac_cv_prog_DESKTOP_FILE_INSTALL=""
 
-depends_build-append \
-    port:pkgconfig
+depends_build-append port:pkgconfig
+depends_skip_archcheck-append   pkgconfig
 
 compilers.choose    fc f77 f90 cc cxx
 
@@ -204,6 +215,10 @@ compilers.setup     \
     -clang35        \
     -clang34        \
     -clang33
+if {[info exists cdb([c_variant_name],compiler)]} {
+    configure.compiler.add_deps no
+    configure.compiler  $cdb([c_variant_name],compiler)
+}
 
 # offscreen rendering with OpenGL via osmesa would be nice to have, but the following
 #    causes a segmentation fault:
@@ -237,19 +252,24 @@ configure.args-append       \
     --disable-docs
 
 # in configure.ac, listed as one of "[p]rograms used when running Octave"
-depends_lib-append port:python27
-configure.python ${prefix}/bin/python2.7
+# Somehow depends_skip_archcheck-append python27 does not work
+#depends_lib-append port:python27
+#depends_skip_archcheck-append   python27
+#configure.python ${prefix}/bin/python2.7
 
 # in configure.ac, listed as one of "[p]rograms used when running Octave"
 depends_lib-append port:ghostscript
+depends_skip_archcheck-append   ghostscript
 configure.env-append GHOSTSCRIPT=${prefix}/bin/gs
 
 # in configure.ac, listed as one of "[p]rograms used when running Octave"
 depends_lib-append port:gnuplot
+depends_skip_archcheck-append   gnuplot
 configure.env-append GNUPLOT=${prefix}/bin/gnuplot
 
 # in configure.ac, listed as one of "[p]rograms used when running Octave"
 depends_lib-append port:less
+depends_skip_archcheck-append   less
 configure.env-append DEFAULT_PAGER=${prefix}/bin/less
 
 depends_lib-append   port:ncurses
@@ -263,9 +283,18 @@ depends_lib-append   port:pcre
 #--without-cxsparse
 #--without-umfpack
 depends_lib-append  port:SuiteSparse
-foreach lib {amd camd colamd cholmod cxsparse umfpack} {
+foreach lib {amd camd colamd cxsparse} {
     configure.args-append \
         --with-${lib}="-l${lib} -lsuitesparseconfig"
+}
+if {[llength [glob -nocomplain -directory ${prefix}/lib libmetis.*]] > 0} {
+    set metis -lmetis
+} else {
+    set metis {}
+}
+foreach lib {cholmod umfpack} {
+    configure.args-append \
+        --with-${lib}="-l${lib} ${metis} -lsuitesparseconfig"
 }
 
 #--without-qhull
@@ -314,6 +343,7 @@ depends_run-append   \
     port:ghostscript \
     port:transfig    \
     port:pstoedit
+depends_skip_archcheck-append   epstool ghostscript transfig pstoedit
 
 pre-configure {
     configure.args-append --with-blas="-L${prefix}/lib ${linalglib}" --with-lapack=""
@@ -411,11 +441,13 @@ default_variants-append +sound
 
 variant app description "build application bundle to launch ${subport}" {
     depends_build-append port:ImageMagick
+    depends_skip_archcheck-append   ImageMagick
 
     if {[vercmp ${xcodeversion} 4.5] < 0} {
         # need a way to generate icns file for XCode prior to 4.5
         # see #51487
         depends_build-append port:libicns
+        depends_skip_archcheck-append   libicns
     }
 
     global appName
@@ -503,6 +535,7 @@ variant app description "build application bundle to launch ${subport}" {
     }
 
     post-destroot {
+        xinstall -d ${destroot}${applications_dir}
         copy ${worksrcpath}/${appName} ${destroot}${applications_dir}
     }
 }
@@ -510,6 +543,7 @@ default_variants-append +app
 
 variant docs description {build documentation files} {
     depends_build-append port:texinfo
+    depends_skip_archcheck-append   texinfo
     configure.env-append                \
         MAKEINFO=${prefix}/bin/makeinfo \
         TEXI2DVI=${prefix}/bin/texi2dvi \
@@ -519,10 +553,12 @@ variant docs description {build documentation files} {
     depends_build-append \
         port:texlive-basic \
         port:texlive-latex
+    depends_skip_archcheck-append   texlive-basic texlive-latex
 
     # see #51132
     depends_build-append \
         port:texlive-fonts-recommended
+    depends_skip_archcheck-append   texlive-fonts-recommended
 
     configure.args-replace --disable-docs --enable-docs
 }
@@ -605,6 +641,14 @@ if { ![variant_isset universal] } {
 } else {
     merger-post-destroot {
         foreach arch ${universal_archs_to_use} {
+            # Remove potentially arch-specific absolute paths from *.la
+            foreach f [glob -directory ${destroot}-${arch}${prefix}/lib */*/*.la] {
+                reinplace -E "/^dependency_libs=' / {
+                    s, -L\[^ '\]*,,g
+                    s, \[^ \]*/lib(\[^ /.'\]+)\[^ '\]*, -l\\1,g
+                    s,=' ,=' -L${prefix}/lib ,
+                }" $f
+            }
             set octave_install_share ${destroot}-${arch}${prefix}/share/octave/packages
             set octave_install_lib   ${destroot}-${arch}${prefix}/lib/octave/packages
             set octave_packages_file ${destroot}-${arch}${prefix}/share/octave/octave_packages
