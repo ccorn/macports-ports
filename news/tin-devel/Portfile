@@ -3,9 +3,9 @@
 PortSystem          1.0
 
 name                tin-devel
-conflicts           tin tin-recent
+conflicts           tin
 version             2.3.4
-revision            1
+revision            2
 categories          news
 license             BSD
 platforms           darwin

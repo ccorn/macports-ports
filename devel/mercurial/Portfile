@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 PortGroup           bitbucket 1.0
 
-bitbucket.setup     seanfarley mercurial 4.1
+bitbucket.setup     seanfarley mercurial 4.1.1
 categories          devel python
 license             GPL-2+
 maintainers         sean openmaintainer
@@ -23,10 +23,10 @@ long_description    Mercurial is a fast, lightweight Source Control Management \
                     CGI, SSH or a stream of patch emails. Mercurial supports \
                     Apples' FileMerge for merges.
 
-homepage            http://www.selenic.com/mercurial/
+homepage            http://www.mercurial-scm.org
 platforms           darwin
-checksums           rmd160  3643126eacb0e1bede84072b6f368742e8f0fa32 \
-                    sha256  d9ecbec6b2e051ac369a588c6356b7eea20b4a4338d32008b50767d7313ad63f
+checksums           rmd160  0cf4e2dae6a5fed69241ed6875a4fbaa45093621 \
+                    sha256  bdd87fceb9a34a80a900bb6dd3eb01f9aa42fa74822c36032162ff158978aa53
 
 depends_build       port:py27-docutils
 
@@ -42,14 +42,14 @@ build.cmd           make
 build.target        all PYTHON=${python.bin}
 
 subport mercurial-devel {
-    bitbucket.setup     seanfarley mercurial 1791be8a95c5
+    bitbucket.setup     seanfarley mercurial a5bad127128d
     name                mercurial-devel
     version             4.1.99
-    revision            0
+    revision            1
 
     conflicts           mercurial
-    checksums           rmd160  b72cfd97d31e60f8f794b0264cef396ef715d440 \
-                        sha256  d34a957338c94b974b20960eede4a9d99edf98752cb868008903559b75d57298
+    checksums           rmd160  1aab1c7403315d69f718fcd961fb69df6a096185 \
+                        sha256  fd60627e56712fe7d9746f5fead1650cb1685a8472e764cbbd2c08c8f39b60a3
 }
 
 # chg is not installed by default yet

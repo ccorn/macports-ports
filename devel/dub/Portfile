@@ -2,8 +2,9 @@
 
 PortSystem          1.0
 PortGroup           github 1.0
+PortGroup           muniversal 1.0
 
-github.setup        dlang dub 1.2.0 v
+github.setup        dlang dub 1.2.2 v
 categories          devel
 platforms           darwin
 license             GPL-3
@@ -16,11 +17,8 @@ depends_lib         port:dmd \
                     port:phobos \
                     port:dmd-tools
 
-checksums           rmd160  462e6a5d549cf9f8ce29b0b2c58395e109df1874 \
-                    sha256  898116607a7365b8b92dca1256c982699e003ea90574c441ad0ced8928aca614
-
-# 0.9.24 had a stealth update
-dist_subdir         ${name}/${version}_1
+checksums           rmd160  403c626dadf50f7fafc4b9107d5b7e3b2440ca95 \
+                    sha256  2056bdf57716b45aac91e7f80b25184c2cef06cb918b725e009d81ec991aceac
 
 use_configure       no
 
@@ -28,9 +26,35 @@ build.cmd           ./build.sh
 build.target
 build.env           CC=${configure.cc}
 
-destroot {
-    xinstall -d -m 755 ${destroot}${prefix}/bin
-    copy ${worksrcpath}/bin/dub ${destroot}${prefix}/bin
+# muniversal PG requires Makefile
+post-extract {
+    xinstall -m 0644 ${filespath}/makefile_macports_install ${build.dir}
+}
+destroot.cmd /usr/bin/make
+destroot.args \
+    -f makefile_macports_install \
+    PREFIX=${prefix}
+
+# respect MACOSX_DEPLOYMENT_TARGET environment value
+patchfiles-append   patch-build.sh.diff
+
+# look for configuration file in ${prefix} instead of /
+patchfiles-append   patch-dub.d.diff
+post-patch {
+    reinplace "s|__MACPORTS_PREFIX__|${prefix}|g" source/dub/dub.d
+}
+
+if { ![variant_isset universal] } {
+    if { ${build_arch} eq "x86_64" || ${build_arch} eq "ppc64" } {
+        build.env-append DMD="${prefix}/bin/dmd -m64"
+    } else {
+        build.env-append DMD="${prefix}/bin/dmd -m32"
+    }
+} else {
+    lappend merger_build_env(x86_64) DMD='${prefix}/bin/dmd -m64'
+    lappend merger_build_env(i386)   DMD='${prefix}/bin/dmd -m32'
+    lappend merger_build_env(ppc64)  DMD='${prefix}/bin/dmd -m64'
+    lappend merger_build_env(ppc)    DMD='${prefix}/bin/dmd -m32'
 }
 
 livecheck.regex     archive/[join ${github.tag_prefix} ""](\[^"rba\]+)${extract.suffix}

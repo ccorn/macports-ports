@@ -3,7 +3,7 @@
 PortSystem          1.0
 
 name                nginx
-version             1.11.10
+version             1.11.13
 categories          www mail
 platforms           darwin
 license             BSD
@@ -29,12 +29,13 @@ master_sites        http://nginx.org/download:nginx \
                     https://github.com/arut/nginx-rtmp-module/archive/:rtmp_module \
                     https://github.com/slact/nchan/archive/:http_push_module \
                     https://github.com/simpl/ngx_devel_kit/archive/:devel_kit_module \
-                    https://github.com/openresty/lua-nginx-module/archive/:lua_module
+                    https://github.com/openresty/lua-nginx-module/archive/:lua_module \
+                    https://github.com/openresty/headers-more-nginx-module/archive/:h_more_module
 
 distfiles           ${name}-${version}${extract.suffix}:nginx
 checksums           ${name}-${version}${extract.suffix} \
-                    rmd160  5c91dd35ca4dde8beb272240f6888f95809188ee \
-                    sha256  778b3cabb07633f754cd9dee32fc8e22582bce22bfa407be76a806abd935533d \
+                    rmd160  4dc7a1d3304c97ed2cc137ca87fc501dce2b865b \
+                    sha256  360b601ef8ed2998c80fa56a27bf3cd745c3ce18c5fb10892e6595467b1415d3
 
 depends_lib         port:pcre \
                     port:zlib
@@ -52,6 +53,7 @@ set nginx_all_confs {fastcgi.conf fastcgi_params mime.types nginx.conf scgi_para
 set auto_activate_confs {nginx.conf mime.types fastcgi.conf}
 
 # portfile-scoped vars for variant routines to re-def and use in port-stages (post-extract, pre-patch, etc)
+set nginx_lua_mod_dirname      ""
 set nginx_rtmp_mod_dirname     ""
 set nginx_upload_mod_dirname   ""
 
@@ -73,8 +75,7 @@ configure.args-append \
                     --http-client-body-temp-path=${nginx_rundir}/client_body_temp \
                     --http-proxy-temp-path=${nginx_rundir}/proxy_temp \
                     --http-fastcgi-temp-path=${nginx_rundir}/fastcgi_temp \
-                    --http-uwsgi-temp-path=${nginx_rundir}/uwsgi_temp \
-                    --with-ipv6
+                    --http-uwsgi-temp-path=${nginx_rundir}/uwsgi_temp
 
 # remove --disable-dependency-tracking
 configure.universal_args-delete   --disable-dependency-tracking
@@ -360,18 +361,42 @@ variant devel_kit description {Enable ngx_devel_kit module (https://github.com/s
 variant lua requires devel_kit description {Enable Lua module (https://github.com/openresty/lua-nginx-module)} {
     depends_lib-append      port:luajit
     set ngx_lua_filename    lua-nginx-module
-    set ngx_lua_version     0.10.1rc0
+    set ngx_lua_version     0.10.7
     set ngx_lua_distname    ${ngx_lua_filename}-${ngx_lua_version}
     distfiles-append        v${ngx_lua_version}.tar.gz:lua_module
     checksums-append        v${ngx_lua_version}.tar.gz \
-                            rmd160  c9add9c5755741b12a428ba60943900ff7d23d62 \
-                            sha256  1bae94d2a0fd4fad39f2544a2f8eaf71335ea512a6f0027af190b46562224c68
+                            rmd160  533c97482c8c8bbe7df3244ea7ac2d857c943ced \
+                            sha256  c21c8937dcdd6fc2b6a955f929e3f4d1388610f47180e60126e6dcab06786f77
+    patchfiles-append       patch-src-ngx_http_lua_headers.c.diff
 
     configure.cflags        -I${prefix}/include/luajit-2.0/ ${configure.cflags}
     configure.env           LUAJIT_INC=${prefix}/include/luajit-2.0/
     configure.env           LUAJIT_LIB=${prefix}/lib
     configure.args-append   --add-module=${workpath}/${ngx_lua_distname}
+
+    nginx_set_portfile_var  nginx_lua_mod_dirname    "${ngx_lua_distname}"
+
+    # patch routine balks on file names with "../", but rel-paths in patchfiles start from $worksrcpath
+    pre-patch {
+        ln -s   "${workpath}/${nginx_lua_mod_dirname}" "${worksrcpath}/nginx_lua_module.tmp"
+    }
+    post-patch {
+        file delete   "${worksrcpath}/nginx_lua_module.tmp"
+    }
 }
+
+variant headers_more description {Enable headers-more module (https://github.com/openresty/headers-more-nginx-module)} {
+    set ngx_h_more_filename   headers-more-nginx-module
+    set ngx_h_more_version    0.32
+    set ngx_h_more_distname   ${ngx_h_more_filename}-${ngx_h_more_version}
+    distfiles-append          v${ngx_h_more_version}.tar.gz:h_more_module
+    checksums-append          v${ngx_h_more_version}.tar.gz \
+                              rmd160  a0fd69817659321c2d51d9143de413e43cb049b4 \
+                              sha256  c6d9dab8ea1fc997031007e2e8f47cced01417e203cd88d53a9fe9f6ae138720
+
+    configure.args-append     --add-module=${workpath}/${ngx_h_more_distname}
+}
+
 
 livecheck.type      regexm
 livecheck.url       ${homepage}

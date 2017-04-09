@@ -4,7 +4,8 @@ PortSystem              1.0
 PortGroup               compiler_blacklist_versions 1.0
 
 name                    nodejs7
-version                 7.7.1
+version                 7.7.4
+revision                1
 
 categories              devel net
 platforms               darwin
@@ -18,14 +19,14 @@ long_description        Node's goal is to provide an easy way to build scalable 
                         Machine or Python's Twisted. Node takes the event model a bit further-it \
                         presents the event loop as a language construct instead of as a library.
 
-conflicts               nodejs4 nodejs5 nodejs6
+conflicts               nodejs4 nodejs6
 
 homepage                http://nodejs.org/
 master_sites            ${homepage}dist/v${version}
 use_xz                  yes
 
-checksums               rmd160  78aba69dd0f70637d04038d851198967868d2d35 \
-                        sha256  965fc82aa767223be574e41d7f78ec4bd2ab3da619cef1256e46c30d053b7611
+checksums               rmd160  44e2a5caa42b16c35d97b28835be74b243617af4 \
+                        sha256  807c61b1e90a6fd8af3f3b5c1929effa4e1cb4569e7a88357b73197feeba5719
 
 distname                node-v${version}
 
@@ -56,17 +57,17 @@ post-patch {
                    ${worksrcpath}/deps/v8/tools/objdump-v8 \
                    ${worksrcpath}/deps/v8/tools/mingw-generate-makefiles.sh \
                    [rec_glob ${worksrcpath} *.py]] {
-        reinplace "s|/usr/bin/env python|${configure.python}|" ${f}
+        reinplace -q "s|/usr/bin/env python|${configure.python}|" ${f}
     }
     foreach gypfile [rec_glob ${worksrcpath} *.gyp*] {
-        reinplace "s|'python'|'${configure.python}'|" ${gypfile}
+        reinplace -q "s|'python'|'${configure.python}'|" ${gypfile}
     }
     reinplace "s|/usr/bin/env node|${prefix}/bin/node|" ${worksrcpath}/tools/doc/node_modules/marked/bin/marked
     reinplace "s|python|${configure.python}|" ${worksrcpath}/deps/v8/gypfiles/toolchain.gypi
 }
 
 configure.args-append   --without-npm
-configure.args-append   --with-intl=small-icu
+configure.args-append   --with-intl=system-icu
 configure.args-append   --without-inspector
 configure.args-append   --shared-openssl
 configure.args-append   --shared-openssl-includes=${prefix}/include/openssl

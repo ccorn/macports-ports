@@ -12,6 +12,7 @@ set point 3
 
 #Remember to remove revision line when bumping version
 version                     ${major}.${minor}.${point}
+revision                    1
 
 categories                  math science
 maintainers                 me.com:kjell.konis
@@ -83,7 +84,8 @@ configure.args              --enable-R-framework \
                             --without-x \
                             --with-included-gettext
 
-if {${os.major} < 13} {
+if {${os.platform} eq "darwin" && ${os.major} < 13} {
+    depends_lib-append    port:curl
     configure.args-append --disable-openmp
 }
 

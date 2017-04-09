@@ -3,7 +3,7 @@
 PortSystem          1.0
 
 name                pypy
-version             5.6.0
+version             5.7.1
 categories          lang python devel
 license             MIT PSF
 maintainers         {jmr @jmroot} openmaintainer
@@ -19,9 +19,8 @@ homepage            http://pypy.org/
 master_sites        https://bitbucket.org/pypy/pypy/downloads/
 use_bzip2           yes
 distname            ${name}2-v${version}-src
-checksums           md5 c3fc7187061fec762269496f1f5daa86 \
-                    rmd160 df36dad3b2ee6f16145219a2ebc6aa715dc80227 \
-                    sha256 7411448045f77eb9e087afdce66fe7eafda1876c9e17aad88cf891f762b608b0
+checksums           rmd160 842b110389b57bcb794dde75faade5307316903f \
+                    sha256 d01bee43c6df79f7bbc1149bb3e85f489491fb2358a6a1f9a7f0d6e07715832f
 
 depends_build       port:pkgconfig
 depends_lib         port:libffi \
@@ -33,13 +32,13 @@ depends_lib         port:libffi \
 
 patchfiles          darwin.py.diff \
                     make_output.diff \
-                    configure.py.diff \
                     ffiplatform.py.diff \
-                    cbuild.py.diff
+                    paths.diff
 
 post-patch {
     reinplace "s|__PREFIX__|${prefix}|" ${worksrcpath}/lib_pypy/cffi/ffiplatform.py \
-                                        ${worksrcpath}/ctypes_configure/cbuild.py
+                                        ${worksrcpath}/pypy/tool/cpyext/extbuild.py \
+                                        ${worksrcpath}/rpython/translator/platform/distutils_platform.py
 }
 
 use_configure       no
@@ -85,8 +84,7 @@ platform darwin {
 }
 build.env           PYPY_USESSION_DIR=${workpath} PYPY_LOCALBASE=${prefix} \
                     CFLAGS="${configure.cc_archflags} ${configure.cppflags}" \
-                    LDFLAGS="${configure.ld_archflags} ${configure.ldflags}" \
-                    PYPY_CC="${configure.cc}"
+                    LDFLAGS="${configure.ld_archflags} ${configure.ldflags}"
 
 build.dir           ${worksrcpath}/pypy/goal
 build.args          --batch --verbose \

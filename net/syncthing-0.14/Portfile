@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        syncthing syncthing 0.14.21 v
+github.setup        syncthing syncthing 0.14.26 v
 name                syncthing-0.14
 categories          net
 platforms           darwin
@@ -18,8 +18,8 @@ long_description    Syncthing replaces proprietary sync and cloud services \
                     and how it's transmitted over the Internet.
 homepage            https://syncthing.net
 
-checksums           rmd160  14f046166a94a029f4ddc4aac0cd41ae8606fc20 \
-                    sha256  ece72f215c942b0676c9503b95ed3f9081a58cf775215164ebbccffecbddd601
+checksums           rmd160  0742c054c1c044a3c2bd5cfd59ecda02ac627341 \
+                    sha256  ac5d27da8153f1ab49f7af56b3757b7e39fae9af21b5771afe22633cacba92f6
 
 worksrcdir          src/github.com/syncthing/syncthing
 extract.mkdir       yes

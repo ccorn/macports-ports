@@ -19,8 +19,8 @@ long_description \
            processor. \
         2. Further processing with other tools. This step may not be necessary.
 
-homepage        http://cyberelk.net/tim/xmlto/
-master_sites    https://fedorahosted.org/releases/x/m/xmlto/
+homepage        http://cyberelk.net/tim/software/xmlto/
+master_sites    http://releases.pagure.org/xmlto/
 use_bzip2       yes
 
 checksums           rmd160  acba3cc9ff46505ae49b91108c611646aeac2b5d \
@@ -66,5 +66,5 @@ post-destroot {
 }
 
 livecheck.type  regex
-livecheck.url   https://fedorahosted.org/xmlto/browser/configure.in
-livecheck.regex "\\($name,\\s*(\\d+(?:\\.\\d+)*)\\)"
+livecheck.url   [lindex ${master_sites} 0]
+livecheck.regex ${name}-(\[0-9.\]+)${extract.suffix}

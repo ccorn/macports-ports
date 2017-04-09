@@ -5,7 +5,7 @@ PortGroup           python 1.0
 
 name                py-python-augeas
 set real_name       python-augeas
-version             0.5.0
+version             1.0.1
 python.versions     27 34 35
 maintainers         nomaintainer
 license             LGPL-2.1+
@@ -18,10 +18,21 @@ homepage            http://pypi.python.org/pypi/${real_name}/
 master_sites        pypi:p/${real_name}
 distname            ${real_name}-${version}
 
-checksums           rmd160  909056aeef54735a398581b7a30acb5eff190279 \
-                    sha256  67d59d66cdba8d624e0389b87b2a83a176f21f16a87553b50f5703b23f29bac2
+checksums           rmd160  b38a134f2b2c7f6f72b0185b75104a5c6703fb73 \
+                    sha256  cb59b077939f1b29d779f889c7f123f01b0ac51720ea80991887e5df2235f886
 
 if {${name} ne ${subport}} {
     depends_lib-append  \
-                    port:augeas
+                    port:augeas \
+                    port:py${python.version}-cffi \
+                    port:py${python.version}-pycparser \
+                    port:py${python.version}-setuptools \
+                    port:libffi \
+                    port:libxml2
+
+    patchfiles      patch-augeas-ffi.py.diff
+
+    post-patch {
+        reinplace "s|%PREFIX%|${prefix}|" ${worksrcpath}/augeas/ffi.py
+    }
 }

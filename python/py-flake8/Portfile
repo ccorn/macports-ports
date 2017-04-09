@@ -9,6 +9,7 @@ set _n              [string index ${_name} 0]
 
 name                py-${_name}
 version             3.3.0
+revision            1
 categories-append   devel
 platforms           darwin
 supported_archs     noarch
@@ -30,8 +31,8 @@ homepage            http://flake8.readthedocs.org/
 distname            ${_name}-${version}
 master_sites        pypi:${_n}/${_name}/
 
-checksums			rmd160  296cdce03fe383d436f2fd954dff1d3d40702dbf \
-					sha256  b907a26dcf5580753d8f80f1be0ec1d5c45b719f7bac441120793d1a70b03f12
+checksums           rmd160  296cdce03fe383d436f2fd954dff1d3d40702dbf \
+                    sha256  b907a26dcf5580753d8f80f1be0ec1d5c45b719f7bac441120793d1a70b03f12
 
 python.versions     27 34 35 36
 
@@ -41,6 +42,12 @@ if {${name} ne ${subport}} {
     depends_lib-append      port:py${python.version}-pyflakes \
                             port:py${python.version}-codestyle \
                             port:py${python.version}-flake8-mccabe
+
+    # Additional dependencies for Python 2.7
+    if { ${python.version} < 30 } {
+        depends_lib-append  port:py${python.version}-configparser \
+                            port:py${python.version}-enum34
+    }
 
     depends_run-append      port:${_name}_select
 

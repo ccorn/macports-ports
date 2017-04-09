@@ -4,10 +4,10 @@ PortSystem          1.0
 
 name                aiccu
 version             20070115
-revision            4
+revision            5
 categories          net
 platforms           darwin
-maintainers         23bit.net:cr
+maintainers         {danchr @danchr} openmaintainer
 
 description         Automatic IPv6 Connectivity Configuration Utility
 long_description    AICCU makes it very easy for SixXS users to get IPv6 connectivity \
@@ -33,7 +33,7 @@ set pid_file        ${prefix}/var/run/${name}.pidfile
 set conf_file       ${prefix}/etc/aiccu.conf
 
 worksrcdir          aiccu
-patchfiles          Makefile.patch aiccu_conf.patch
+patchfiles          Makefile.patch aiccu_conf.patch ayiya-reconnect.diff
 
 pre-configure {
         reinplace "s|#pidfile /var/run/aiccu.pid|pidfile ${pid_file}|" \

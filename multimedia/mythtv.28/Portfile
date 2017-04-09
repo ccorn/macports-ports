@@ -5,17 +5,17 @@ PortGroup           qt5 1.0
 PortGroup           github 1.0
 PortGroup           active_variants 1.1
 
-set shorthash       03f44039
-# set fullhash      03f44039848bd09444ff4baa8dc158bd61454079
+set shorthash       0bd47303
+# set fullhash      0bd473036fdb132c6f094eff360de3e444256aeb
 set majorversion    .28
 set minorversion    .1
-set lastcommit      20170201
-set corerev         2
-set pluginsrev      1
-set metarev         2
+set lastcommit      20170315
+set corerev         0
+set pluginsrev      0
+set metarev         0
 github.setup        MythTV mythtv ${shorthash}
-checksums           rmd160  0f98af89040fc0666f36a0c26b473d1c4f83b243 \
-                    sha256  30bb2a7ed310417840a380a21d387a0c19fad42e8fa04b48db61ccaf0d987711
+checksums           rmd160  0e3665b02757340eebd1bcf126b772f6c5aec273 \
+                    sha256  8879e2e84fc25cfe275ae8214b094817e9ea0a04168612eab7c8c3be6c4f8c43
 
 name                mythtv${majorversion}
 categories          multimedia
@@ -49,6 +49,13 @@ set pythonbranch    2.7
 set pythonver       python${pythonbranch}
 set pythonbin       ${prefix}/bin/${pythonver}
 set pymodver        py27
+# change to 1 to print reinplace warnings
+set maintainer_mode 0
+if {!$maintainer_mode} {
+	set qflag "-q"
+} else {
+	set qflag ""
+}
 
 subport mythtv-core${majorversion} { }
 subport mythtv-plugins${majorversion} { }
@@ -103,7 +110,6 @@ if {$subport eq "mythtv-core${majorversion}"} {
     conflicts           mythtv-core.25 mythtv-core.26 mythtv-core.27
 
     depends_run         port:logrotate \
-                        port:liberation-fonts \
                         port:dejavu-fonts
 
     require_active_variants \
@@ -145,6 +151,8 @@ if {$subport eq "mythtv-core${majorversion}"} {
     patchfiles-append   patch-configure_opengl_check.diff
     # https://code.mythtv.org/trac/ticket/12857
     patchfiles-append   patch-mythwidgets_osx_focus.diff
+    # https://code.mythtv.org/trac/ticket/13001
+    patchfiles-append   patch_01_typlayer_qsp_ua_detection.diff
     
     post-patch {
         set sedPath ${worksrcpath}/mythtv/
@@ -158,15 +166,13 @@ if {$subport eq "mythtv-core${majorversion}"} {
     
         reinplace -locale C "s|#!/usr/bin/perl|#!${perlbin}|" \
             ${sedPath}bindings/perl/Makefile.PL  \
-            ${sedPath}bindings/perl/MythTV.pm  \
             ${sedPath}contrib/maintenance/optimize_mythdb.pl  \
             ${sedPath}contrib/user_jobs/mythlink.pl  \
             ${sedPath}programs/scripts/database/mythconverg_backup.pl \
             ${sedPath}programs/scripts/database/mythconverg_restore.pl
     
         reinplace -locale C "s|/usr/local/bin|${prefix}/lib/${mysqlver}/bin|"  \
-            ${sedPath}programs/scripts/database/mythconverg_backup.pl \
-            ${sedPath}programs/scripts/database/mythconverg_restore.pl
+            ${sedPath}programs/scripts/database/mythconverg_backup.pl
     
         ui_info "Record Myth version strings"
         reinplace -locale C "s#\${SOURCE_VERSION}#${mythverstring}#g" ${sedPath}version.sh
@@ -179,24 +185,24 @@ if {$subport eq "mythtv-core${majorversion}"} {
         reinplace -locale C "s|/usr/local|${prefix}|" ${worksrcpath}/mythtv/bindings/python/MythTV/static.py
         fs-traverse f ${sedPath}/bindings/python/ {
             if [string equal [ file extension ${f} ] ".py" ] {
-                reinplace -locale C "s|^#! */usr/bin/env python\$|#!${pythonbin}|" ${f}
+                reinplace {*}$qflag -locale C "s|^#! */usr/bin/env python\$|#!${pythonbin}|" ${f}
             }
         }
         fs-traverse f ${sedPath}/programs/scripts/ {
             if [string equal [ file extension ${f} ] ".py" ] {
-                reinplace -locale C "s|^#! */usr/bin/env python\$|#!${pythonbin}|" ${f}
+                reinplace {*}$qflag -locale C "s|^#! */usr/bin/env python\$|#!${pythonbin}|" ${f}
             }
         }
         foreach f [glob -directory ${sedPath}/programs/scripts/hardwareprofile *.py] {
         # fix even though they're currently non-functional on OS X
-            reinplace -locale C "s|^#!/usr/bin/python\$|#!${pythonbin}|" ${f}
+            reinplace {*}$qflag -locale C "s|^#!/usr/bin/python\$|#!${pythonbin}|" ${f}
         }
     
         foreach {applescript} ${applescripts} {
-            reinplace -locale C "s|@PREFIX@|${prefix}|g" ${worksrcpath}/macports/${applescript}.applescript
-            reinplace -locale C "s|@APPLICATIONS_DIR@|${applications_dir}|" ${worksrcpath}/macports/${applescript}.applescript
-            reinplace -locale C "s|@MYTHTVLOGDIR@|${mythtvlogdir}|" ${worksrcpath}/macports/${applescript}.applescript
-            reinplace -locale C "s|@MYTHTVPIDFILE@|${mythtvpidfile}|" ${worksrcpath}/macports/${applescript}.applescript
+            reinplace {*}$qflag -locale C "s|@PREFIX@|${prefix}|g" ${worksrcpath}/macports/${applescript}.applescript
+            reinplace {*}$qflag -locale C "s|@APPLICATIONS_DIR@|${applications_dir}|" ${worksrcpath}/macports/${applescript}.applescript
+            reinplace {*}$qflag -locale C "s|@MYTHTVLOGDIR@|${mythtvlogdir}|" ${worksrcpath}/macports/${applescript}.applescript
+            reinplace {*}$qflag -locale C "s|@MYTHTVPIDFILE@|${mythtvpidfile}|" ${worksrcpath}/macports/${applescript}.applescript
         }
         reinplace -locale C "s|@PREFIX@|${prefix}|g" ${worksrcpath}/macports/${plistfile}
         reinplace -locale C "s|@PLISTLABEL@|${plistlabel}|g" ${worksrcpath}/macports/${plistfile}
@@ -206,7 +212,6 @@ if {$subport eq "mythtv-core${majorversion}"} {
         reinplace -locale C "s|@PREFIX@|${prefix}|g" ${worksrcpath}/macports/logrotate.conf
         reinplace -locale C "s|@PREFIX@|${prefix}|g" ${worksrcpath}/macports/my.cnf
         reinplace -locale C "s|@MYTHTVLOGDIR@|${mythtvlogdir}|g" ${worksrcpath}/macports/logrotate.mythtv
-        reinplace -locale C "s|xxxyyyzzz|${mythtvpidfile}|" ${worksrcpath}/mythtv/configure
     }
     # Block various compilers:
     #
@@ -530,8 +535,8 @@ if {$subport eq "mythtv-plugins${majorversion}"} {
             ${sedPath}configure
         # do fixups regardless of whether variant is selected or not
         foreach fixfile [exec find ${sedPath}/mythweather/mythweather/scripts -name "*.p?"] {
-            reinplace "s;/usr/bin/perl;${perlbin};g" ${fixfile}
-            reinplace "s;/usr/share/mythtv;${perlbin};g" ${fixfile}
+            reinplace {*}$qflag "s;/usr/bin/perl;${perlbin};g" ${fixfile}
+            reinplace {*}$qflag "s;/usr/share/mythtv;${perlbin};g" ${fixfile}
         }
     }
 
