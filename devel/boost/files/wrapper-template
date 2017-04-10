@@ -1,0 +1,135 @@
+#!/bin/sh
+
+# Outside assignments, unquoted $vars shall just be split into words.
+# So turn off filename globbing: 
+set -f
+
+COMPILER='@@@'
+SUFFIX='---'
+PREFIX='&&&'
+OUTPUT_O='NO'
+OUTPUT=''
+NAMED_OUTPUT=''
+LASTFILE=''
+INTEL='NO'
+POWERPC='NO'
+SIZE32='NO'
+SIZE64='NO'
+NEWARGS=''
+
+SKIP='NO'
+
+for arg in "$@"
+do
+	if [ $SKIP = 'ARCH' ]; then
+		# intercept -arch option and set SIZEXX
+		SKIP='NO'
+		case $arg in
+			i386	) SIZE32='YES'; INTEL='YES' ;;
+			ppc	) SIZE32='YES'; POWERPC='YES' ;;
+			ppc64	) SIZE64='YES'; POWERPC='YES' ;;
+			x86_64	) SIZE64='YES'; INTEL='YES' ;;
+			*	) echo >&2 "$0: Unknown -arch $arg"; exit 2 ;;
+		esac
+		
+	elif [ "$arg" = '-arch' ]; then
+		SKIP='ARCH'
+		
+	elif [ "$arg" = '--version' ]; then
+		${COMPILER} --version
+		exit $?
+		
+	else
+		NEWARGS="$NEWARGS$arg "
+		
+		# if the -c option is given, the output is .o
+		if [ "$arg" = '-c' ]; then
+			OUTPUT_O='YES'
+		fi
+
+		# if the output file is given by a -o option, record it
+		if [ $SKIP = 'O' ]; then
+			SKIP='NO'
+			NAMED_OUTPUT=$arg
+		fi
+		
+		if [ "$arg" = '-o' ]; then
+			SKIP='O'
+		fi
+		
+		# Note each file ending by ${SUFFIX} and remember the last one
+		# Transform them in .o 
+		if echo "$arg" | grep -E -q "${SUFFIX}\$"; then
+			LASTFILE=$arg
+			OUTPUT=$OUTPUT`echo "$arg" | \
+				sed -E "s:.*/::;s/${SUFFIX}\$/.o/"`" "
+		fi
+	fi
+done
+
+if [ $INTEL = 'YES' ] && [ $POWERPC = 'YES' ]; then
+	echo >&2 "$0: Not a cross-compiler"
+	exit 2
+fi
+
+# What is the output?
+
+if [ ${NAMED_OUTPUT}"X" != "X" ]; then
+	OUTPUT=$NAMED_OUTPUT
+
+elif [ $OUTPUT_O = 'NO' ]; then
+	# It is an executable whose is name is the LASTFILE without suffix
+	#OUTPUT=`echo "${LASTFILE}" | sed -E "s/${SUFFIX}\$//"`
+	# No, it is a.out, assuming we are indeed linking (no -E, -S)
+	OUTPUT='a.out'
+fi
+
+# Otherwise, the output is just the ${OUTPUT} variable as computed before
+
+# Now, compile
+
+if [ $SIZE32 = 'NO' ] && [ $SIZE64 = 'NO' ]; then
+	# No size indication given, just proceed with default
+	${COMPILER} $NEWARGS
+	exit $?
+
+elif [ $SIZE32 = 'YES' ] && [ $SIZE64 = 'NO' ]; then
+	# 32-bit
+	${COMPILER} -m32 $NEWARGS
+	exit $?
+	
+elif [ $SIZE32 = 'NO' ] && [ $SIZE64 = 'YES' ]; then
+	# 64-bit
+	${COMPILER} -m64 $NEWARGS
+	exit $?
+
+else
+	# Universal case
+	${COMPILER} -m32 $NEWARGS || exit $?
+	for filename in ${OUTPUT}
+	do
+		mv "${filename}" "${filename}.32"
+	done
+
+	${COMPILER} -m64 $NEWARGS || exit $?
+	for filename in ${OUTPUT}
+	do
+		mv "${filename}" "${filename}.64"
+	done
+
+	for filename in ${OUTPUT}
+	do
+		if [ $INTEL = 'YES' ]; then
+			lipo -create -arch x86_64 "${filename}.64" \
+				 -arch i386 "${filename}.32" \
+				 -output "${filename}" || exit $?
+		else
+			lipo -create -arch ppc64 "${filename}.64" \
+				 -arch ppc "${filename}.32" \
+				 -output "${filename}" || exit $?
+		fi
+	
+		rm -f "${filename}.32" "${filename}.64"
+	done
+fi
+exit 0

@@ -59,16 +59,36 @@ patchfiles      patch-tools-build-src-engine-build.sh.diff \
                 # OS versions without affecting build on 10.6 and less (where clang is not
                 # the default compiler) or 10.9 and up (where libc++ is the default).
 
-# temporary patch to fix: explicit template instanciations in
-# boost::serialization don't get exported with all compilers; this fix
-# is already in the boost repo & will be part of the next release. See
-# also the following tickets:
-# https://trac.macports.org/ticket/48717
-# https://svn.boost.org/trac/boost/ticket/11671
-
-patchfiles-append patch-export_serialization_explicit_template_instantiations.diff
-
 post-patch {
+    # Prepare compiler wrappers capable of handling one or more -arch options
+    file copy -force ${filespath}/wrapper-template \
+        ${worksrcpath}/c-wrapper
+    file copy -force ${filespath}/wrapper-template \
+        ${worksrcpath}/f-wrapper
+    file copy -force ${filespath}/wrapper-template \
+        ${worksrcpath}/cxx-wrapper
+
+    # Need a recent C++ compiler version, choosing the one used for libstdcxx
+    configure.compiler macports-gcc-5
+    configure.cxxflags-append -Wno-unused-local-typedefs
+
+    reinplace   "s|@@@|${configure.cc}|" ${worksrcpath}/c-wrapper
+    reinplace   "s|---|\\\\.c|" ${worksrcpath}/c-wrapper
+    reinplace   "s|&&&|${prefix}|" ${worksrcpath}/c-wrapper
+
+    reinplace   "s|@@@|${configure.cxx}|" ${worksrcpath}/cxx-wrapper
+    reinplace   "s#---#(\\\\.C|\\\\.cpp|\\\\.cc)#" \
+        ${worksrcpath}/cxx-wrapper
+    reinplace   "s|&&&|${prefix}|" ${worksrcpath}/cxx-wrapper
+
+    reinplace   "s|@@@|${configure.f90}|" ${worksrcpath}/f-wrapper
+    reinplace   "s|---|\\\\.f|" ${worksrcpath}/f-wrapper
+    reinplace   "s|&&&|${prefix}|" ${worksrcpath}/f-wrapper
+
+    configure.cc ${worksrcpath}/c-wrapper
+    configure.cxx ${worksrcpath}/cxx-wrapper
+    configure.f90 ${worksrcpath}/f-wrapper
+
     reinplace "s|%%CONFIGURE.CC%%|${configure.cc}|g" ${worksrcpath}/tools/build/src/engine/build.jam \
                                                      ${worksrcpath}/tools/build/src/engine/build.sh
 }
@@ -83,10 +103,10 @@ proc write_jam s {
 # clang++ produces broken boost libraries (https://trac.macports.org/ticket/31525)
 # If Apple's clang is used on 32-bit systems, it seems to silently ignore the '-march=i386' flag.
 # (https://trac.macports.org/ticket/38157)
-compiler.blacklist {clang < 421} *llvm-gcc-4.2 *gcc-4.0 gcc-3.3
+compiler.blacklist {clang < 421} macports-clang-2.9 macports-clang-3.0 *llvm-gcc-4.2 *gcc-4.0 gcc-3.3
 
 compilers.choose   cc cxx
-mpi.setup          -gcc -dragonegg
+mpi.setup          -dragonegg
 
 # It turns out that ccache and distcc can produce boost libraries that, although they
 # compile without warning, have all sorts of runtime errors especially with pointer corruption.
@@ -127,7 +147,7 @@ post-configure {
 
 build.cmd       ${worksrcpath}/b2
 build.target
-build.args      -d2 \
+build.args      -q -d2 \
                 --layout=tagged \
                 --debug-configuration \
                 --user-config=user-config.jam \
