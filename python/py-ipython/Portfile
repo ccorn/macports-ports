@@ -22,8 +22,8 @@ long_description    ${description}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  4a4e757fe94351ef5170d748824e6b780fdb1e8a \
-                    sha256  9796f94585ddf1c2ff3b4acdd58b10538a96534032f00f8fd5c1d4e11112cc7c
+checksums           rmd160  15e79f21343b1a9050f5fccdfbd9f0334a5bbf16 \
+                    sha256  bf5e615e7d96dac5a61fbf98d9e2926d98aa55582681bea7e9382992a3f43c1d
 
 if {${name} ne ${subport}} {
     set python_major [string range ${python.version} 0 end-1]
