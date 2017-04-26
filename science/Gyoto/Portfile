@@ -29,8 +29,7 @@ depends_lib         port:cfitsio \
                     port:udunits2 \
                     path:bin/yorick:yorick
 
-depends_run         port:yorick-yutils \
-                    port:yorick-gy
+depends_run         port:yorick-yutils
 
 # yorick is not universal
 universal_variant   no
@@ -52,7 +51,7 @@ build.args-append   Y_CFLAGS="${configure.cxxflags}" Y_CPPFLAGS="${configure.cpp
 test.target         check check-lorene
 test.run            yes
 
-compilers.setup     -gcc -dragonegg
+compilers.setup     -dragonegg
 compilers.enforce_c lorene
 
 if {![catch {set result [active_variants boost openmpi {}]}]} {
@@ -168,5 +167,5 @@ if {[string match libc++ ${configure.cxx_stdlib}]} {
     }
 
 } else {
-    configure.args-append --disable-c++11
+#    configure.args-append --disable-c++11
 }
