@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-tornado
-version             4.4.2
+version             4.5.1
 revision            0
 categories-append   www
 platforms           darwin
@@ -28,8 +28,8 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  32ee8a4a998e7b46ebe0c37d696a85dad9ee072e \
-                    sha256  2898f992f898cd41eeb8d53b6df75495f2f423b6672890aadaf196ea1448edcc
+checksums           rmd160  592ece258cd5758419a77b3c0149b7987a4db9af \
+                    sha256  db0904a28253cfe53e7dedc765c71596f3c53bb8a866ae50123320ec1a7b73fd
 
 if {${name} ne ${subport}} {
     if {${python.version} == 26} {

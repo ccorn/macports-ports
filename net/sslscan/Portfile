@@ -3,7 +3,7 @@
 PortSystem 1.0
 PortGroup github 1.0
 
-github.setup    rbsec sslscan 1.11.8-rbsec
+github.setup    rbsec sslscan 1.11.10-rbsec
 categories      net
 maintainers     raimue \
                 openmaintainer
@@ -14,12 +14,12 @@ long_description \
     include the certificate and the prefered ciphers of \
     the SSL service in plaintext or XML.
 platforms       darwin
-license         GPL-3
+license         {GPL-3+ OpenSSLException}
 
 depends_lib     path:lib/libssl.dylib:openssl
 
-checksums       rmd160  0b823f13f5bb9a89f25104d4921bc02150e7a79e \
-                sha256  1fed5d9295e6ad55dcfff69d7a1a0536a62fd5b8787108223e1c8b2b731122fb
+checksums       rmd160  2868cf6a0b81c0e4d4d90c4609dfd3fd2c1f4587 \
+                sha256  eb2f29299c4e96b3d062fac582cc1ef1c1ef8e0c281b4e3fc428b977f4e14814
 
 patchfiles      patch-Makefile.diff
 

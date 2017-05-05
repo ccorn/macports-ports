@@ -4,10 +4,10 @@ PortSystem          1.0
 
 name                freetds
 epoch               1
-version             1.00.27
+version             1.00.37
 categories          databases
 platforms           darwin
-maintainers         ryandesign openmaintainer
+maintainers         {ryandesign @ryandesign} openmaintainer
 # libs are LGPL, tdspool executable is GPL
 license             {GPL-2+ LGPL}
 
@@ -27,8 +27,8 @@ homepage            http://www.freetds.org/
 master_sites        ftp://ftp.freetds.org/pub/${name}/stable/
 use_bzip2           yes
 
-checksums           rmd160  2fca741a26650bcab8e7a03e72a5da74741438ef \
-                    sha256  abd47f949564a31f8177a53f0dd5b2835e2785a634f78ba2b5903c37c60758cc
+checksums           rmd160  fe37114347277a27e0f1049b0752aeb4c9fa5fab \
+                    sha256  1ab3840a41d1160a2e305eeb1820f255bd18116e46cb74c9ec8160939e880ab2
 
 depends_lib         port:libiconv \
                     port:ncurses \

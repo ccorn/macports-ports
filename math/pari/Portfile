@@ -5,10 +5,11 @@ PortGroup           muniversal 1.0
 
 name                pari
 version             2.9.2
+revision            1
 categories          math
 platforms           darwin
 license             GPL-2+
-maintainers         gmail.com:watsonbladd openmaintainer
+maintainers         {gmail.com:watsonbladd @wbl} openmaintainer
 
 description         PARI/GP computer algebra system
 
@@ -204,6 +205,10 @@ variant galpol description {include precomputed Galois->polynomial data} {
         rmd160  6015681df3415568392a68bfc05e1134411f2ca5 \
         sha256  484fba6e7bcef8e5c1cea0e1a75d74a3[\
                 ]1122b3148a1301667d265427fb8db44d
+}
+
+variant mt description {Build multithreaded} {
+    configure.args-append --mt=pthread
 }
 
 variant seadata description {include precomputed elliptic curve GF(q) data} {

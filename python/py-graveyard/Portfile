@@ -13,6 +13,7 @@ array set replacements {
     31 34
     32 34
     33 34
+    34 35
 }
 
 proc unknown args {
@@ -88,11 +89,13 @@ py-gst-python           0.10.22_3   26
 py-gtkhtml2             2.25.3_3    26
 py-gtkmvc               1.99.1_3    26
 py-gtkspell             2.25.3_4    26
+py-h5py                 2.6.0_1     26 33
 py-hcluster             0.2.0_2     26
 py-hgsvn                0.1.9_1     26
 py-htmldocs             3.3.99      26 31 32 33
 py-http-parser          0.8.3_1     26 31 32 33
 py-ipy                  0.81_1      25 26
+py-isodate              0.5.4       33 34
 py-jcc                  2.13_1      26
 py-jsbeautifier         1.4.0_1     26
 py-kapteyn              2.2_1       26
@@ -170,6 +173,7 @@ py-tweepy               1.12_1      26
 py-twisted              13.2.0_1    26
 py-twisted-web2         8.1.0_1     26
 py-uncertainties        2.4.6.1_1   26 33
+py-unidecode            0.04.20     33 34
 py-visa                 1.4_1       26
 py-vobject              0.8.1c_1    26
 py-watchdog             0.7.1_1     33

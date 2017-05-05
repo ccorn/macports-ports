@@ -3,7 +3,7 @@
 PortSystem          1.0
 
 name                osh
-version             4.3.0
+version             4.3.2
 epoch               1
 categories          shells
 license             BSD BSD-old
@@ -19,8 +19,8 @@ platforms           darwin
 homepage            http://v6shell.org/
 master_sites        ${homepage}src/
 
-checksums           rmd160  06503796d9b9e1442a747e1e17629cac007925d2 \
-                    sha256  1173b8feffb617c0ed249f6cb7aff482eae960d8ccfb89f38ed73dab37dae5ed
+checksums           rmd160  2ab1948d4206256bed7a923c4a75a39ab6d34768 \
+                    sha256  6123b24cd87e70cbf99f26ce5dea992abedf7e4f0c6ad964853427919b47dcc7
 
 use_configure       no
 use_parallel_build  yes
