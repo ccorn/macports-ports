@@ -106,6 +106,16 @@ post-deactivate {
     system "mktexlsr"
 }
 
+# OpenGL and XDR support conflicts with 64-bit builds on Darwin 9
+variant no_gl description {remove OpenGL/XDR usage (may help with +universal)} {
+    configure.args-append       --disable-gl
+    # Turn off usage of xstream.h
+    post-configure {
+        reinplace {s,#define HAVE_RPC_RPC_H .*,/* #undef HAVE_RPC_RPC_H */,} \
+            ${worksrcpath}/config.h
+    }
+}
+
 # asymptote's GUI needs either pyXY-pil or pyXY-Pillow
 # https://trac.macports.org/ticket/44284
 variant python27 conflicts python35 python36 description {Enable xasy GUI using Python 2.7} {

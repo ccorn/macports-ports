@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           muniversal 1.0
 
 name                pari
-version             2.9.1
+version             2.9.2
 categories          math
 platforms           darwin
 license             GPL-2+
@@ -19,16 +19,45 @@ long_description    PARI/GP is a widely used computer algebra system designed \
 homepage            http://pari.math.u-bordeaux.fr/
 master_sites        ${homepage}pub/pari/unix/
 
-checksums           rmd160  34d44f73eb1a47aecaf0d780a875551b19654a0a \
-                    sha256  dc510f96686463c1ade7c2a6e16fa9466fd4af6a65fddf9822ba07d7d2e70767
+checksums           pari-${version}.tar.gz \
+                    rmd160 f0e8a00f79b555116775b550347ebe2542d83e64 \
+                    sha256 9aa24cbbcf4e0b09dcc21cf9b09f2eb08e38ee16ab13651be7274c9b3e46207e
 
 depends_lib         port:gmp \
                     port:ncurses \
                     port:readline
 
+post-extract {
+    if {[file exists ${workpath}/data] && ![file exists ${worksrcpath}/data]} {
+        file rename ${workpath}/data ${worksrcpath}/data
+    }
+}
+
 platform darwin 8 {
     build.args-append EXTRADLLDFLAGS="-Wl,-single_module"
     destroot.args-append EXTRADLLDFLAGS="-Wl,-single_module"
+    post-patch {
+    # Update linker option names
+    reinplace "s|-dylib_|-|g" \
+        ${worksrcpath}/config/Makefile.SH \
+        ${worksrcpath}/config/get_dlld
+    }
+}
+
+array set arch_trans {
+    i386    ix86
+    x86_64  x86_64
+    ppc     ppc
+    ppc64   ppc64
+}
+
+if {[variant_isset universal]} {
+    foreach arch [array names arch_trans] {
+        set merger_configure_args($arch) \
+            --host=$arch_trans($arch)-${os.platform}
+    }
+} else {
+    configure.args-append --host=$arch_trans($build_arch)-${os.platform}
 }
 
 # llvm-gcc produces incorrect code, ticket #33024
@@ -62,15 +91,39 @@ if {${build_arch} eq "i386" || ${build_arch} eq "x86_64"} {
 set universal_archs_supported ${supported_archs}
 
 post-patch {
-    if {![variant_isset doc]} {
-        reinplace "s/\\(doc all:\\).*/\\1/" \
-            ${worksrcpath}/config/DOC_Make.SH
-        reinplace "/INSTALL_DATA.*\\.\\(dvi\\|ps\\)/d" \
-            ${worksrcpath}/config/Makefile.SH
+    # Do not build tex/dvi doc by default
+    reinplace {s/\(doc all:\).*/\1/} \
+        ${worksrcpath}/config/DOC_Make.SH
+    reinplace {s/^\(install-doc: .*\) install-docdvi/\1/} \
+        ${worksrcpath}/config/Makefile.SH
+}
+
+post-configure {
+    # Pari's Configure sets the build directory according to --host,
+    # but the config/objdir used by the top Makefile may tell otherwise
+    if {[variant_isset universal]} {
+        foreach arch [array names arch_trans] {
+            if {![file isdirectory ${worksrcpath}-$arch]} continue
+            set objdir [exec sh -c "cd ${worksrcpath}-$arch && config/objdir"]
+            if {[file isdirectory \
+                ${worksrcpath}-$arch/O${os.platform}-$arch_trans($arch)] && \
+                ![file exists ${worksrcpath}-$arch/$objdir]} {
+                ln -s O${os.platform}-$arch_trans($arch) \
+                    ${worksrcpath}-$arch/$objdir
+            }
+        }
+    } else {
+        set objdir [exec sh -c "cd ${worksrcpath} && config/objdir"]
+        if {[file isdirectory \
+            ${worksrcpath}/O${os.platform}-$arch_trans($build_arch)] && \
+            ![file exists ${worksrcpath}/$objdir]} {
+            ln -s O${os.platform}-$arch_trans($build_arch) \
+                ${worksrcpath}/$objdir
+        }
     }
 }
 
-build.args-append   CPLUSPLUS=${configure.cxx}
+build.args-append   CXX=${configure.cxx}
 
 build.target        gp
 
@@ -82,7 +135,7 @@ post-destroot {
     ln -s ../../${name}/doc ${docdir}/doc
 }
 
-variant doc description {Build DVI/PDF/PS documentation} {
+variant doc description {Build PDF documentation} {
     depends_build-append path:bin/tex:texlive
     build.target-append docpdf
     post-destroot {
@@ -112,6 +165,17 @@ variant x11 conflicts fltk description {Build with X11 support for the high-reso
     configure.args-append --graphic=X11
 }
 
+variant elldata description {include precomputed elliptic curve (Q) data} {
+    master_sites-append ${homepage}pub/pari/packages:elldata
+    distfiles-append    elldata.tgz:elldata
+    checksums-append    elldata.tgz \
+                        md5     0ae49b7aa6a012ccd2804bfb831d3686 \
+                        sha1    85f51ef85390f0f737fba10567d7d47f99249780 \
+                        rmd160  e1a90bfaab3ec1db6698a9bb4c8700ec1a413497 \
+                        sha256  6c909f09bb19c8a8125145b1aac37589[\
+                                ]15daa7fd03530bc909dcb460d4eecb38
+}
+
 # Plotting works with fltk @1.1.10_3, but the GUI part freezes
 # (a Force Quit is needed).
 variant fltk conflicts x11 description {Build with FLTK support for the high-resolution plotting functions} {
@@ -119,6 +183,45 @@ variant fltk conflicts x11 description {Build with FLTK support for the high-res
     configure.args-delete --graphic=none
     configure.args-append --graphic=fltk
 }
+
+variant galdata description {include precomputed polynomial->Galois data} {
+    master_sites-append ${homepage}pub/pari/packages:galdata
+    distfiles-append    galdata.tgz:galdata
+    checksums-append    galdata.tgz \
+        md5     f9f61b2930757a785b568e5d307a7d75 \
+        sha1    0fe78ed49e197066708a3fc3753b2651107a1264 \
+        rmd160  488afbddf7026dd6d0c9ebbed72cb14c8c37173e \
+        sha256  b7c1650099b24a20bdade47a85a92835[\
+                ]1c586287f0d4c73933313873e63290dd
+}
+
+variant galpol description {include precomputed Galois->polynomial data} {
+    master_sites-append ${homepage}pub/pari/packages:galpol
+    distfiles-append    galpol.tgz:galpol
+    checksums-append    galpol.tgz \
+        md5     c241b3b40267f640df4d45ed2d604442 \
+        sha1    5d21bba704a906b3149d1a7375f609e67445fc11 \
+        rmd160  6015681df3415568392a68bfc05e1134411f2ca5 \
+        sha256  484fba6e7bcef8e5c1cea0e1a75d74a3[\
+                ]1122b3148a1301667d265427fb8db44d
+}
+
+variant seadata description {include precomputed elliptic curve GF(q) data} {
+    master_sites-append ${homepage}pub/pari/packages:seadata
+    distfiles-append    seadata.tgz:seadata
+    checksums-append    seadata.tgz \
+        md5     6e9c119ccb3c65916a48e1a8cd899558 \
+        sha1    fa3deb36df0ce71a466eb0ff0d4a18d48d44e8b9 \
+        rmd160  e88637426f74c5223068fc2d916741c10d8279e4 \
+        sha256  c9282a525ea3f92c1f9c6c69e37ac5a8[\
+                ]7b48fb9ccd943cfd7c881a3851195833
+}
+
+variant tune description {tune speed parameters on the build machine} {
+        configure.args-append --tune
+}
+
+default_variants    +elldata +galdata +galpol +seadata
 
 livecheck.type      regex
 livecheck.url       [lindex ${master_sites} 0]
