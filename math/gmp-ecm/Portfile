@@ -1,28 +1,83 @@
 PortSystem 1.0
-# Future versions (with asm redc support) will need this...
-#PortGroup  muniversal  1.0
+PortGroup muniversal 1.0
+PortGroup compilers 1.0
+merger_arch_flag            no
+merger_arch_compiler        yes
+merger_must_run_binaries    yes
 
 name                gmp-ecm
-version             6.3
+version             7.0.4
+revision            0
 categories          math
-license             GPL-2+
 platforms           darwin
 maintainers         nomaintainer
 description         Factor integers using the Elliptic Curve Method
 long_description    Free implementation of the Elliptic Curve Method (ECM) \
                     for integer factorization.
 homepage            https://gforge.inria.fr/projects/ecm/
-master_sites        https://gforge.inria.fr/frs/download.php/26838/
+master_sites        https://gforge.inria.fr/frs/download.php/file/36224/
 distname            ecm-${version}
-depends_lib         port:gmp
-checksums           md5     b30b59e48d65c94e3b034a0296b02c1b \
-                    sha1    4ce7a903d9ff2cedf54f0f66cb43acf2ee819a48 \
-                    rmd160  4d58fb34b379942501b6c55e50e7edad814b3608
+# rho.c requires gsl
+depends_lib         port:gmp port:gsl
+checksums           ecm-7.0.4.tar.gz \
+                    md5 559b13454b2094fbf26b33ff4fc824b7 \
+                    sha1 407e41af6f93214509810b954b88251e4b89e82b \
+                    rmd160 c2ed6813cf49e675c6c866a81befebebc31c0978 \
+                    sha256 0cf7b3eee8462cc6f98b418b47630e1eb6b3f4f8c3fc1fb005b08e2a1811ba43
 
-# Due to bugs:
-#   https://gforge.inria.fr/tracker/index.php?func=detail&aid=10646&group_id=135&atid=623
-#   https://gforge.inria.fr/tracker/index.php?func=detail&aid=10648&group_id=135&atid=623
-configure.args      --disable-asm-redc
+compilers.choose    cc
+compilers.setup
+# compiler.setup does not set configure.compiler, but we need it
+# for proper archflags and to avoid weird fallbacks when blacklisting.
+if {[info exists cdb([c_variant_name],compiler)]} {
+    configure.compiler.add_deps no
+    configure.compiler  $cdb([c_variant_name],compiler)
+}
+configure.universal_args-delete --disable-dependency-tracking
+configure.args      --disable-asm-redc \
+                    --disable-assert \
+                    --disable-openmp \
+                    --disable-sse2 \
+		    --enable-gmp-cflags
+
+use_parallel_build  no
+
+variant asmredc description {enable asm REDC code (currently deprecated)} {
+	# Deprecated due to bugs:
+	#   https://gforge.inria.fr/tracker/index.php?func=detail&aid=10646&group_id=135&atid=623
+	#   https://gforge.inria.fr/tracker/index.php?func=detail&aid=10648&group_id=135&atid=623
+	configure.args-delete   --disable-asm-redc
+	configure.args-append   --enable-asm-redc
+}
+
+variant assert description {enable assertion tests (recommended)} {
+	configure.args-delete   --disable-assert
+	configure.args-append   --enable-assert
+}
+
+variant openmp description {enable OpenMP multi-threading (requires gcc44+)} {
+	configure.args-delete	--disable-openmp
+	configure.args-append	--enable-openmp
+}
+
+variant sse2 description {enable x86 SSE2 asm code} {
+	configure.args-delete   --disable-sse2
+	configure.args-append   --enable-sse2
+}
+
+variant test        description {run tests (needs time)} {
+	# test.run does not seem to be respected
+	# Using build.post_args to work well with +tune
+	build.post_args-append	check
+	merger_must_run_binaries yes
+}
+
+variant tune \
+	description {optimize algorithm parameters (needs time and idle MPU)} {
+	build.target			tune
+	lunshift build.post_args	&& ${build.cmd} ecm-params all
+	merger_must_run_binaries yes
+}
 
 post-destroot {
     set docdir ${destroot}${prefix}/share/doc/${name}
