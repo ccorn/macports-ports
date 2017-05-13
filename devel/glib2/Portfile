@@ -11,7 +11,7 @@ conflicts                   glib2-devel
 set my_name                 glib
 # Don't update to 2.52 until https://trac.macports.org/ticket/53911 is resolved.
 version                     2.50.3
-revision                    1
+revision                    2
 set branch                  [join [lrange [split ${version} .] 0 1] .]
 categories                  devel
 maintainers                 {ryandesign @ryandesign} openmaintainer
@@ -39,6 +39,7 @@ checksums                   rmd160  3bc3bf5ae5d9997520e970c5c5a269538d871889 \
 patchfiles                  patch-configure.diff \
                             patch-glib-2.0.pc.in.diff \
                             patch-glib-gmain.c.diff \
+                            patch-glib-gmessages_h.diff \
                             patch-glib_gunicollate.c.diff \
                             patch-gi18n.h.diff \
                             patch-gio_xdgmime_xdgmime.c.diff \
