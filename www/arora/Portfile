@@ -27,7 +27,7 @@ depends_lib         port:qt4-mac \
 universal_variant   no
 
 configure {
-    system "cd ${worksrcpath} && ${prefix}/bin/qmake"
+    system "cd ${worksrcpath} && ${prefix}/libexec/qt4/bin/qmake"
 }
 
 destroot {
