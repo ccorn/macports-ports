@@ -4,8 +4,7 @@ PortSystem          1.0
 
 name                sudo
 epoch               1
-version             1.8.19p2
-revision            1
+version             1.8.20p2
 categories          sysutils security
 license             ISC
 maintainers         gmail.com:youvegotmoxie {mps @Schamschula}
@@ -26,8 +25,8 @@ master_sites        ${homepage}dist/ \
 # stealth update
 dist_subdir         ${name}/${version}_1
 
-checksums           rmd160  279309a618016c7231741a14965a5e1781be908d \
-                    sha256  237e18e67c2ad59ecacfa4b7707198b09fcf84914621585a9bc670dcc31a52e0
+checksums           rmd160  168f05dd033b14b62c508c85696b89965a15e539 \
+                    sha256  bd42ae1059e935f795c69ea97b3de09fe9410a58a74b5d5e6836eb5067a445d9
 
 patchfiles          patch-sudoers.in.diff
 
@@ -51,7 +50,7 @@ pre-destroot {
 }
 
 post-destroot {
-    move ${destroot}${prefix}/etc/sudoers ${destroot}${prefix}/etc/sudoers.dist
+    file delete ${destroot}${prefix}/etc/sudoers
     xinstall -d -m 0755 ${destroot}${prefix}/var/run/sudo
 }
 destroot.keepdirs ${destroot}${prefix}/var/run/sudo

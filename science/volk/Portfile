@@ -30,11 +30,12 @@ provides the release version, which is typically updated every month or so.
 
 subport volk-devel {
 
-    github.setup    gnuradio volk 018498173344ccc10c6911a828c56136e523b14d
-    version         20170313
+    github.setup    gnuradio volk 0e9d89a481fedec8e50db4b4ae7913992150ee8a
+    version         20170512
+    revision        1
     checksums       \
-        rmd160 976b309ff28f805df7cac783fe9e3c33fab4f630 \
-        sha256 c9192d576421b51e66f66b203fe61041f4009306da20396a58da98947882b14f
+        rmd160 d499e7302eb17d3e0dacdbd64c034dddb97b57b5 \
+        sha256 53baafaafc3953c40f1b1ff986319adf1054afdb7669e614a33116e8dd41602d
 
     conflicts       volk
     long_description ${long_description} ${subport} \
@@ -57,6 +58,7 @@ depends_lib-append   port:boost
 
 # temporary patch to fix building on older compilers that don't handle
 # dynamic type casting robustly; use correct type API for 'pow' function.
+# in 'maint' but we use 'master' here for the devel port.
 
 patchfiles-append patch-kernels_volk_volk_32f_x2_pow_32f.h.diff
 

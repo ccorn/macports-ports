@@ -4,13 +4,13 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-requests
-version             2.13.0
+version             2.18.1
 categories-append   devel
 platforms           darwin
 license             Apache-2
 supported_archs     noarch
 
-python.versions     26 27 34 35 36
+python.versions     27 34 35 36
 
 maintainers         stromnov openmaintainer
 
@@ -29,12 +29,16 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  72ba4e042f98baaa7e7a9c257c484bbe2815160e \
-                    sha256  5722cd09762faa01276230270ff16af7acf7c5c45d623868d9ba116f15791ce8
+checksums           rmd160  fc6cfa5b4918efabee6c95dd5326d46f01942012 \
+                    sha256  c6f3bdf4a4323ac7b45d01e04a6f6c20e32a052cd04de81e05103abc049ad9b9
 
 if {${name} ne ${subport}} {
     depends_build-append \
                         port:py${python.version}-setuptools
+    depends_lib-append  port:py${python.version}-chardet \
+                        port:py${python.version}-idna \
+                        port:py${python.version}-urllib3 \
+                        port:py${python.version}-certifi
 
     livecheck.type      none
 }

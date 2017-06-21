@@ -11,6 +11,7 @@ if {${os.platform} eq "darwin" && ${os.major} < 10} {
     version             1.4.0
 } else {
     version             1.6.1
+    revision            1
 }
 categories          multimedia
 maintainers         {devans @dbevans} openmaintainer
@@ -69,6 +70,8 @@ configure.args      --enable-vp8 \
                     --enable-postproc \
                     --enable-multithread \
                     --enable-runtime-cpu-detect \
+                    --enable-experimental \
+                    --enable-spatial-svc \
                     --disable-install-docs \
                     --disable-debug-libs \
                     --disable-examples \

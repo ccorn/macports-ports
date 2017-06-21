@@ -4,7 +4,7 @@ PortSystem              1.0
 PortGroup               python 1.0
 PortGroup               bitbucket 1.0
 
-bitbucket.setup         marmoute mutable-history 6.0.0
+bitbucket.setup         marmoute mutable-history 6.3.1
 name                    py-hgevolve
 
 categories-append       devel
@@ -17,22 +17,22 @@ description             Mutable history for mercurial
 long_description        This extension provides several commands to mutate history \
                         and deal with issues it may raise.
 
-checksums               rmd160  5d5d6eb7c3f3e32d9e2e5cf5b74e6dfc3a50481c \
-                        sha256  706f98ef77096381c32aa87c2ff07d1c585840bbea5ac7ad0c71c64d86bba484
+checksums               rmd160  52f225a852c09e2eb8e4f50ecb58373187bcbfd7 \
+                        sha256  2eae86f7fe1b79f82e4f86dfa3d51e7785f75ed8d3b3e42800d85ed97f39e630
 
 # can't set python.versions before adding custom subports
 subport py27-hgevolve-devel {
 }
 
 if {[string match "*-devel" $subport]} {
-    bitbucket.setup     marmoute mutable-history eb47d436cdc3
+    bitbucket.setup     marmoute mutable-history 3e62042a6bb7
     bitbucket.livecheck default
     name                py-hgevolve-devel
-    version             6.0.99
-    revision            0
+    version             6.3.99
+    revision            1
 
-    checksums           rmd160  a918f4314f5d6a03da28ef354f75d75b70f6bab9 \
-                        sha256  81b5d02ad03d7b1405d45ed3b93dcf22177c1f61df05b6b876435ae5aa049875
+    checksums           rmd160  42e09768b425ba5cac0b204fe0f31857cc9511b8 \
+                        sha256  a5987b25d0222304b1b9b9fd4f68ca7e868d251deb9aa7c245be408a4c394b9f
 }
 
 python.versions         27

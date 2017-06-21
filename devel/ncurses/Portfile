@@ -1,7 +1,7 @@
 PortSystem 1.0
 
 name            ncurses
-version         6.0
+version         6.0-20170610
 categories      devel
 platforms       darwin freebsd
 license         MIT
@@ -14,14 +14,14 @@ long_description \
     characters and function-key mapping, and has all the other          \
     SYSV-curses enhancements over BSD Curses.
 
-homepage        http://www.gnu.org/software/ncurses/ncurses.html
-master_sites    gnu
-
-checksums       rmd160 4d9e5938f00b400bfb0d37f3c54f2f36c4157d48 \
-                sha256 f551c24b30ce8bfb6e96d9f59b42fbea30fa3a6123384172f9e7284bcf647260
+homepage        http://invisible-island.net/ncurses/
+master_sites    http://invisible-mirror.net/archives/ncurses/current/
+extract.suffix	.tgz
+checksums       rmd160  dfc8ed3b5bb27c15ca7c08c91ae00b0329a76f8a \
+                sha256  4c196bd0f1bf0ce643c1547cc7fc25cee713d21299a660eeb9b5dfa8becacb45
 
 # hex.diff from http://opensource.apple.com/source/ncurses/ncurses-44/patches.applied/
-patchfiles      hex.diff configure.diff
+patchfiles      hex.diff
 
 configure.cppflags
 configure.ldflags
@@ -63,3 +63,5 @@ post-destroot {
     ln -s libncurses.${major}.dylib ${destroot}${prefix}/lib/libtermcap.dylib
     ln -s ncurses6-config ${destroot}${prefix}/bin/ncursesw6-config
 }
+
+livecheck.regex ${name}-(\[\\d.-\]+)${extract.suffix}

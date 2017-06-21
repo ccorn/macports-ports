@@ -5,7 +5,7 @@ PortGroup           mpi 1.0
 PortGroup           muniversal 1.0
 
 name                gdal
-version             2.1.3
+version             2.2.0
 categories          gis
 license             MIT BSD
 platforms           darwin
@@ -25,8 +25,8 @@ long_description    GDAL is a translator library for raster geospatial \
 homepage            http://www.gdal.org/
 master_sites        http://download.osgeo.org/gdal/${version}/
 
-checksums           rmd160  8b08c23e8f50a2ea701647b27e9ab76759bc3a9c \
-                    sha256  ae6a0a0dc6eb45a981a46db27e3dfe16c644fcf04732557e2cb315776974074a
+checksums           rmd160  7b81161990d6cff4a88b17f37fdcd934abb5c0eb \
+                    sha256  d06546a6e34b77566512a2559e9117402320dd9487de9aa95cb8a377815dc360
 
 compilers.choose    cc cxx
 mpi.setup
@@ -101,22 +101,29 @@ configure.args-append \
 # Always choose internal libjson code (#44098)
 configure.args-append   --with-libjson-c=internal
 
-# Patch to ensure that the python installation respects DESTDIR
-patchfiles          patch-gdalwarpkernel_opencl_c.diff \
-                    patch-gdalwarpkernel_opencl_h.diff \
-                    patch-alg_GNUmakefile.diff \
+patchfiles          patch-gdalwarpkernel_opencl_h.diff \
+                    patch-gdalwarpkernel_opencl_cpp.diff \
                     patch-apps_GNUmakefile.diff \
                     patch-ogr_p_h.diff \
                     patch-ogr_api_cpp.diff \
                     patch-nawk.diff \
                     patch-scripts-GNUmakefile.diff
-#                   patch-swig_python_GNUmakefile \
-                    patch-pdfcreatecopy_h.diff \
-                    patch-pdfcreatecopy_cpp.diff \
 
 # uchar is undeclared, and stream->bufbase_ is of type jas_uchar
 # see https://github.com/mdadams/jasper/commit/d42b2388f7f8e0332c846675133acea151fc557a#diff-c9eea58015962f20fc7ba09e1388c3da
 patchfiles-append   patch-uchar.diff
+
+# for all platforms without C++11 support
+# this is just a suboptimal approximation (doesn't hold for gcc)
+if {${configure.cxx_stdlib} != "libc++"} {
+    configure.args-append \
+                    --without-cpp11
+    # backported from master and could be applied everywhere
+    patchfiles-append \
+                    patch-configure-isnan.diff \
+                    patch-port-cpl_config.h.in.patch \
+                    patch-port-cpl_port.h.diff
+}
 
 pre-configure {
     global worksrcpath_dirs

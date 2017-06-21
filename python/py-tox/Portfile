@@ -3,11 +3,13 @@
 PortSystem          1.0
 PortGroup           python 1.0
 PortGroup           select 1.0
+PortGroup           github 1.0
+
+github.setup        tox-dev tox 2.7.0 v
 
 name                py-tox
-version             2.3.1
 categories-append   devel
-maintainers         gmail.com:pedro.salgado openmaintainer
+maintainers         {gmail.com:pedro.salgado @steenzout} openmaintainer
 platforms           darwin
 supported_archs     noarch
 license             MIT
@@ -20,8 +22,8 @@ master_sites        pypi:t/tox/
 
 distname            tox-${version}
 
-checksums           rmd160  dddc14678033bacc58a54b05f007b0dcefa50d93 \
-                    sha256  bf7fcc140863820700d3ccd65b33820ba747b61c5fe4e2b91bb8c64cb21a47ee
+checksums           rmd160  89a1a09d8e0631a217388a8f98b1e61f8e393b2c \
+                    sha256  9c3bdc06fe411d24015e8bbbab9d03dc5243a970154496aac13f9283682435f9
 
 python.versions     27 34 35 36
 

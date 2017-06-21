@@ -15,13 +15,12 @@ homepage            http://sdr.osmocom.org/trac/wiki/GrOsmoSDR
 license             GPL-3
 platforms           darwin macosx
 
-set commit          e9dde9afd754c6e3bcf1a1444c04064051f04ecd
-version             20170227
-revision            1
+set commit          c653754dde5e2cf682965e939cc016fbddbd45e4
+version             20170611
 distname            ${name}-${commit}
 checksums           ${distname}.tar.gz \
-                    rmd160 b38b44cb0764f8f3567633090941f296fd09c4ba \
-                    sha256 fc5f2f154156864fe7d2201a0699fc2ec7f8c8d5bdf0e865cbc8c25bb975137b
+                    rmd160 db4a0d0e1972d2422e71bcaffd544d98cff7c22c \
+                    sha256 17c2b559e3fd9bcd66b5f038b9d8ead141956eadfef610b09913a2b3f7779f26
 
 master_sites        http://cgit.osmocom.org/gr-osmosdr/snapshot/
 
@@ -54,7 +53,15 @@ configure.ldflags-delete -L${prefix}/lib
 
 # per user concensus: enable all variants except +debug and +universal
 
-default_variants +docs +uhd +swig +hackrf +fcdproplus +rtlsdr +bladeRF +airspy +soapysdr +sdrplay
+default_variants +docs +uhd +swig +hackrf +fcdproplus +rtlsdr +bladeRF +airspy
+
+# SoapySDR and SDRPlay work on 10.9 and newer only until fixed
+
+platform darwin {
+    if {${os.major} > 12} {
+        default_variants +soapysdr +sdrplay
+    }
+}
 
 # common configure flags
 
@@ -221,6 +228,11 @@ if {![variant_isset airspy]} {
 
 }
 
+# SoapySDR and SDRPlay work on 10.9 and newer only until fixed
+
+platform darwin {
+    if {${os.major} > 12} {
+
 variant soapysdr description "Install ${name} with support for SoapySDR" {
 
     depends_lib-append port:SoapySDR
@@ -245,4 +257,7 @@ if {![variant_isset sdrplay]} {
 
     configure.args-append -DENABLE_NONFREE=OFF -DENABLE_SDRPLAY=OFF
 
+}
+
+    }
 }

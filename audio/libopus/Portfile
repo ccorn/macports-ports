@@ -5,7 +5,7 @@ PortGroup       muniversal 1.0
 PortGroup       compiler_blacklist_versions 1.0
 
 name            libopus
-version         1.1.4
+version         1.2
 categories      audio
 license         BSD
 platforms       darwin
@@ -19,15 +19,15 @@ long_description \
     and real-time uses.
 
 homepage        http://www.opus-codec.org
-master_sites    http://downloads.xiph.org/releases/opus
+master_sites    https://archive.mozilla.org/pub/opus/
 
 platform i386 {
     # checking How to get X86 CPU Info... configure: error: no supported Get CPU Info method, please disable intrinsics
     compiler.blacklist *gcc-4.* {clang < 500}
 }
 
-checksums       rmd160  a5cb4400e6e41be23d522cfffb04f14e1ac555f1 \
-                sha256  9122b6b380081dd2665189f97bfd777f04f92dc3ab6698eea1dbb27ad59d8692
+checksums       rmd160  1142a2a920cc73ac09645870bb6389d887604c0e \
+                sha256  77db45a87b51578fbc49555ef1b10926179861d854eb2613207dc79d9ec0a9a9
 
 distname        opus-${version}
 

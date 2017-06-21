@@ -45,10 +45,10 @@ Provides the UHD GIT maint or master branch, depending on which is more advanced
 
     name            uhd-devel
     conflicts       uhd
-    github.setup    EttusResearch uhd 2790b51f3072b5ad5e3a5c4921a84f460096f92d
-    version         20170413
-    checksums       rmd160 b44710e37c813f3823b6c8e304d5ad7f36cf3e7f \
-                    sha256 5ca9fef1d36f3e22b61f4de756497b1e0bb4834089fd0d712d5d77a9c013bf32
+    github.setup    EttusResearch uhd 1da86f9cf5526269f253e17416e7e501c1c3a6a7
+    version         20170528
+    checksums       rmd160 cde3c1fe316efc269ee664301cc94ca0b213e0c4 \
+                    sha256 39ae45cd28df706078291a498534d6038ae66c30faca3f4877c0c882307595f3
 
     # overload the github livecheck URL with the maint branch,
     # when it is more advanced; comment out for master.
@@ -110,10 +110,14 @@ configure.args-append \
 configure.args-append \
     -DCMAKE_MODULES_DIR=${prefix}/share/cmake
 
-# require C++11
+# try to enable C++11 for older compilers too.  for some reason cmake
+# doesn't recognize libstdc++ compilers as being c++11 capable, even
+# though some are. set this and hope for the best ...
 
-configure.args-append \
-    -DCMAKE_CXX_STANDARD=11
+if {${configure.cxx_stdlib} eq "macports-libstdc++" ||
+    ${configure.cxx_stdlib} eq "libstdc++"} {
+    configure.cxxflags-append -std=gnu++11
+}
 
 # per user concensus: enable all variants except +debug and +universal
 

@@ -538,6 +538,13 @@ array set sql_plugins {
     }
     {psql PostgreSQL "revision 0"} {
         {
+            "postgresql96"
+            "port:postgresql96"
+            "${prefix}/include/postgresql96"
+            "-L${prefix}/lib/postgresql96 -lpq"
+            ""
+        }
+        {
             "postgresql95"
             "port:postgresql95"
             "${prefix}/include/postgresql95"
@@ -707,6 +714,10 @@ foreach {module module_info} [array get modules] {
             #
             # When testing, ensure that a universal object file is not inadvertently created.
             patchfiles-append patch-machtest.diff
+
+            # Support direct linker flags. Newer glib versions seem to use -Wl,framework,...
+            # or -Wl,framework -Wl,...
+            patchfiles-append patch-config.tests_unix_compile.test-support-linker-flags-in-LDFLAGS.diff
 
             #-----------------------------------------------------------------------------
             # qtbase is used for:
@@ -1239,6 +1250,9 @@ foreach {module module_info} [array get modules] {
                         ui_error "${subport} requires OS X 10.9 or later"
                         return -code error "incompatible OS version"
                     }
+                } elseif { ${os.major} == 13 } {
+                    # see https://bugreports.qt.io/browse/QTBUG-54486
+                    configure.sdk_version 10.10
                 }
 
                 # see http://lists.qt-project.org/pipermail/interest/2016-February/thread.html#20946
@@ -1267,6 +1281,15 @@ foreach {module module_info} [array get modules] {
                     foreach dylib "grue/Grue/libdeclarative_grue${debug}.dylib grue/sensors/libqtsensors_grue${debug}.dylib" {
                         system "/usr/bin/install_name_tool -change libgruesensor.1.dylib ${qt_examples_dir}/sensors/grue/libgruesensor.1.dylib ${destroot}${qt_examples_dir}/sensors/${dylib}"
                     }
+                }
+            }
+
+            # special case
+            if { ${module} eq "qtmultimedia" } {
+                if { ${os.major} < 13 } {
+                    # see https://trac.macports.org/ticket/52922
+                    # see https://trac.macports.org/ticket/53949
+                    patchfiles-append patch-firstObject.diff
                 }
             }
         }

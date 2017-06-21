@@ -3,8 +3,8 @@
 PortSystem          1.0
 PortGroup           perl5 1.0
 
-perl5.branches      5.24
-perl5.setup         Net-HTTP 6.14
+perl5.branches      5.24 5.26
+perl5.setup         Net-HTTP 6.16
 platforms           darwin
 maintainers         nomaintainer
 license             {Artistic-1 GPL}
@@ -14,8 +14,8 @@ description         Low-level HTTP connection (client)
 
 long_description    ${description}
 
-checksums           rmd160  06eb106d3efabef12ebac6d14f738e73b46ebb63 \
-                    sha256  df0e71d3ec3a8351204619b32ee4a4a39368a419bcfe9324fcd6655bb11a433e
+checksums           rmd160  a24280912d8773f102ebd4baa78843d4f51859d4 \
+                    sha256  70c45b6aaf3e9fb1ce30a1fc3cf828cfaee45c5c0bd147b2f617efade1765e78
 
 if {${perl5.major} != ""} {
     depends_lib-append \

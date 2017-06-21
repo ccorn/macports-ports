@@ -29,9 +29,9 @@ if {${subport} eq ${name}} {
 
     # release
 
-    version         ${branch}.1
-    checksums       rmd160 ef93de4f41d6b494d569f0d35e212eb5b5f8ba48 \
-                    sha256 ce5d9161396e06501b00e52933783150a87c33080d4bdcef461b5b7fd24ac228
+    version         ${branch}.2
+    checksums       rmd160 369ed02b2a69a47d0792b7ee964907afedbd669d \
+                    sha256 da3072794eb4c09f2d782fcee043847b99bb4cf8d4573978d9b2024214d6e92d
 
     master_sites    http://www.cmake.org/files/v${branch}/
     conflicts       cmake-devel
@@ -54,17 +54,19 @@ if {${subport} eq ${name}} {
 
     # devel
 
-    version         20170502
-    set dist_branch 3.8
-    set dist_date   20170502
-    set dist_hash   g2abb6
-    checksums       rmd160 40a5b11f6ee28946e2dc68bd718215d2146e6656 \
-                    sha256 a3b8e74022af3da513f757b81e12c687c8a76812299e95282a0a1e8ba8629d6c
+    version         20170620
+    set commit      8308803167368b873641e5066017536a082f3c68
+    checksums       rmd160 3a30446404d419b7c117c54b9e91851aa452b686 \
+                    sha256 89eb06668c90aaf4a44dcbbb66e2d7998951f749cb54209b62f5aa77ca2d32b7
 
-    master_sites    http://www.cmake.org/files/dev/
-    distname        ${name}-${dist_branch}.${dist_date}-${dist_hash}
+    master_sites    https://gitlab.kitware.com/cmake/cmake/repository/archive.tar.bz2?ref=${commit}&
+    distname        ${name}-${commit}
+
+    post-extract {
+        move ${workpath}/${name}-${commit}-${commit} ${workpath}/${name}-${commit}
+    }
+
     conflicts       cmake
-
     long_description ${base_long_description} \
         The ${subport} port is updated roughly every week.
 
@@ -77,9 +79,9 @@ if {${subport} eq ${name}} {
         patch-Source_CMakeVersionCompute.cmake.devel.diff
 
     livecheck.type  regex
-    livecheck.regex (${name}-\[0-9a-g.-\]+)${extract.suffix}
-    livecheck.version ${distname}
-    livecheck.url   http://www.cmake.org/files/dev/
+    livecheck.regex /cmake/cmake/commit/(\[0-9a-g\]+)
+    livecheck.version ${commit}
+    livecheck.url   https://gitlab.kitware.com/cmake/cmake/tree/master
 
 }
 
