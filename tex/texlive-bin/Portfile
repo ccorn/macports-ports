@@ -1,6 +1,7 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem      1.0
+PortGroup       compilers 1.0
 PortGroup       compiler_blacklist_versions 1.0
 PortGroup       texlive 1.0
 
@@ -116,11 +117,19 @@ post-patch {
     reinplace "s|@@TEXMFSYSCONFIG@@|${texlive_texmfsysconfig}|" ${worksrcpath}/texk/kpathsea/paths.h
 }
 
-# llvm-gcc apparently fails on Xcode 4.0.x (#30758)
-compiler.blacklist {llvm-gcc-4.2 < 2335.15}
-
-# Fix build failure on Tiger due to use of -isystem
-compiler.blacklist-append gcc-4.0 gcc-3.3
+# dvisgm requires C++11 support
+compilers.choose    cc cxx objc
+compilers.setup     -gcc44 -gcc45 -gcc46 \
+                    -clang33 -clang34 -clang35 \
+                    -llvm -dragonegg33 -dragonegg34
+# compiler.setup does not set configure.compiler, but we need it
+# for proper archflags and to avoid weird fallbacks when blacklisting.
+if {[info exists cdb([c_variant_name],compiler)]} {
+    configure.compiler.add_deps no
+    configure.compiler  $cdb([c_variant_name],compiler)
+    compiler.blacklist  gcc-3.3 gcc-4.0 gcc-4.2 llvm-gcc-4.2 clang \
+                        apple-gcc-4.0 apple-gcc-4.2 macports-llvm-gcc42
+}
 
 # We use MacPorts-provided libraries instead of the ones included in
 # texlive whenever possible, to avoid redundancy and to better keep
@@ -211,13 +220,13 @@ if {[variant_isset universal]} {
 # work around bug in texlive makefiles where $OBJC is not recorded
 # during configure phase
 build.env                   OBJC=${configure.objc} \
-                            OBJCFLAGS="${configure.objcflags} [get_canonical_archflags objc]" \
+                            OBJCFLAGS=\${CFLAGS} \
                             OBJCXX=${configure.objcxx}
 
 if {[string match *clang* ${configure.cxx}]} {
-    build.env-append        OBJCXXFLAGS="${configure.objcxxflags} [get_canonical_archflags objcxx] -stdlib=${configure.cxx_stdlib}"
+    build.env-append        OBJCXXFLAGS="\${CXXFLAGS} -stdlib=${configure.cxx_stdlib}"
 } else {
-    build.env-append        OBJCXXFLAGS="${configure.objcxxflags} [get_canonical_archflags objcxx]"
+    build.env-append        OBJCXXFLAGS=\${CXXFLAGS}
 }
 
 post-destroot   {
