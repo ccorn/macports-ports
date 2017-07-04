@@ -16,30 +16,18 @@ long_description    \
     ${description} It knows how to hook into bash, zsh, tcsh and fish shell to load or unload environment variables depending on the current directory. This allows project-specific environment variables without cluttering the \"~/.profile\" file.
 
 if {${name} eq ${subport}} {
-    github.setup        direnv direnv 2.11.3 v
-    checksums           rmd160 406d2eec7c30de0f78174432ed7035153de0bc0e \
-                        sha256 0a720a043d113b02147d2e87b1801f811fb74f73a785f1350047b16eb806c9eb
+    github.setup        direnv direnv 2.12.0 v
+    checksums           rmd160 d6d3177d9f42d198a10a96d3b171681712886446 \
+                        sha256 b5e121e6641ae12c428af0ecbee33b398739aeaa06bd0ef906c83e6ff0020378
     conflicts           direnv-devel
 }
 
 subport direnv-devel {
-    github.setup        direnv direnv 448bd6cf7b3386510e1e5ffb2f07b2100983a362
-    version             20170619
-    checksums           rmd160 0a1bb3c9372417524925f1803ebfe91f74de1058 \
-                        sha256 46ccc8e6f164803830193db76dcb1b5f09ffc5461dc7fd9b7463c6c02979b078
+    github.setup        direnv direnv 775d98c407c085926f5f92cdfb9f73db56de56af
+    version             20170630
+    checksums           rmd160 0b3f301e7eb8d255effede4da7f9f0ec67df1cc8 \
+                        sha256 4acaae496ad176b2502f3856e152e38f026aaf4060d7d1a6de2a0ff13999ac48
     conflicts           direnv
-
-    # fix importing of dotenv
-    patchfiles-append       patch-cmd_dotenv.go.diff
-
-    post-patch {
-        # move 'dotenv' into 'src/dotenv' to make GOPATH happy
-        file mkdir ${worksrcpath}/src
-        move ${worksrcpath}/dotenv ${worksrcpath}/src
-    }
-
-    build.env-append        GOPATH=${worksrcpath}
-
 }
 
 # override github information
@@ -50,9 +38,20 @@ homepage                http://direnv.net/
 
 depends_lib-append      port:go
 
+# fix importing of dotenv
+patchfiles-append       patch-cmd_dotenv.go.diff
+
 # fix PREFIX and DESTDIR variables to match what 'port' needs
 patchfiles-append       patch-Makefile.diff
 
+post-patch {
+    # move 'dotenv' into 'src/dotenv' to make GOPATH happy
+    file mkdir ${worksrcpath}/src
+    move ${worksrcpath}/dotenv ${worksrcpath}/src
+}
+
 use_configure           no
+
+build.env-append        GOPATH=${worksrcpath}
 
 destroot.env-append     PREFIX=${prefix}

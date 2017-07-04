@@ -8,7 +8,7 @@ name                iperf3
 categories          net
 platforms           darwin
 license             BSD
-maintainers         gmail.com:allan.que openmaintainer
+maintainers         {gmail.com:allan.que @aque} openmaintainer
 description         Measures the maximum achievable bandwidth on IP networks
 long_description    ${name} is a tool for active measurements of the maximum \
                     achievable bandwidth on IP networks. It supports tuning \
@@ -21,6 +21,9 @@ conflicts           ${name}-devel
 checksums           rmd160  eae80e399734d3e9e26222105ee1fbd6fb8d8e2f \
                     sha256  a1beff784aab49e5ccd6a13b1525be849fb9afce83d4c87693342492a6eea1c4
 
+test.run            yes
+test.target         check
+
 post-destroot {
     # install doc files
     xinstall -d ${destroot}${prefix}/share/doc/${name}
@@ -29,11 +32,16 @@ post-destroot {
 }
 
 subport ${name}-devel {
-    github.setup        esnet iperf 7c79294b5b2b3499fdf1dcd42969971909a740e3
-    version             20170125
+    github.setup        esnet iperf 88d907f7fb58bfab5d086c5da60c922e1c582c92
+    version             20170626
 
-    checksums           rmd160  a6b4df85022543e4379ec70a58e73c42ac82b286 \
-                        sha256  af18e86bc4981c0639274acf22bea048fba03237f7a1c3c12e38302d17cd3a43
+    checksums           rmd160  3793eefb303ffebadbbe6ba2055683c1eca15374 \
+                        sha256  3098ae6787da9ba08dad6cb6329d3b6282f058711033ff7edbb6ad145cd6d088
+
+    depends_lib-append  port:openssl
+    patchfiles          patch-iperf_auth.c.diff \
+                        patch-iperf_util.h.diff \
+                        patch-iperf_util.c.diff
 
     conflicts           ${name}
 

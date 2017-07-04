@@ -28,7 +28,7 @@ dist_subdir         ruby24
 
 # 10.7 or earlier cannot compile ruby-2.4.0, upstream ruby-trunk's r57180 fixes this error
 patchfiles          patch-legacy_mac.diff \
-                    patch-dir_c-fgetattrlist.diff
+                    patch-leopard.diff
 
 checksums           md5 07b2ae5d2f46321c95b37066c8415900 \
                     rmd160 02f0be92b3fb3fbb4bd1f945359c0d45297cefc6 \
@@ -51,6 +51,7 @@ select.group        ruby
 select.file         ${filespath}/ruby24
 
 configure.args      --enable-shared \
+                    --enable-install-static-library \
                     --disable-install-doc \
                     --mandir="${prefix}/share/man" \
                     --enable-pthread \
@@ -61,7 +62,8 @@ configure.args      --enable-shared \
                     --with-rubylibprefix="${prefix}/lib/ruby2.4"
 
 variant dtrace description {Enable dtrace support.
-Note that dtrace invokes "gcc", so you may have to "port select gcc" it} {
+Note that dtrace invokes "gcc",
+so you may have to "port select gcc" it} {
     configure.args-delete --disable-dtrace
     configure.args-append --enable-dtrace
 }
