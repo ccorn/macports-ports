@@ -33,28 +33,7 @@ set portfetch::mirror_sites::sites(apache) {
 
 # Equivalent to "perl_cpan"; neither name takes precedence over the other.
 set portfetch::mirror_sites::sites(cpan) {
-    http://mirror.aarnet.edu.au/pub/CPAN/modules/by-module/
-    ftp://ftp.auckland.ac.nz/pub/perl/CPAN/modules/by-module/
-    http://ftp.carnet.hr/pub/CPAN/modules/by-module/
-    http://mirror.cogentco.com/pub/CPAN/modules/by-module/
-    http://mirror.cc.columbia.edu/pub/software/cpan/modules/by-module/
-    ftp://ftp.cpan.org/pub/CPAN/modules/by-module/
-    http://cpan.mirror.euserv.net/modules/by-module/
-    ftp://ftp.funet.fi/pub/languages/perl/CPAN/modules/by-module/
-    http://mirrors.ibiblio.org/CPAN/modules/by-module/
-    http://cpan.mirrors.ilisys.com.au/modules/by-module/
-    http://mirror.internode.on.net/pub/cpan/modules/by-module/
-    ftp://ftp.is.co.za/programming/perl/modules/by-module/
-    ftp://ftp.kddlabs.co.jp/lang/perl/CPAN/modules/by-module/
-    http://www.mirrorservice.org/sites/cpan.perl.org/CPAN/modules/by-module/
-    ftp://xyz.csail.mit.edu/pub/CPAN/modules/by-module/
-    http://mirrors.mit.edu/CPAN/modules/by-module/
     http://mirror.ox.ac.uk/sites/www.cpan.org/modules/by-module/
-    ftp://ftp.sunet.se/pub/lang/perl/CPAN/modules/by-module/
-    http://mirror.uoregon.edu/CPAN/modules/by-module/
-    http://mirror.uta.edu/CPAN/modules/by-module/
-    http://cpan.cs.utah.edu/modules/by-module/
-    http://ftp.wayne.edu/CPAN/modules/by-module/
 }
 
 # Equivalent to "tex_ctan"; neither name takes precedence over the other.
@@ -307,21 +286,6 @@ set distfiles_scheme [expr {${os.platform} eq "darwin" && ${os.major} < 10 ? "ht
 
 set portfetch::mirror_sites::sites(macports_distfiles) "
     ${distfiles_scheme}://distfiles.macports.org/:mirror
-    http://aarnet.au.distfiles.macports.org/pub/macports/distfiles/:mirror
-    http://cjj.kr.distfiles.macports.org/:mirror
-    http://fco.it.distfiles.macports.org/mirrors/macports-distfiles/:mirror
-    http://her.gr.distfiles.macports.org/:mirror
-    http://jnb.za.distfiles.macports.org/distfiles/:mirror
-    http://jog.id.distfiles.macports.org/macports/distfiles/:mirror
-    http://kmq.jp.distfiles.macports.org/:mirror
-    http://lil.fr.distfiles.macports.org/:mirror
-    http://mse.uk.distfiles.macports.org/sites/distfiles.macports.org/:mirror
-    http://nou.nc.distfiles.macports.org/pub/macports/distfiles.macports.org/:mirror
-    http://nue.de.distfiles.macports.org/:mirror
-    http://osl.no.distfiles.macports.org/:mirror
-    ${distfiles_scheme}://pek.cn.distfiles.macports.org/macports/distfiles/:mirror
-    http://sea.us.distfiles.macports.org/macports/distfiles/:mirror
-    http://ykf.ca.distfiles.macports.org/MacPorts/mpdistfiles/:mirror
 "
 
 # To update this list use:
