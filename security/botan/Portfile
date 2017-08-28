@@ -1,10 +1,12 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
 PortSystem          1.0
-PortGroup           compilers 1.0
 PortGroup           muniversal 1.0
+PortGroup           cxx11 1.0
 
 name                botan
-version             1.10.14
-revision            0
+version             1.10.16
+set branch          [join [lrange [split ${version} .] 0 1] .]
 categories          security devel
 platforms           darwin
 maintainers         nomaintainer
@@ -15,30 +17,32 @@ long_description    Botan is a C++ library implementing a variety of \
                     quite stable, and is suitable for use in a wide variety of \
                     programs.
 
-homepage            https://botan.randombit.net/
-master_sites        https://botan.randombit.net/releases/
-distfiles           Botan-${version}.tgz
-worksrcdir          Botan-${version}
-checksums           sha256  10ed0b394db165733ac9557d8656356b7e9744d38c61c2b9c44cba6d84ff4c1c
+homepage            https://botan.randombit.net
+master_sites        ${homepage}/releases/
+distname            Botan-${version}
+extract.suffix      .tgz
+
+checksums           rmd160  72f02a2817109f90cb99045107f8385825d6fc1a \
+                    sha256  6c5472401d06527e87adcb53dd270f3c9b1fb688703b04dd7a7cfb86289efe52
 
 depends_build       port:python27
 depends_lib         path:lib/libssl.dylib:openssl port:zlib port:bzip2
 
-worksrcdir          Botan-${version}
-
-# From 1.11 on, Botan requires C++11
-compilers.choose    cc cxx
-compilers.setup     -gcc44 -gcc45 -gcc46 \
-                    -clang33 -clang34 -clang35 \
-                    -llvm -dragonegg33 -dragonegg34
-# compiler.setup does not set configure.compiler, but we need it
-# for proper archflags and to avoid weird fallbacks when blacklisting.
-if {[info exists cdb([c_variant_name],compiler)]} {
-    configure.compiler.add_deps no
-    configure.compiler  $cdb([c_variant_name],compiler)
-    compiler.blacklist  gcc-3.3 gcc-4.0 gcc-4.2 llvm-gcc-4.2 clang \
-                        apple-gcc-4.0 apple-gcc-4.2 macports-llvm-gcc42
-}
+#worksrcdir          Botan-${version}
+#
+## From 1.11 on, Botan requires C++11
+#compilers.choose    cc cxx
+#compilers.setup     -gcc44 -gcc45 -gcc46 \
+#                    -clang33 -clang34 -clang35 \
+#                    -llvm -dragonegg33 -dragonegg34
+## compiler.setup does not set configure.compiler, but we need it
+## for proper archflags and to avoid weird fallbacks when blacklisting.
+#if {[info exists cdb([c_variant_name],compiler)]} {
+#    configure.compiler.add_deps no
+#    configure.compiler  $cdb([c_variant_name],compiler)
+#    compiler.blacklist  gcc-3.3 gcc-4.0 gcc-4.2 llvm-gcc-4.2 clang \
+#                        apple-gcc-4.0 apple-gcc-4.2 macports-llvm-gcc42
+#}
 configure.cmd       ${prefix}/bin/python2.7 ./configure.py
 configure.args      --docdir=share/doc --with-openssl --with-zlib --with-bzip2
 
@@ -46,6 +50,12 @@ if {[string match *clang* ${configure.compiler}]} {
   configure.args-append --cc=clang
 } elseif {[string match *gcc* ${configure.compiler}]} {
   configure.args-append --cc=gcc
+}
+
+# add the selected -stdlib to clang builds
+# see https://trac.macports.org/ticket/53123
+if {[string match *clang* ${configure.cxx}]} {
+    configure.cxx ${configure.cxx} -stdlib=${configure.cxx_stdlib}
 }
 
 destroot.destdir    DESTDIR=${destroot}${prefix}
@@ -81,12 +91,12 @@ if {![variant_isset universal]} {
 } else {
     # the arch flag is lost in the build phase, so put it back
     foreach arch ${configure.universal_archs} {
-        lappend merger_build_args(${arch}) CXX='${configure.cxx} -arch ${arch}'
+        eval lappend merger_build_args(${arch}) CXX='${configure.cxx} -arch ${arch}'
     }
 }
 
 # configure.py rejects this argument
 configure.universal_args-delete --disable-dependency-tracking
 
-livecheck.regex     "Botan-(1.10.\[0-9\]+).tgz"
-livecheck.url       https://botan.randombit.net/
+livecheck.regex     Botan-(${branch}\\.\[0-9.\]+)${extract.suffix}
+livecheck.url       ${homepage}/download.html

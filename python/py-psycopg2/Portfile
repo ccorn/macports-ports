@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-psycopg2
-version             2.7.1
+version             2.7.3
 
 categories-append   databases
 maintainers         snc openmaintainer
@@ -24,9 +24,9 @@ homepage            http://initd.org/psycopg/
 master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 distname            ${python.rootname}-${version}
 
-checksums           md5     67848ac33af88336046802f6ef7081f3 \
-                    rmd160  06e973d424d9bf7507e986b10da5effdd47245bb \
-                    sha256  86c9355f5374b008c8479bc00023b295c07d508f7c3b91dbd2e74f8925b1d9c6
+checksums           md5     f9823ffedcec57a8c036e67c6fb3fa36 \
+                    rmd160  77169c0cf96b86f82dfe25f4a78d52c80776755d \
+                    sha256  c9bd49848556d04093909faec017c3675efabf78c2b7f383bf7c43ba18324ac8
 
 if {${name} ne ${subport}} {
     depends_lib-append  path:lib/libssl.dylib:openssl

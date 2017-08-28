@@ -6,7 +6,8 @@ PortGroup           compiler_blacklist_versions 1.0
 PortGroup           gobject_introspection 1.0
 
 name                gitg
-version             3.22.0
+version             3.24.0
+revision            1
 license             GPL-2+
 set branch          [join [lrange [split ${version} .] 0 1] .]
 description         GNOME git repository viewer.
@@ -27,8 +28,8 @@ master_sites        gnome:sources/${name}/${branch}/
 
 use_xz              yes
 
-checksums           rmd160  c73323d0c4e68c54be5597718dffe34657fb9162 \
-                    sha256  ba6895f85c18748294075980a5e03e0936ad4e84534dbb0d8f9e29aa874ddeaf
+checksums           rmd160  a591373f9c93bd557af334a1abaf9d9075fce582 \
+                    sha256  3e4ec4a8ae83bc7ced8c7610927ade70e37daa5e8beeb4f357a6ea30b4cc951e
 
 depends_build       port:pkgconfig \
                     port:intltool \
@@ -52,7 +53,10 @@ depends_run         port:gnome-themes-standard
 
 gobject_introspection yes
 
-patchfiles          patch-autogen.sh.diff
+patchfiles          patch-autogen.sh.diff \
+                    patch-allow-popping-up-menu-from-keyboard.diff \
+                    patch-fix-invalid-assignment.diff \
+                    patch-libgit2-glib-0.26.diff
 
 # reconfigure using upstream autogen.sh for intltool 0.51 compatibility
 

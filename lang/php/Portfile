@@ -20,7 +20,7 @@ long_description        PHP is a widely-used general-purpose scripting \
                         scripting.
 
 # The list of PHP branches this port provides.
-php.branches            5.2 5.3 5.4 5.5 5.6 7.0 7.1
+php.branches            5.2 5.3 5.4 5.5 5.6 7.0 7.1 7.2
 
 # Fix for users specifying the subport name with the wrong case.
 set subport             [string tolower ${subport}]
@@ -103,36 +103,36 @@ switch ${subport_branch} {
     }
     5.6 {
         epoch           2
-        version         5.6.30
+        version         5.6.31
         use_xz          yes
-        checksums       rmd160  bdd350282df037e53205459f2ea5d840e69b3616 \
-                        sha256  a363185c786432f75e3c7ff956b49c3369c3f6906a6b10459f8d1ddc22f70805
+        checksums       rmd160  68960936685b6b96bcfd6ac6c69c537143274537 \
+                        sha256  c464af61240a9b7729fabe0314cdbdd5a000a4f0c9bd201f89f8628732fe4ae4
     }
     7.0 {
         epoch           2
-        version         7.0.20
+        version         7.0.22
         use_xz          yes
-        checksums       rmd160  12dc84f76d8e867af23938496747f701851bfb64 \
-                        sha256  31b9cf1fb83fe3cd82c2f6603a0ae81ae6abacb5286827e362d8f85e68908e0a
+        checksums       rmd160  92ffa127f6bf7d593dea193acc006b24e23ce9cf \
+                        sha256  408c3fbc235ec940433bfac1f3ed4bf797f61b4a1693b9fb0b6a04b2c1832501
     }
     7.1 {
         epoch           2
-        version         7.1.6
+        version         7.1.8
         use_xz          yes
-        checksums       rmd160  779236a581fac8fb9ff59f2663b92425610ee2d7 \
-                        sha256  01584dc521ab7ec84b502b61952f573652fe6aa00c18d6d844fb9209f14b245b
+        checksums       rmd160  121e1f0b6ef1051a612f58f9829e8fbfc3d02e06 \
+                        sha256  8943858738604acb33ecedb865d6c4051eeffe4e2d06f3a3c8f794daccaa2aab
     }
     7.2 {
         # When this becomes a stable version, remove the overrides for homepage,
         # master_sites and livecheck, and update php.latest_stable_branch in the
         # php-1.1 portgroup.
         epoch           0
-        version         7.2.0alpha1
+        version         7.2.0beta3
         homepage        https://qa.php.net/
-        master_sites    https://downloads.php.net/~krakjoe/
+        master_sites    https://downloads.php.net/~remi/
         use_xz          yes
-        checksums       rmd160  92892ee9ea2f23672e54ae8fe3db0c17d155f491 \
-                        sha256  3812b54ff84b32cb3750994088161e9c6455000499f4716b635b7c1e64a75a2c
+        checksums       rmd160  917cfd5aff352a85df53bd798df50a0d48462a8f \
+                        sha256  86ab60f96223768d2cb6b3669ce5d048ce904beccf532119aa02058e7cc9e498
         livecheck.url   ${homepage}
         livecheck.regex php-([strsed ${subport_branch} {g/\\./\\./}](?:\\.\[0-9.\]+)*(?:(?:alpha|beta|RC)\\d+|-latest))\\.tar
     }
@@ -297,7 +297,6 @@ subport ${php} {
         5.3.29              {revision 2}
         5.4.45              {revision 1}
         5.5.38              {revision 1}
-        5.6.30              {revision 1}
     }
     
     depends_run             port:php_select
@@ -720,7 +719,6 @@ subport ${php}-intl {
         5.3.29              {revision 3}
         5.4.45              {revision 1}
         5.5.38              {revision 1}
-        5.6.30              {revision 1}
     }
     
     categories-append       devel
@@ -768,6 +766,7 @@ subport ${php}-mbstring {
     long_description        ${description}
 }
 
+if {[vercmp ${branch} 7.2] < 0} {
 subport ${php}-mcrypt {
     categories-append       security
     
@@ -783,6 +782,7 @@ subport ${php}-mcrypt {
     depends_lib-append      port:libtool
     
     configure.args-append   --with-mcrypt=${prefix}
+}
 }
 
 if {[vercmp ${branch} 7] < 0} {
@@ -1210,6 +1210,23 @@ subport ${php}-sockets {
                             functions
     
     long_description        ${description}
+}
+
+if {[vercmp ${branch} 7.2] >= 0} {
+subport ${php}-sodium {
+    php.extensions          sodium
+
+    categories-append       security
+
+    description             a PHP interface to libsodium, a modern and \
+                            easy-to-use crypto library
+
+    long_description        ${description}
+
+    depends_lib-append      port:libsodium
+
+    configure.args-append   --with-sodium=${prefix}
+}
 }
 
 if {[vercmp ${branch} 5.3] >= 0} {

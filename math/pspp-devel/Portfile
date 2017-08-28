@@ -5,10 +5,9 @@ PortGroup           app 1.0
 PortGroup           active_variants 1.1
 
 name                pspp-devel
-set buildstamp      20170629090509
-set buildhash       ge157cc
-version             0.10.5-pre2
-revision            5
+set buildstamp      20170821030501
+set buildhash       gf790db
+version             1.0.0
 # depends_test port:p${perl5.major}-text-diff
 categories          math
 license             GPL-3+
@@ -25,7 +24,7 @@ homepage            http://www.gnu.org/software/pspp/
 platforms           darwin
 
 master_sites        http://pspp.benpfaff.org/~blp/pspp-master/${buildstamp}/source
-distname            pspp-${version}${buildhash}
+distname            pspp-${version}-${buildhash}
 
 depends_lib-append  path:lib/pkgconfig/cairo.pc:cairo \
                     port:fontconfig \
@@ -43,8 +42,8 @@ depends_lib-append  path:lib/pkgconfig/cairo.pc:cairo \
 
 depends_build-append    port:pkgconfig
 
-checksums           rmd160  75ba0657f1eb9816a975ef1806d999af4bef8b89 \
-                    sha256  3e36359c9f27a5ed2687b06d487d778fd1dda11b79d7ba724b82468f8f365d99
+checksums           rmd160  521d194858a455c7f6f311b3ec8eaa8bed226bc6 \
+                    sha256  27b1290f8c91b30e80308d94590d55a527750c18a88a3be295a9321de7faa614
 
 post-extract {
     if {[variant_isset gui]} {
