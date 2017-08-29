@@ -2,7 +2,7 @@
 
 PortSystem          1.0
 PortGroup           muniversal 1.0
-PortGroup           cxx11 1.0
+PortGroup           cxx11 1.1
 
 name                botan
 version             1.10.16
@@ -28,21 +28,6 @@ checksums           rmd160  72f02a2817109f90cb99045107f8385825d6fc1a \
 depends_build       port:python27
 depends_lib         path:lib/libssl.dylib:openssl port:zlib port:bzip2
 
-#worksrcdir          Botan-${version}
-#
-## From 1.11 on, Botan requires C++11
-#compilers.choose    cc cxx
-#compilers.setup     -gcc44 -gcc45 -gcc46 \
-#                    -clang33 -clang34 -clang35 \
-#                    -llvm -dragonegg33 -dragonegg34
-## compiler.setup does not set configure.compiler, but we need it
-## for proper archflags and to avoid weird fallbacks when blacklisting.
-#if {[info exists cdb([c_variant_name],compiler)]} {
-#    configure.compiler.add_deps no
-#    configure.compiler  $cdb([c_variant_name],compiler)
-#    compiler.blacklist  gcc-3.3 gcc-4.0 gcc-4.2 llvm-gcc-4.2 clang \
-#                        apple-gcc-4.0 apple-gcc-4.2 macports-llvm-gcc42
-#}
 configure.cmd       ${prefix}/bin/python2.7 ./configure.py
 configure.args      --docdir=share/doc --with-openssl --with-zlib --with-bzip2
 
