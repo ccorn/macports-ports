@@ -1,7 +1,6 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem      1.0
-#PortGroup       compilers 1.0
 PortGroup       compiler_blacklist_versions 1.0
 PortGroup       texlive 1.0
 PortGroup       cxx11 1.1
@@ -124,20 +123,6 @@ post-patch {
     reinplace "s|@@TEXMFSYSCONFIG@@|${texlive_texmfsysconfig}|" ${worksrcpath}/texk/kpathsea/paths.h
 }
 
-## dvisgm requires C++11 support
-#compilers.choose    cc cxx objc
-#compilers.setup     -gcc44 -gcc45 -gcc46 \
-#                    -clang33 -clang34 -clang35 \
-#                    -llvm -dragonegg33 -dragonegg34
-## compiler.setup does not set configure.compiler, but we need it
-## for proper archflags and to avoid weird fallbacks when blacklisting.
-#if {[info exists cdb([c_variant_name],compiler)]} {
-#    configure.compiler.add_deps no
-#    configure.compiler  $cdb([c_variant_name],compiler)
-#    compiler.blacklist  gcc-3.3 gcc-4.0 gcc-4.2 llvm-gcc-4.2 clang \
-#                        apple-gcc-4.0 apple-gcc-4.2 macports-llvm-gcc42
-#}
-#
 # We use MacPorts-provided libraries instead of the ones included in
 # texlive whenever possible, to avoid redundancy and to better keep
 # current with respect to security updates and the like.
