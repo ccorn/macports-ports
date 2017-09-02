@@ -1,12 +1,7 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem 1.0
-PortGroup           compilers 1.0
-PortGroup           muniversal 1.0
 PortGroup           qmake 1.0
-qt_arch_types
-merger_arch_flag    no
-merger_arch_compiler yes
 
 name                qscintilla
 
@@ -38,36 +33,13 @@ long_description    QScintilla is a port to Qt of Neil Hodgson's Scintilla C++ e
 distname            QScintilla_gpl-${version}
 master_sites        sourceforge:pyqt
 
-# C++11 required
-compilers.choose    cc cxx
-compilers.setup     -gcc44 -gcc45 -gcc46 \
-                    -clang33 -clang34 -clang35 \
-                    -llvm -dragonegg33 -dragonegg34
-# compiler.setup does not set configure.compiler, but we need it
-# for proper archflags and to avoid weird fallbacks when blacklisting.
-if {[info exists cdb([c_variant_name],compiler)]} {
-    configure.compiler.add_deps no
-    configure.compiler  $cdb([c_variant_name],compiler)
-    compiler.blacklist  gcc-3.3 gcc-4.0 gcc-4.2 llvm-gcc-4.2 clang \
-                        apple-gcc-4.0 apple-gcc-4.2 macports-llvm-gcc42
-}
-configure.universal_args-delete --disable-dependency-tracking
-configure.cxxflags-append   -std=c++11
-
 # fix up QMake .pro files for +debug, if selected; also fixed up the
 # library and header paths to include .. and ../Qt4 before others;
 # also, don't include qscintilla2 via CONFIG, instead do it directly
 # to avoid linking against an already-installed library.
 patchfiles-append   patch-add_debug.diff
 
-# enable C++11
-configure.cxxflags-append -std=c++11
-
-# set the correct stdlib for linking for older compilers.
-if {${configure.cxx_stdlib} eq "macports-libstdc++" ||
-    ${configure.cxx_stdlib} eq "libstdc++"} {
-    configure.ldflags-append -stdlib=macports-libstdc++
-}
+configure.cxxflags-append -DNO_CXX11_REGEX
 
 post-patch {
     # allow for universal and non-native building, if desired, by
@@ -103,13 +75,12 @@ post-patch {
         ${worksrcpath}/designer-Qt4Qt5/designer-Qt4Qt5.pro
 }
 
-# Ensure arch flags are not stripped off, using runtime vars for muniversal
-configure.post_args-append  \
-    && printf {'%s\n'} {"CC=\"$CC\""} {"CXX=\"$CXX\""} >TOOLS
-build.cmd   . TOOLS && ${build.cmd}
-build.args-append {CC="$CC"} {CXX="$CXX"} {LINK="$CXX"}
-# PortGroup qt4 vs muniversal: Need to set INSTALL_ROOT as well for destroot
-destroot.target-append {'INSTALL_ROOT=${DESTDIR}'}
+# allow ccache, if specified by the user
+pre-build {
+    if {[tbool configure.ccache]} {
+        build.post_args "CCACHE=ccache"
+    }
+}
 
 livecheck.type      regex
 livecheck.url       ${homepage}download
