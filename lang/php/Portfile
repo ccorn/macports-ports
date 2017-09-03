@@ -110,29 +110,29 @@ switch ${subport_branch} {
     }
     7.0 {
         epoch           2
-        version         7.0.22
+        version         7.0.23
         use_xz          yes
-        checksums       rmd160  92ffa127f6bf7d593dea193acc006b24e23ce9cf \
-                        sha256  408c3fbc235ec940433bfac1f3ed4bf797f61b4a1693b9fb0b6a04b2c1832501
+        checksums       rmd160  c6bfde6ec5683321cc5cd94b1784a1b55bec2138 \
+                        sha256  8e526e3551a58e00c8055fa4a72804aa1bd3ee1c0411b25bf1504cc4992609df
     }
     7.1 {
         epoch           2
-        version         7.1.8
+        version         7.1.9
         use_xz          yes
-        checksums       rmd160  121e1f0b6ef1051a612f58f9829e8fbfc3d02e06 \
-                        sha256  8943858738604acb33ecedb865d6c4051eeffe4e2d06f3a3c8f794daccaa2aab
+        checksums       rmd160  82f6731045a7090834be5f65eea90877973ffac0 \
+                        sha256  ec9ca348dd51f19a84dc5d33acfff1fba1f977300604bdac08ed46ae2c281e8c
     }
     7.2 {
         # When this becomes a stable version, remove the overrides for homepage,
         # master_sites and livecheck, and update php.latest_stable_branch in the
         # php-1.1 portgroup.
-        epoch           0
-        version         7.2.0beta3
+        epoch           1
+        version         7.2.0RC1
         homepage        https://qa.php.net/
         master_sites    https://downloads.php.net/~remi/
         use_xz          yes
-        checksums       rmd160  917cfd5aff352a85df53bd798df50a0d48462a8f \
-                        sha256  86ab60f96223768d2cb6b3669ce5d048ce904beccf532119aa02058e7cc9e498
+        checksums       rmd160  518cbe343a61bb89d3f37d39769f4602e6ad24ba \
+                        sha256  04f68d9accb60e56adecc34a80b84bde16edb255a13eef701ea2d6c2b13dc15b
         livecheck.url   ${homepage}
         livecheck.regex php-([strsed ${subport_branch} {g/\\./\\./}](?:\\.\[0-9.\]+)*(?:(?:alpha|beta|RC)\\d+|-latest))\\.tar
     }

@@ -5,7 +5,7 @@ PortGroup select 1.0
 PortGroup compiler_blacklist_versions 1.0
 
 name                gcc7
-subport             libgcc-devel {}
+#subport             libgcc-devel {}
 
 epoch               1
 version             7-20170622
