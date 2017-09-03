@@ -1,6 +1,10 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
+PortGroup           muniversal 1.0
+merger_arch_flag    no
+merger_arch_compiler yes
+PortGroup           cxx11 1.1
 
 name                gpgme
 version             1.9.0
@@ -34,6 +38,7 @@ depends_lib         port:pth \
                     port:libassuan
 
 depends_run         path:bin/gpg2:gnupg2
+depends_skip_archcheck-append pkgconfig gnupg2
 
 patchfiles          patch-configure.ac.diff \
                     patch-fixup-GpgmeppConfig.cmake.diff \
@@ -54,25 +59,13 @@ autoreconf.args     -fvi
 # gpgme Qt5 bindings will be handled in separate port
 # see https://trac.macports.org/ticket/53122
 
-lappend languages cl
+lappend languages cl cpp
 # quiet various implicit function declaration warnings
 # see /usr/include/sys/cdefs.h
 configure.cppflags-append -D_DARWIN_C_SOURCE
 
-# cpp bindings require libc++
-
-platform darwin {
-    if {${configure.cxx_stdlib} eq "libc++"} {
-        lappend languages cpp
-    }
-}
-
 configure.args      --enable-languages="${languages}" \
                     --enable-static
-
-post-configure {
-    reinplace "s|CC -dynamiclib|CC -dynamiclib [get_canonical_archflags]|g" ${worksrcpath}/libtool
-}
 
 test.run            yes
 test.target         check
