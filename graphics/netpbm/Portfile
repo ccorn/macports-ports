@@ -281,6 +281,7 @@ patchfiles-append    patch-python.diff
 if {${os.major} < 10} {
     # the system python is too old to run scripts
     depends_build-append port:python27
+    depends_skip_archcheck-append python27
     configure.python ${prefix}/bin/python2.7
 } else {
     configure.python /usr/bin/python
