@@ -46,6 +46,15 @@ license_noconflict  gmp mpfr ppl libmpc
 
 set major           [lindex [split ${version} .-] 0]
 
+platform darwin powerpc {
+    # Need this when linking with libs linked to native runtime libs
+    patchfiles-append         force-static-gcc.patch
+
+    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80865
+    # https://gcc.gnu.org/ml/gcc-testresults/2017-01/msg02971.html
+    patchfiles-append         patch-darwin-ppc-2017-01-msg02971.diff
+}
+
 platform darwin {
     configure.pre_args-append --build=${build_arch}-apple-darwin${os.major}
 
@@ -54,9 +63,6 @@ platform darwin {
     # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81033
     patchfiles-append         patch-249926-darwin.c.diff 
     patchfiles-append         patch-81033-8-darwin.c.diff
-    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80865
-    # https://gcc.gnu.org/ml/gcc-testresults/2017-01/msg02971.html
-    patchfiles-append         patch-darwin-ppc-2017-01-msg02971.diff
 }
 
 configure.dir       ${workpath}/build
