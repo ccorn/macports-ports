@@ -10,7 +10,7 @@
    /* Make sure we pick up all the relevant quotes etc.  */
 -  assemble_name_raw (fp, (const char *) buf);
 +  assemble_name_raw (fp, new_is_cold ? "__cold_sect_of_" : "__hot_sect_of_");
-+  assemble_name_raw (fp, IDENTIFIER_POINTER (DECL_ASSEMBLER_NAME (decl)));
++  assemble_name_raw (fp, IDENTIFIER_POINTER (DECL_NAME (decl)));
    fputs (":\n", fp);
  }
  

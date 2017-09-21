@@ -47,9 +47,6 @@ license_noconflict  gmp mpfr ppl libmpc
 set major           [lindex [split ${version} .-] 0]
 
 platform darwin powerpc {
-    # Need this when linking with libs linked to native runtime libs
-    patchfiles-append         force-static-gcc.patch
-
     # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80865
     # https://gcc.gnu.org/ml/gcc-testresults/2017-01/msg02971.html
     patchfiles-append         patch-darwin-ppc-2017-01-msg02971.diff
@@ -61,7 +58,7 @@ platform darwin {
     # see https://gcc.gnu.org/ml/gcc-patches/2012-05/msg00672.html
     patchfiles-append         patch-float128.diff
     # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81033
-    patchfiles-append         patch-249926-darwin.c.diff 
+    patchfiles-append         patch-249926conservative-darwin.c.diff 
     patchfiles-append         patch-81033-8-darwin.c.diff
 }
 
@@ -266,6 +263,24 @@ select.file         ${filespath}/mp-${name}
 
 }
 
+# There may be incompatibilities between the native C++ runtime
+# and the newer g++ runtimes, particularly related to exception handling.
+# Use one or both of +defaultabi4 and +staticlibgcc.
+# The first tries to establish compatibility with older ABIs,
+# the second tries to make both ABIs coexist peacefully.
+variant defaultabi4 description "Use gcc4 compatible ABI" {
+    configure.args-append --with-default-libstdcxx-abi=gcc4-compatible
+}
+variant staticlibgcc description {Always use -static-libgcc to prevent ABI clashes} {
+    patchfiles-append   force-static-gcc.patch
+}
+platform darwin {
+    if {${os.major} < 13} {
+        if {![variant_isset staticlibgcc]} {
+            default_variants +defaultabi4
+        }
+    }
+}
 platform powerpc {
     configure.universal_archs ppc ppc64
 }
