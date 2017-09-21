@@ -1,9 +1,10 @@
+# $Id: Portfile 95107 2012-07-05 20:50:09Z mww@macports.org $
+
 PortSystem          1.0
 PortGroup           python 1.0
-
 name                mixminion
-version             0.0.7.1
-revision            1
+version             0.0.8alpha3
+revision            4
 categories          mail
 license             {LGPL-2.1 OpenSSLException}
 maintainers         nomaintainer
@@ -15,10 +16,10 @@ long_description \
 platforms           darwin
 
 homepage            http://mixminion.net/
-master_sites        ${homepage}dist/
+master_sites        ${homepage}dist/${version}
 distname            Mixminion-${version}
 
-checksums           md5 a7ee96a22dd6246760556fa959a37380
+checksums           sha1 543235e96ccde34e2db20fe79aad32412db3ccac
 
 python.default_version  27
 
@@ -30,3 +31,4 @@ post-destroot {
       }
    }
 }
+
