@@ -9,6 +9,7 @@ subport             libgcc6 {}
 
 epoch               2
 version             6.4.0
+revision            1
 platforms           darwin
 categories          lang
 maintainers         nomaintainer
@@ -43,8 +44,6 @@ depends_lib         port:cctools \
 depends_skip_archcheck-append gcc_select ld64 cctools
 license_noconflict  gmp mpfr ppl libmpc
 
-patchfiles-append   force-static-gcc.patch
-
 set major           [lindex [split ${version} .-] 0]
 
 platform darwin {
@@ -52,6 +51,9 @@ platform darwin {
 
     # see https://gcc.gnu.org/ml/gcc-patches/2012-05/msg00672.html
     patchfiles-append         patch-float128.diff
+    # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81033
+    patchfiles-append         patch-249926conservative-darwin.c.diff 
+    patchfiles-append         patch-81033-8-darwin.c.diff
 }
 
 configure.dir       ${workpath}/build
@@ -252,6 +254,24 @@ select.file         ${filespath}/mp-${name}
 
 }
 
+# There may be incompatibilities between the native C++ runtime
+# and the newer g++ runtimes, particularly related to exception handling.
+# Use one or both of +defaultabi4 and +staticlibgcc.
+# The first tries to establish compatibility with older ABIs,
+# the second tries to make both ABIs coexist peacefully.
+variant defaultabi4 description "Use gcc4 compatible ABI" {
+    configure.args-append --with-default-libstdcxx-abi=gcc4-compatible
+}
+variant staticlibgcc description {Always use -static-libgcc to prevent ABI clashes} {
+    patchfiles-append   force-static-gcc.patch
+}
+platform darwin {
+    if {${os.major} < 13} {
+        if {![variant_isset staticlibgcc]} {
+            default_variants +defaultabi4
+        }
+    }
+}
 platform powerpc {
     configure.universal_archs ppc ppc64
 }
@@ -268,8 +288,7 @@ configure.env-append \
 build.env-append \
     CPP="${configure.cc} -E" \
     CXXCPP="${configure.cxx} -E"
-# Do not add multi-archflags to the stage1 compiler, that breaks the build
-#configure.cc-append [get_canonical_archflags]
+configure.cc-append [get_canonical_archflags]
 configure.cc_archflags
 configure.cxx-append ${configure.cxx_archflags}
 configure.cxx_archflags
