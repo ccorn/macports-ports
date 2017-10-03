@@ -8,7 +8,7 @@ name                gcc49
 
 epoch               2
 version             4.9.4
-revision            2
+revision            3
 platforms           darwin
 categories          lang
 maintainers         nomaintainer
@@ -45,8 +45,6 @@ depends_run         port:gcc_select \
 
 depends_skip_archcheck-append gcc_select ld64 cctools
 license_noconflict  gmp mpfr ppl libmpc
-
-patchfiles-append   force-static-gcc.patch
 
 # Handle OS X deployment targets correctly (GCC PR target/63810
 # <https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63810>).
@@ -205,6 +203,24 @@ post-destroot {
 select.group        gcc
 select.file         ${filespath}/mp-${name}
 
+# There may be incompatibilities between the native C++ runtime
+# and the newer g++ runtimes, particularly related to exception handling.
+# Use one or both of +defaultabi4 and +staticlibgcc.
+# The first tries to establish compatibility with older ABIs,
+# the second tries to make both ABIs coexist peacefully.
+variant defaultabi4 description "Use gcc4 compatible ABI" {
+    configure.args-append --with-default-libstdcxx-abi=gcc4-compatible
+}
+variant staticlibgcc description {Always use -static-libgcc to prevent ABI clashes} {
+    patchfiles-append   force-static-gcc.patch
+}
+platform darwin {
+    if {${os.major} < 13} {
+        if {![variant_isset staticlibgcc]} {
+            default_variants +defaultabi4
+        }
+    }
+}
 platform powerpc {
     configure.universal_archs ppc ppc64
 }
