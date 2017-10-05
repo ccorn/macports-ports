@@ -50,8 +50,9 @@ platform darwin powerpc {
     # https://trac.macports.org/ticket/54215
     # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80865
     # https://gcc.gnu.org/ml/gcc-testresults/2017-01/msg02971.html
-    # Only patch 2 needed
+    # Only patch 2 needed, patch 3 is nice, patch 4 is for Ada only.
     patchfiles-append         patch-darwin-ppc-remove-lr-use.diff
+    patchfiles-append         patch-darwin-ppc-longjmp-noreturn.diff
 }
 
 platform darwin {
