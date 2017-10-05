@@ -47,9 +47,11 @@ license_noconflict  gmp mpfr ppl libmpc
 set major           [lindex [split ${version} .-] 0]
 
 platform darwin powerpc {
+    # https://trac.macports.org/ticket/54215
     # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80865
     # https://gcc.gnu.org/ml/gcc-testresults/2017-01/msg02971.html
-    patchfiles-append         patch-darwin-ppc-2017-01-msg02971.diff
+    # Only patch 2 needed
+    patchfiles-append         patch-darwin-ppc-remove-lr-use.diff
 }
 
 platform darwin {

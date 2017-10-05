@@ -1,0 +1,50 @@
+From 7abddda25c5d3ee568cd72477cfca89a1b3baceb Mon Sep 17 00:00:00 2001
+From: Iain Sandoe <iain@codesourcery.com>
+Date: Sun, 27 Nov 2016 15:48:23 +0000
+Subject: [PATCH 3/4] [Darwin PPC] Fix Fortran bootstrap by fixing ppc/setjmp.h
+
+Earlier Darwin headers do not declare longjmp as noreturn, this was
+already fixed for i386, but also affects the powerpc port.
+
+2016-11-27  Iain Sandoe  <iain@codesourcery.com>
+
+	PR bootstrap/72833
+	* inclhack.def (darwin_longjmp_noreturn): Amend to add ppc.
+	* fixincl.x: Regenerated.
+---
+ fixincludes/fixincl.x    | 10 +++++-----
+ fixincludes/inclhack.def |  3 ++-
+ 2 files changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/fixincludes/fixincl.x b/fixincludes/fixincl.x
+index 6a010d6..8567828 100644
+--- fixincludes/fixincl.x
++++ fixincludes/fixincl.x
+@@ -2753,7 +2753,7 @@ tSCC zDarwin_Longjmp_NoreturnName[] =
+  *  File name selection pattern
+  */
+ tSCC zDarwin_Longjmp_NoreturnList[] =
+-  "i386/setjmp.h\0";
++  "i386/setjmp.h\0ppc/setjmp.h\0";
+ /*
+  *  Machine/OS name selection pattern
+  */
+diff --git a/fixincludes/inclhack.def b/fixincludes/inclhack.def
+index 03a267b..6cf056c 100644
+--- fixincludes/inclhack.def
++++ fixincludes/inclhack.def
+@@ -1421,12 +1421,13 @@ fix = {
+ };
+ 
+ /*
+- *  Before Mac OS X 10.8 <i386/setjmp.h> doesn't mark longjump noreturn.
++ *  Before Mac OS X 10.8 <{i386,ppc}/setjmp.h> don't mark longjump noreturn.
+  */
+ fix = {
+     hackname  = darwin_longjmp_noreturn;
+     mach      = "*-*-darwin*";
+     files     = "i386/setjmp.h";
++    files     = "ppc/setjmp.h";
+     bypass    = "__dead2";
+     select    = "(.*longjmp\\(.*jmp_buf.*[^)]+\\));";
+     c_fix     = format;

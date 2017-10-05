@@ -1,0 +1,50 @@
+From 8bcf01a06f997580088a8a7d69ce16b881187dfb Mon Sep 17 00:00:00 2001
+From: Iain Sandoe <iain@codesourcery.com>
+Date: Wed, 31 Aug 2016 19:45:18 +0100
+Subject: [PATCH 2/4] [Darwin,PPC] Remove uses of LR in restore_world.
+
+r 239866 removed most of the uses of LR in returns and subclass
+
+Darwin had an additional use of LR in the restore_world machinery.  This patch removes it from the pattern in altivec.md and the relevant predicate.
+
+2016-12-11  Iain Sandoe  <iain@codesourcery.com>
+
+	* config/rs6000/altivec.md (*restore_world): Remove LR use.
+	* config/rs6000/predicates.md (restore_world_operation): Adjust op
+	count, remove one USE.
+---
+ gcc/config/rs6000/altivec.md    | 1 -
+ gcc/config/rs6000/predicates.md | 3 +--
+ 2 files changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/gcc/config/rs6000/altivec.md b/gcc/config/rs6000/altivec.md
+index 8af7ac5..60fc983 100644
+--- gcc/config/rs6000/altivec.md
++++ gcc/config/rs6000/altivec.md
+@@ -414,7 +414,6 @@
+ (define_insn "*restore_world"
+  [(match_parallel 0 "restore_world_operation"
+                   [(return)
+-		   (use (reg:SI LR_REGNO))
+                    (use (match_operand:SI 1 "call_operand" "s"))
+                    (clobber (match_operand:SI 2 "gpc_reg_operand" "=r"))])]
+  "TARGET_MACHO && (DEFAULT_ABI == ABI_DARWIN) && TARGET_32BIT"
+diff --git a/gcc/config/rs6000/predicates.md b/gcc/config/rs6000/predicates.md
+index 3d69fc8..8f568a7 100644
+--- gcc/config/rs6000/predicates.md
++++ gcc/config/rs6000/predicates.md
+@@ -1468,13 +1468,12 @@
+   rtx elt;
+   int count = XVECLEN (op, 0);
+ 
+-  if (count != 59)
++  if (count != 58)
+     return 0;
+ 
+   index = 0;
+   if (GET_CODE (XVECEXP (op, 0, index++)) != RETURN
+       || GET_CODE (XVECEXP (op, 0, index++)) != USE
+-      || GET_CODE (XVECEXP (op, 0, index++)) != USE
+       || GET_CODE (XVECEXP (op, 0, index++)) != CLOBBER)
+     return 0;
+ 
