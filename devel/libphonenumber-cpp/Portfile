@@ -6,7 +6,7 @@ PortGroup           github 1.0
 
 cmake.out_of_source yes
 
-github.setup        googlei18n libphonenumber 8.8.0 v
+github.setup        googlei18n libphonenumber 8.8.2 v
 
 name                libphonenumber-cpp
 license             Apache-2
@@ -17,8 +17,8 @@ maintainers         {devans @dbevans} openmaintainer
 categories          devel
 platforms           darwin
 
-checksums           rmd160  193c1a020c2d32b914c7e980cf54bc6c3a1e5f29 \
-                    sha256  924af599c441237e7f03373e9ca210ccf6b0ad6f7852fb100902fb364933b77d
+checksums           rmd160  d6b4bd80db4ef878492ed92cf778a9e949ae18f8 \
+                    sha256  411e11d4f0b1d26169688edc3badd75a998633ac3d4cedc1133834cf40d48cc4
 
 dist_subdir         ${name}/${version}_1
 worksrcdir          ${worksrcdir}/cpp

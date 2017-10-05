@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                certbot-apache
-version             0.17.0
+version             0.18.2
 categories          security
 license             Apache-2
 maintainers         {mps @Schamschula} openmaintainer
@@ -16,8 +16,8 @@ master_sites        pypi:c/certbot-apache
 
 python.versions     27
 
-checksums           rmd160  afa5294ffda4d830329704ec016fb714cf9a7ab1 \
-                    sha256  29b9e7bc5eaaff6dc4bce8398e35eeacdf346126aad68cac3d41bb87df20a6b9
+checksums           rmd160  68e8fca64c5bc9b29616cb441c0a67c3b7c3a57d \
+                    sha256  07856f49db28593eb58ed970da2f6520b0d0d7402ac7757a5ea41fcb6a24a9ea
 
 depends_lib-append  port:certbot \
                     port:py${python.version}-acme \

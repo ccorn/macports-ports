@@ -5,7 +5,7 @@ PortGroup select 1.0
 PortGroup compiler_blacklist_versions 1.0
 
 name                gcc7
-subport             libgcc {}
+subport             libgcc { revision 1 }
 
 epoch               2
 version             7.2.0
@@ -50,8 +50,9 @@ platform darwin powerpc {
     # https://trac.macports.org/ticket/54215
     # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80865
     # https://gcc.gnu.org/ml/gcc-testresults/2017-01/msg02971.html
-    # Only patch 2 needed, patch 3 is nice, patch 4 is for Ada only.
+    # Patch 1 fails tests, patch 2 makes the build succeed.
     patchfiles-append         patch-darwin-ppc-remove-lr-use.diff
+    # Patch 3 seems reasonable, patch 4 is for Ada only.
     patchfiles-append         patch-darwin-ppc-longjmp-noreturn.diff
 }
 
@@ -147,7 +148,15 @@ configure.cxx_stdlib
 
 build.dir           ${configure.dir}
 build.target        bootstrap-lean
-use_parallel_build  yes
+
+# Temporary fix to disable parallel builds on macOS 10.13
+# See https://trac.macports.org/ticket/54829
+#     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81797
+if { ${os.major} < 17 } {
+    use_parallel_build yes
+} else {
+    use_parallel_build no
+}
 
 destroot.target     install install-info-host
 
@@ -168,8 +177,18 @@ if {${subport} eq "libgcc"} {
 
     depends_lib-delete path:lib/libgcc/libgcc_s.1.dylib:libgcc
 
-    configure.args-delete --libdir=${prefix}/lib/${name}
-    configure.args-append --libdir=${prefix}/lib/libgcc
+    configure.args-replace \
+        --libdir=${prefix}/lib/${name} \
+        --libdir=${prefix}/lib/libgcc
+
+    # see https://trac.macports.org/ticket/54766
+    configure.args-replace \
+        --includedir=${prefix}/include/${name} \
+        --includedir=${prefix}/include/gcc
+
+    configure.args-replace \
+        --with-gxx-include-dir=${prefix}/include/${name}/c++/ \
+        --with-gxx-include-dir=${prefix}/include/gcc/c++/
 
     # TODO: Possibly disable bootstrap with appropriate configure flags.
     #       the problem is that libstdc++'s configure script tests for tls support
@@ -219,7 +238,6 @@ if {${subport} eq "libgcc"} {
 
         file delete -force ${destroot}${prefix}/bin
         file delete -force ${destroot}${prefix}/share
-        file delete -force ${destroot}${prefix}/include
         file delete -force ${destroot}${prefix}/lib/libgcc
         file delete -force ${destroot}${prefix}/libexec
 

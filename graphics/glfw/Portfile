@@ -6,7 +6,7 @@ PortGroup           github 1.0
 
 name                glfw
 categories          graphics
-maintainers         michaelld openmaintainer
+maintainers         {michaelld @michaelld} openmaintainer
 description         GLFW is a free, open-source, portable library for OpenGL and OpenGL ES application development
 license             zlib
 platforms           darwin macosx
@@ -60,10 +60,10 @@ platform darwin {
 
             # devel
 
-            github.setup    glfw glfw d80d4be0307d52d7add69f9a995a34325a9dfe1c
-            version         20170828
-            checksums       rmd160 f085f0b5c05c2a839669b7fd30777fb23a8cdd3f \
-                            sha256 d91f75bdfc98c2ab11973a7f8445bf01e2a5739a2e851f280aa631858b8c6074
+            github.setup    glfw glfw 32e78aeb2edb5cb5add36ae575fc914f6c4fc7e5
+            version         20170919
+            checksums       rmd160 e3c2ffa74fcd35f06baa7b072a82f0b1ae3e2f56 \
+                            sha256 14e2d5c511bd3159688b085e04b04f572505928c87f137d03eab92935466cedd
 
             conflicts       glfw
             long_description ${description}: \

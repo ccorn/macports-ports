@@ -4,6 +4,7 @@ PortSystem          1.0
 
 name                libunistring
 version             0.9.7
+revision            1
 categories          textproc
 platforms           darwin
 license             GPL-3

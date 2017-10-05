@@ -5,7 +5,8 @@ PortGroup           cmake 1.0
 PortGroup           cxx11 1.0
 
 name                gmic
-version             2.0.3
+version             2.0.4
+revision            2
 license             CeCILL
 categories          science
 platforms           darwin
@@ -31,8 +32,11 @@ use_parallel_build  no
 
 distfiles           ${name}_${version}${extract.suffix}
 
-checksums           rmd160  3379b634bb64d848f0850256f688a4b189d56cb5 \
-                    sha256  b1f65aba4aa76bdf6da1ad923018de6844f5b76f9974978b4b12be108f87261e
+# stealth update
+dist_subdir         ${name}/${version}_2
+
+checksums           rmd160  08845fb2f17cb3f85e84c73edafb98173ad9787d \
+                    sha256  d2f9cb362668b1905c62d57a6fb73c15974841961c58c250a568854c0e4c9e55
 
 depends_build-append \
                     port:pkgconfig

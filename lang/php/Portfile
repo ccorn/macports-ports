@@ -110,29 +110,29 @@ switch ${subport_branch} {
     }
     7.0 {
         epoch           2
-        version         7.0.23
+        version         7.0.24
         use_xz          yes
-        checksums       rmd160  c6bfde6ec5683321cc5cd94b1784a1b55bec2138 \
-                        sha256  8e526e3551a58e00c8055fa4a72804aa1bd3ee1c0411b25bf1504cc4992609df
+        checksums       rmd160  ba6ceb57c8829de19bc44193c786d7a3887a9b2a \
+                        sha256  4dba7aa365193c9229f89f1975fad4c01135d29922a338ffb4a27e840d6f1c98
     }
     7.1 {
         epoch           2
-        version         7.1.9
+        version         7.1.10
         use_xz          yes
-        checksums       rmd160  82f6731045a7090834be5f65eea90877973ffac0 \
-                        sha256  ec9ca348dd51f19a84dc5d33acfff1fba1f977300604bdac08ed46ae2c281e8c
+        checksums       rmd160  9333e9980f5a742cda6abecc86f39bc4b79e674d \
+                        sha256  2b8efa771a2ead0bb3ae67b530ca505b5b286adc873cca9ce97a6e1d6815c50b
     }
     7.2 {
         # When this becomes a stable version, remove the overrides for homepage,
         # master_sites and livecheck, and update php.latest_stable_branch in the
         # php-1.1 portgroup.
         epoch           1
-        version         7.2.0RC1
+        version         7.2.0RC3
         homepage        https://qa.php.net/
         master_sites    https://downloads.php.net/~remi/
         use_xz          yes
-        checksums       rmd160  518cbe343a61bb89d3f37d39769f4602e6ad24ba \
-                        sha256  04f68d9accb60e56adecc34a80b84bde16edb255a13eef701ea2d6c2b13dc15b
+        checksums       rmd160  43aacc4bedd14feb560370706d9affa308d5d86d \
+                        sha256  abe0a237f94837854f2cfd9c7dc99fbca2c817ae1d6194a514f29b463db36853
         livecheck.url   ${homepage}
         livecheck.regex php-([strsed ${subport_branch} {g/\\./\\./}](?:\\.\[0-9.\]+)*(?:(?:alpha|beta|RC)\\d+|-latest))\\.tar
     }
@@ -177,7 +177,7 @@ if {[is_sapi_subport]} {
     # Use -p1 to accommodate the Suhosin patch
     patch.pre_args      -p1
     patchfiles          patch-${php}-scripts-php-config.in.diff
-    
+
     if {[vercmp ${branch} 5.2] <= 0} {
         patchfiles-append \
                         patch-${php}-libxml-2.9.diff \
@@ -1161,7 +1161,7 @@ subport ${php}-postgresql {
     }
     
     if {![variant_isset postgresql82] && ![variant_isset postgresql83] && ![variant_isset postgresql84] && ![variant_isset postgresql90] && ![variant_isset postgresql91] && ![variant_isset postgresql92] && ![variant_isset postgresql93] && ![variant_isset postgresql94] && ![variant_isset postgresql95] && ![variant_isset postgresql96]} {
-        default_variants +postgresql95
+        default_variants +postgresql96
     }
 }
 

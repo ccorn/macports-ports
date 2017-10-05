@@ -135,7 +135,15 @@ configure.cxx_stdlib
 
 build.dir           ${configure.dir}
 build.target        bootstrap-lean
-use_parallel_build  yes
+
+# Temporary fix to disable parallel builds on macOS 10.13
+# See https://trac.macports.org/ticket/54829
+#     https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81797
+if { ${os.major} < 17 } {
+    use_parallel_build yes
+} else {
+    use_parallel_build no
+}
 
 destroot.target     install install-info-host
 
@@ -156,8 +164,9 @@ if {${subport} eq "libgcc-devel"} {
 
     depends_lib-delete port:libgcc-devel
 
-    configure.args-delete --libdir=${prefix}/lib/${name}
-    configure.args-append --libdir=${prefix}/lib/libgcc
+    configure.args-replace \
+        --libdir=${prefix}/lib/${name} \
+        --libdir=${prefix}/lib/libgcc
 
     # TODO: Possibly disable bootstrap with appropriate configure flags.
     #       the problem is that libstdc++'s configure script tests for tls support

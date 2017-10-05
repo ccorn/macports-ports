@@ -12,8 +12,8 @@ set llvm_version_no_dot 50
 set clang_executable_version 5.0
 set lldb_executable_version 5.0.0
 name                    llvm-${llvm_version}
-revision                0
-subport                 clang-${llvm_version} { revision 2 }
+revision                1
+subport                 clang-${llvm_version} { revision 3 }
 subport                 lldb-${llvm_version} {}
 set suffix              mp-${llvm_version}
 set sub_prefix          ${prefix}/libexec/llvm-${llvm_version}
@@ -97,10 +97,10 @@ if {${subport} eq "llvm-${llvm_version}"} {
 #default_variants-append +assertions
 #default_variants-append +debug
 
-version                 ${llvm_version}.0rc2
-epoch                   1
-#master_sites            http://llvm.org/releases/${version}
-master_sites             http://prereleases.llvm.org/${llvm_version}.0/rc2
+version                 ${llvm_version}.0
+epoch                   2
+master_sites            http://llvm.org/releases/${version}
+#master_sites             http://prereleases.llvm.org/${llvm_version}.0/rc4
 use_xz                  yes
 extract.suffix          .tar.xz
 distfiles               llvm-${version}.src${extract.suffix}
@@ -118,27 +118,27 @@ if {${distfiles} ne ""} {
     }
 }
 
-checksums           llvm-5.0.0rc2.src.tar.xz \
-                    rmd160  f4f12d04c0a8bda7aaefaff0c7ebda61bb64fe7c \
-                    sha256  14442c8f5583c0aa5dcf73809828f9be57fedeb2191b00a8bd706a2954d19468 \
-                    cfe-5.0.0rc2.src.tar.xz \
-                    rmd160  739debf47e7ec82915de32a920142acc05d10568 \
-                    sha256  879548d82be18fa74658005bc1740c47e4432d767b79beb4d3aa2f27c0584eaa \
-                    compiler-rt-5.0.0rc2.src.tar.xz \
-                    rmd160  24499b29d4a1d454f8bbd04bb4792f1adff42f5f \
-                    sha256  646544492cc5b5ee4c3f28321efc4bab2a70257e073229fc4fa5336d1c18371e \
-                    libcxx-5.0.0rc2.src.tar.xz \
-                    rmd160  c26faffe7b22e7851c600b11761e6e5990213405 \
-                    sha256  9638910b17637d276baefc6ee2e2bf79d68e937c8a8c23adbd6207a3b8c1b655 \
-                    clang-tools-extra-5.0.0rc2.src.tar.xz \
-                    rmd160  7eeb8df0827ef650406a9c4c182242bb4ec6ad8a \
-                    sha256  f93deb98033387735eedff6550a16074fae18909e59c2698faf1166bc1942889 \
-                    lldb-5.0.0rc2.src.tar.xz \
-                    rmd160  2dcb728416e9eaaf83b042bae0f456494e0843aa \
-                    sha256  367b24d263d2899646527ed6fcfae271dc521cf247b2b8c861d03b74aea68092 \
-                    polly-5.0.0rc2.src.tar.xz \
-                    rmd160  1c446dfb4383c600791223606abb2b6ee45273b1 \
-                    sha256  9a2b9e073748357404f38964fcdf8c6b2fb44210d60e2aabb93373aa494965dd
+checksums           llvm-5.0.0.src.tar.xz \
+                    rmd160  849075e32e6aa5e38c2e9a7108803e745c0ed0fc \
+                    sha256  e35dcbae6084adcf4abb32514127c5eabd7d63b733852ccdb31e06f1373136da \
+                    cfe-5.0.0.src.tar.xz \
+                    rmd160  743f1b22554c984c07798bfdbed36d429fb6ae08 \
+                    sha256  019f23c2192df793ac746595e94a403908749f8e0c484b403476d2611dd20970 \
+                    compiler-rt-5.0.0.src.tar.xz \
+                    rmd160  5adedd0f4dfe7ddb0bedef427007f2e8c5855a62 \
+                    sha256  d5ad5266462134a482b381f1f8115b6cad3473741b3bb7d1acc7f69fd0f0c0b3 \
+                    libcxx-5.0.0.src.tar.xz \
+                    rmd160  93f5e85fe33e75c82dafbb2a9e5a2be315fdc798 \
+                    sha256  eae5981e9a21ef0decfcac80a1af584ddb064a32805f95a57c7c83a5eb28c9b1 \
+                    clang-tools-extra-5.0.0.src.tar.xz \
+                    rmd160  45b70caea7cf718571b07aee1448a7dbd8ef4f9e \
+                    sha256  87d078b959c4a6e5ff9fd137c2f477cadb1245f93812512996f73986a6d973c6 \
+                    lldb-5.0.0.src.tar.xz \
+                    rmd160  95527bacf127bec8ea034033c1e9498452c7573d \
+                    sha256  c0a0ca32105e9881d86b7ca886220147e686edc97fdb9f3657c6659dc6568b7d \
+                    polly-5.0.0.src.tar.xz \
+                    rmd160  f9e13c9c8120db4133e9b6937730da09c8dcb9c6 \
+                    sha256  44694254a2b105cec13ce0560f207e8552e6116c181b8d21bda728559cf67042
 
 patch.pre_args  -p1
 patchfiles \
@@ -551,12 +551,11 @@ if {${subport} eq "llvm-${llvm_version}"} {
     }
 
     variant libstdcxx description {-stdlib=macports-libstdc++ searches for MacPorts libstdc++} {
-        depends_lib-append port:gcc6
 
         patchfiles-append 9001-macports-libstdcxx.diff
 
         post-patch {
-            reinplace "s|@@MACPORTS_GCC_INCLUDE_DIR@@|${prefix}/include/gcc6/c++|g" \
+            reinplace "s|@@MACPORTS_GCC_INCLUDE_DIR@@|${prefix}/include/gcc/c++|g" \
                 ${worksrcpath}/tools/clang/lib/Frontend/InitHeaderSearch.cpp
             reinplace "s|@@MACPORTS_HOST_NAME@@|${build_arch}-apple-darwin${os.major}|g" \
                 ${worksrcpath}/tools/clang/lib/Frontend/InitHeaderSearch.cpp

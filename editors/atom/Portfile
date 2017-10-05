@@ -1,0 +1,37 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           github 1.0
+
+github.setup        atom atom 1.20.1 v
+categories          editors
+platforms           darwin
+license             MIT
+maintainers         {khindenburg @kurthindenburg} openmaintainer
+
+description         The hackable text editor
+long_description    ${description}
+
+homepage            https://atom.io
+
+checksums           rmd160  7a5143f6bff8534094a1a07f3d61d77201df5449 \
+                    sha256  65ec936ccbc5302b36669b0f72cf38f44b6de990d6f1271ee3e90fb54a2106c3
+
+depends_lib-append  path:bin/npm:npm5 \
+                    port:git \
+                    port:python27
+
+use_configure       no
+build.cmd           script/build
+build.env-append    CC="${configure.cc} [get_canonical_archflags cc]" \
+                    CXX="${configure.cxx} [get_canonical_archflags cxx]" \
+                    PYTHON="${prefix}/bin/python2.7"
+build.target-delete all
+
+universal_variant   no
+
+destroot {
+    file copy ${worksrcpath}/out/Atom.app ${destroot}${applications_dir}/Atom.app
+}
+
+livecheck.regex     {archive/v([0-9.]+).tar.gz}

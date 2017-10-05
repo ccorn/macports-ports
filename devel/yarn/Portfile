@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        yarnpkg yarn 0.27.5 v
+github.setup        yarnpkg yarn 1.1.0 v
 
 categories          devel
 
@@ -26,9 +26,8 @@ homepage            https://yarnpkg.com/
 
 github.tarball_from releases
 distname            ${name}-${git.branch}
-worksrcdir          dist
-checksums           rmd160  5e0c2c4b223a89d99cfc2e21ffb1d7d7b9df3850 \
-                    sha256  f0f3510246ee74eb660ea06930dcded7b684eac2593aa979a7add84b72517968
+checksums           rmd160  78c8bec2ed2f2184abe3e584433c2c01d2f7e836 \
+                    sha256  171c1f9ee93c488c0d774ac6e9c72649047c3f896277d88d0f805266519430f3
 
 depends_run         path:bin/node:nodejs6
 
