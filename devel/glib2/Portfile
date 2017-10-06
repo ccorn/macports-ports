@@ -156,7 +156,8 @@ platform darwin {
 if {${os.platform} eq "darwin" && ${os.major} <= 10} {
     # Requires python 2.7 as of 2.53.4
     # See https://bugzilla.gnome.org/show_bug.cgi?id=785193
-    depends_lib-append      port:python27
+    depends_build-append    port:python27
+    depends_skip_archcheck-append python27
     configure.python        ${prefix}/bin/python2.7
 }
 
