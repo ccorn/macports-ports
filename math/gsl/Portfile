@@ -2,6 +2,7 @@
 
 PortSystem          1.0
 PortGroup           compilers 1.0
+PortGroup           muniversal 1.0
 
 name                gsl
 version             2.4
@@ -37,6 +38,13 @@ post-activate    {
 
 compilers.choose    cc
 compilers.setup     -dragonegg
+# compiler.setup does not set configure.compiler, but we need it
+# for proper archflags and to avoid weird fallbacks when blacklisting.
+if {[info exists cdb([c_variant_name],compiler)]} {
+    configure.compiler.add_deps no
+    configure.compiler  $cdb([c_variant_name],compiler)
+    compiler.blacklist  dragonegg
+}
 
 if {[variant_isset doc_python27]} { set PythonVersion 27 }
 if {[variant_isset doc_python35]} { set PythonVersion 35 }
