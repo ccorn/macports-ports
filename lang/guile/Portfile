@@ -65,17 +65,6 @@ depends_lib         port:readline \
 # guile-config is a wrapper around pkg-config
 depends_lib-append  port:pkgconfig
 
-compilers.choose
-compilers.setup
-# compiler.setup does not set configure.compiler, but we need it
-# for proper archflags and to avoid weird fallbacks when blacklisting.
-if {[info exists cdb([c_variant_name],compiler)]} {
-    configure.compiler.add_deps no
-    configure.compiler  $cdb([c_variant_name],compiler)
-    compiler.blacklist  gcc-3.3 gcc-4.0 gcc-4.2 llvm-gcc-4.2 \
-                        apple-gcc-4.0 apple-gcc-4.2 macports-llvm-gcc42
-}
-
 configure.args      CPPFLAGS="-I${prefix}/include" \
                     LDFLAGS="-L${prefix}/lib" \
                     CPP="\$CC -E" \
