@@ -1,5 +1,5 @@
---- src/_macosx.m.orig	2015-11-29 10:44:55.000000000 -0700
-+++ src/_macosx.m	2015-11-29 11:02:16.000000000 -0700
+--- src/_macosx.m.orig	2017-10-03 08:50:44.000000000 +0200
++++ src/_macosx.m	2017-10-10 12:40:29.000000000 +0200
 @@ -1,5 +1,8 @@
  #include <Cocoa/Cocoa.h>
  #include <ApplicationServices/ApplicationServices.h>
@@ -8,4 +8,14 @@
 +#endif
  #include <sys/socket.h>
  #include <Python.h>
- #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+ 
+@@ -1319,7 +1322,8 @@ NavigationToolbar_get_active (Navigation
+     }
+     Py_ssize_t list_index = 0;
+     PyObject* list = PyList_New(m);
+-    for (size_t state_index = 0; state_index < n; state_index++)
++    size_t state_index;
++    for (state_index = 0; state_index < n; state_index++)
+     {
+         if(states[state_index]==1)
+         {
