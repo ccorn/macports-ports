@@ -27,4 +27,10 @@ homepage            http://www.blosc.org/
 checksums           rmd160  c74700a6245c7ca1a2c3b9bb4538a819fbc59b60 \
                     sha256  c5289124f5c4aadeb112351075c98ff2dc8e5b8a84602ab04769254c8736dc4b
 
+platform darwin {
+    if {${os.major} < 10} {
+        patchfiles-append   patch-posix-memalign.diff
+    }
+}
+
 cmake.out_of_source yes
