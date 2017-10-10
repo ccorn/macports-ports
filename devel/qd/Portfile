@@ -2,6 +2,7 @@
 
 PortSystem 1.0
 PortGroup           compilers 1.0
+PortGroup           muniversal 1.0
 
 name                qd
 version             2.3.17
@@ -26,6 +27,12 @@ master_sites    ${homepage}
 
 compilers.choose    cxx fc
 compilers.setup     -dragonegg -gfortran
+# compiler.setup does not set configure.compiler, but we need it
+# for proper archflags and to avoid weird fallbacks when blacklisting.
+if {[info exists cdb([c_variant_name],compiler)]} {
+    configure.compiler.add_deps no
+    configure.compiler  $cdb([c_variant_name],compiler)
+}
 
 checksums \
         md5     5e17dbeaff328ce312ccadccdb669592 \
@@ -38,10 +45,12 @@ if {[fortran_variant_isset]} {
     configure.args-append   --disable-fortran
 }
 
-post-build {
-    reinplace -E {s|-arch [a-z0-9_]+||g} \
-        ${worksrcpath}/qd-config
-}
+build.post_args-append  && \
+    sed -E -i.bak {'
+s/-arch [a-z0-9_]+|-m32|-m64//g
+/^(src|build)dir=/s/=.*$/=./
+s: -L(/[^ /]+){4,}::g
+'} qd-config
 
 livecheck.type      regex
 livecheck.url       ${homepage}
