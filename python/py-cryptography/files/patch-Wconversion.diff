@@ -1,0 +1,11 @@
+--- src/_cffi_src/build_openssl.py.orig	2017-10-11 14:35:21.000000000 +0200
++++ src/_cffi_src/build_openssl.py	2017-10-16 21:07:38.000000000 +0200
+@@ -47,7 +47,7 @@ def _extra_compile_args(platform):
+     revisit this.
+     """
+     if platform != "win32":
+-        return ["-Wconversion", "-Wno-error=sign-conversion"]
++        return []
+     else:
+         return []
+ 
