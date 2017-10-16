@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        acaudwell Logstalgia 1.0.8 logstalgia-
+github.setup        acaudwell Logstalgia 1.1.0 logstalgia-
 name                logstalgia
 categories          www
 platforms           darwin
@@ -19,8 +19,8 @@ homepage            http://logstalgia.io/
 github.tarball_from releases
 distname            ${name}-${version}
 
-checksums           rmd160  ba150534fade1e28765a372df00d442d430c6b19 \
-                    sha256  32e05fc601d48993749665e47d553ae8ab2190c7ec5350c1fe562fcf9638388a
+checksums           rmd160  64505cadef0454c993f08c0447ef6f2ef4a48c84 \
+                    sha256  680d47babea2665a674032abed7a60cbecf00378b5b9924d265b1c063a7110c3
 
 depends_build       port:boost \
                     port:glm \
