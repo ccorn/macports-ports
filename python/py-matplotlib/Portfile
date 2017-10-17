@@ -68,6 +68,9 @@ if {${name} ne ${subport}} {
     # build fails with gcc-4.0 on Leopard, use gcc-4.2 (#37069)
     compiler.blacklist gcc-4.0
 
+    # Using some C99 constructs
+    build.cmd CFLAGS=\"\$CFLAGS -std=c99\" && ${build.cmd}
+
     post-destroot {
         if {${name} ne ${subport}} {
             xinstall -m 755 -d ${destroot}${prefix}/share/doc/${subport} \
