@@ -123,6 +123,9 @@ post-configure {
     }
 }
 
+# Using some C99 constructs
+configure.cflags-append -std=gnu99
+
 build.args                  V=1
 
 test.run                    yes
