@@ -29,9 +29,9 @@ if {${subport} eq ${name}} {
 
     # release
 
-    version         ${branch}.4
-    checksums       rmd160 bb9c30f2726413f0d7d7b92e0294b61438151d62 \
-                    sha256 b5d86f12ae0072db520fdbdad67405f799eb728b610ed66043c20a92b4906ca1
+    version         ${branch}.6
+    checksums       rmd160 858257d95fde810195e4cf7254072dd8db608cc4 \
+                    sha256 7410851a783a41b521214ad987bb534a7e4a65e059651a2514e6ebfc8f46b218
 
     master_sites    http://www.cmake.org/files/v${branch}/
     conflicts       cmake-devel
@@ -59,10 +59,10 @@ if {${subport} eq ${name}} {
 
     # devel
 
-    version         20171011
-    set commit      86edb6660b8b938cf291e69cc73e01fc30c69809
-    checksums       rmd160 dc2a74c9e1bca777a20a95741c3bf2a96b670e07 \
-                    sha256 5482302541e1aac14f4a87320b310cfd54ea8ef6b1d1571dbca26793fa2e8b0c
+    version         20171116
+    set commit      c1930caffe827b937d05dca9ffb82ba0b0b20eb2
+    checksums       rmd160 95b9979a5ac3f4f863949e3f735c1ebc33281e22 \
+                    sha256 9ddf939731c412aeee13e5a09bcc8caa2d0cb465c022860b689b5b11e1a6936e
 
     master_sites    https://gitlab.kitware.com/cmake/cmake/repository/archive.tar.bz2?ref=${commit}&
     distname        ${name}-${commit}
@@ -81,7 +81,8 @@ if {${subport} eq ${name}} {
         patch-Modules-FindFreetype.cmake.devel.diff \
         patch-Modules-noArchCheck.devel.diff \
         patch-CMakeFindFrameworks.cmake.devel.diff \
-        patch-Source_CMakeVersionCompute.cmake.devel.diff
+        patch-Source_CMakeVersionCompute.cmake.devel.diff \
+        patch-Source_CMakeLists.txt.diff
 
     # require C++11 as of 2017-08-21
     # https://gitlab.kitware.com/cmake/cmake/commit/c1f3eb9f2d628b2911aa17f65012fab0befc4b87

@@ -8,9 +8,9 @@ PortGroup           gobject_introspection 1.0
 name                gegl-devel
 conflicts           gegl gegl-0.3
 set git_name        gegl
-set git_commit      a40f4f530754d60d9775a4770015d8c83167c556
-set git_date        20170906
-version             0.3.21-${git_date}
+set git_commit      ea4d21761227daab7554e628457f341c4dab8284
+set git_date        20171114
+version             0.3.23-${git_date}
 license             {GPL-3+ LGPL-3+}
 categories          graphics
 maintainers         {devans @dbevans}
@@ -28,15 +28,11 @@ master_sites        https://git.gnome.org/browse/${git_name}/snapshot/
 
 distname            ${git_name}-${git_commit}
 
-checksums           rmd160  671239a960cb33ab503bbbf41b7a2a18863f5094 \
-                    sha256  2b415ab848e79e8e68745e6e805d89b87889fdc850ce5aae6cae1b1b9c019bab
+checksums           rmd160  89c2aad448831e23f9590e448ec5decf455dcd0a \
+                    sha256  5f16a96f6a794c60efc7d34f4bdce5312fa9c0fc64ee16ff414f5ca904c3e26f
 
 depends_build       port:pkgconfig \
-                    port:intltool \
                     port:w3m \
-                    port:autoconf \
-                    port:automake \
-                    port:libtool \
                     port:python27
 
 depends_lib         port:babl-devel \
@@ -50,6 +46,8 @@ depends_lib         port:babl-devel \
                     port:gexiv2 \
                     port:jasper \
                     port:json-glib \
+                    port:lcms2 \
+                    port:lensfun \
                     port:libraw \
                     port:librsvg \
                     path:lib/libavcodec.dylib:ffmpeg \
@@ -57,26 +55,21 @@ depends_lib         port:babl-devel \
                     port:vala \
                     port:webp
 
-patchfiles          patch-configure.ac.diff \
-                    patch-force-intltoolize.diff
+patchfiles          patch-configure.ac.diff
 
 post-patch {
     # http://trac.macports.org/ticket/35148
     if {${os.major} < 10} {
         reinplace "s|OpenGL/CGLDevice.h|OpenGL/CGLTypes.h|" ${worksrcpath}/gegl/opencl/cl_gl.h
     }
-
-    # Not sure what they expected by using these macros... they only belong in system headers...
-    reinplace "s/AVAILABLE_MAC_OS_X_VERSION_10_6_AND_LATER//" ${worksrcpath}/gegl/opencl/cl_platform.h
 }
 
 gobject_introspection yes
 
 compiler.blacklist-append gcc-4.0 *gcc-4.2
 
-# reconfigure using upstream autogen.sh for intltool 0.51 compatibility
-
-configure.cmd       ./autogen.sh
+use_autoreconf      yes
+autoreconf.args     -fvi
 
 configure.python    ${prefix}/bin/python2.7
 
@@ -91,10 +84,10 @@ platform darwin {
         set merger_configure_args(x86_64) --build=${build_arch}-apple-${os.platform}${os.version}
         set merger_configure_cflags(ppc) -fno-altivec
         set merger_configure_cxxflags(ppc) -fno-altivec
-    } elseif {${build_arch} == "ppc"} {
+    } elseif {${build_arch} eq "ppc"} {
         configure.cflags-append -fno-altivec
         configure.cxxflags-append -fno-altivec
-    } elseif {${build_arch} == "x86_64"} {
+    } elseif {${build_arch} eq "x86_64"} {
         configure.args-append --build=${build_arch}-apple-${os.platform}${os.version}
     }
 }

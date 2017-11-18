@@ -5,7 +5,7 @@ PortGroup           perl5 1.0
 
 perl5.branches      5.24 5.26
 
-perl5.setup         Mojolicious 7.47
+perl5.setup         Mojolicious 7.56 ../../authors/id/S/SR/SRI
 epoch               2
 categories-append   www
 platforms           darwin
@@ -31,8 +31,8 @@ long_description    The Mojolicious MVC web framework is all about minimalism \
                     static file server, I18N, first class Unicode support \
                     and much more for you to discover.
 
-checksums           rmd160  e9b5f79b53aa7afab130ed42013cc322b06ee78f \
-                    sha256  e041baf237befa81b0b917caf5a238886abe4c687b82ac6d59011375d9075494
+checksums           rmd160  d8389b8ce85ea6d958096e6846180cf5bde6760b \
+                    sha256  4c9620492ef02ed83175b417b4b92fa610144e1293440564f95ef8ce96ebe305
 
 if {${perl5.major} != ""} {
     depends_lib-append \

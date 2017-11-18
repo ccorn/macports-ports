@@ -4,7 +4,8 @@ PortSystem              1.0
 PortGroup               python 1.0
 
 name                    py-pyqt5
-version                 5.8.2
+version                 5.9
+revision                2
 categories-append       devel
 platforms               darwin
 maintainers             {mmoll @mamoll} openmaintainer
@@ -15,8 +16,8 @@ homepage                http://www.riverbankcomputing.co.uk/software/pyqt/intro
 license                 GPL-3
 master_sites            sourceforge:pyqt
 distname                PyQt5_gpl-${version}
-checksums               rmd160  0d60affe99f094fad83535499b8652ced83678b1 \
-                        sha256  ebd70515b30bbd6098fee29e6271a6696b1183c5530ee30e6ba9aaab195536e8
+checksums               rmd160  eb238f8c6f08136b0c10cb7a18857cde6c54dbb2 \
+                        sha256  ab0e7999cf202cc72962c78aefe461d16497b3c1a8282ab966ad90b6cb271096
 
 python.versions 27 34 35 36
 
@@ -66,10 +67,16 @@ if {${name} ne ${subport}} {
 
     variant scintilla description {Build the PyQt API for QScintilla} {
         depends_lib-append \
-                        port:qscintilla2
+                        port:qscintilla-qt5
         configure.args-replace \
                         --no-qsci-api \
                         --qsci-api
+
+        post-destroot {
+            # move the Qsci API file to a Python specific name
+            move ${destroot}${qt_data_dir}/qsci/api/python/PyQt5.api \
+                ${destroot}${qt_data_dir}/qsci/api/python/PyQt5-Python${python.branch}.api
+        }
     }
 
     variant webengine conflicts universal description {Build QtWebEngine module} {

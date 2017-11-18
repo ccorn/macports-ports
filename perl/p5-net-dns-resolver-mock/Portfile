@@ -1,0 +1,23 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           perl5 1.0
+
+perl5.branches      5.24 5.26
+perl5.setup         Net-DNS-Resolver-Mock 1.20171031
+license             {Artistic-1 GPL}
+maintainers         {devans @dbevans} openmaintainer
+description         Net::DNS::Resolver::Mock - Mock a DNS Resolver object for testing
+long_description    ${description}
+
+platforms           darwin
+
+checksums           rmd160  f41e56441ec3597e9281075e25ff79f98a731aa0 \
+                    sha256  fca67707b2f73907ede79100fff30099c8ad2d1db76051acbc7e991985c4e15e
+
+if {${perl5.major} != ""} {
+    depends_lib-append \
+                    port:p${perl5.major}-net-dns
+
+    supported_archs noarch
+}
