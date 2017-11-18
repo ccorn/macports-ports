@@ -168,7 +168,6 @@ foreach qt_major {4 5} {
         }
     }
 }
->>>>>>> master
 
 if {${subport} eq ${name}} {
     revision 1

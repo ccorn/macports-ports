@@ -58,7 +58,7 @@ depends_lib         port:desktop-file-utils \
 patchfiles          patch-use-configured-perl.diff \
                     patch-no-data-member.diff \
                     patch-use-cxxutil-h.diff \
-                    patch-src-2geom-svg-path-writer-cpp.diff
+                    patch-src-2geom-svg-path-writer-cpp.diff \
                     libavoid-abs-ambiguous.diff
 
 post-patch {
