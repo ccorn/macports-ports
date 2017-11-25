@@ -1,4 +1,5 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+# $Id: Portfile 110376 2013-08-30 19:17:57Z jeremyhu@macports.org $
 
 PortSystem      1.0
 PortGroup       xcode 1.0
@@ -15,7 +16,7 @@ long_description   \
     TeXShop is a TeX previewer for Mac OS X, written in Cocoa.  \
     Since pdf is a native file format on OS X, TeXShop uses     \
     "pdftex" and "pdflatex" rather than "tex" and "latex" to    \
-    typeset, these programs in the standard teTeX distribution  \
+    typeset, these programs in the standard texlive distribution  \
     of TeX produce pdf output instead of dvi output.
 homepage        http://pages.uoregon.edu/koch/texshop/
 master_sites    ${homepage}
@@ -40,6 +41,9 @@ post-extract    {
         # Tiger chokes on the x86_64
         system "cd ${worksrcpath} && lipo -remove x86_64 $sparkle -output $sparkle"
     }
+}
+
+post-patch {
     reinplace "s|defaultConfigurationName = Debug|defaultConfigurationName = Release|" ${worksrcpath}/${name}.xcodeproj/project.pbxproj
     reinplace "s|GCC_VERSION_i386 = 4\.0|GCC_VERSION_i386 = [lindex [split ${configure.objc} -] 1]|g" ${worksrcpath}/3rdparty/OgreKit/OgreKit.xcodeproj/project.pbxproj
     reinplace "s|GCC_VERSION_ppc = 3\.3|GCC_VERSION_ppc = [lindex [split ${configure.objc} -] 1]|g" ${worksrcpath}/3rdparty/OgreKit/OgreKit.xcodeproj/project.pbxproj
@@ -51,18 +55,33 @@ patchfiles		patch-TSDocument.m.diff
 
 compiler.blacklist  *clang*
 
-build.target    ${name}
-
 xcode.project   ${name}.xcodeproj
 xcode.configuration Release
+xcode.target		${name}
 xcode.build.settings    FRAMEWORK_SEARCH_PATHS=${worksrcpath} \
                         CONFIGURATION_BUILD_DIR=${worksrcpath}/build
 
+build.target    ${name}
 destroot.target     ${name}
-xcode.destroot.settings INSTALL_MODE_FLAG=755 {*}${xcode.build.settings}
-post-destroot        {
-    file delete -force ${destroot}${applications_dir}/TeX.mdimporter
+eval xcode.destroot.settings INSTALL_MODE_FLAG=755 ${xcode.build.settings}
 
+variant altpdftex description {install altpdf*tex scripts} {}
+variant mdimporter description {install Spotlight module TeX.mdimporter} {}
+
+post-destroot {
+    if {[variant_isset altpdftex]} {
+        xinstall -d ${destroot}${prefix}/bin
+        ln -s ${applications_dir}/${name}.app/Contents/Resources/altpdflatex \
+            ${destroot}${prefix}/bin/
+        ln -s ${applications_dir}/${name}.app/Contents/Resources/altpdftex \
+            ${destroot}${prefix}/bin/
+    }
+    if {[variant_isset mdimporter]} {
+        xinstall -d ${destroot}/Library/Spotlight
+        copy ${destroot}${applications_dir}/TeX.mdimporter \
+            ${destroot}/Library/Spotlight/
+    }
+    delete   ${destroot}${applications_dir}/TeX.mdimporter
     xinstall -m 755 ${filespath}/lilypond.engine ${destroot}${applications_dir}/${name}.app/Contents/Resources/${name}/Engines/Lilypond.engine
     reinplace s|@@PREFIX@@|${prefix}|g ${destroot}${applications_dir}/${name}.app/Contents/Resources/${name}/Engines/Lilypond.engine
 }
