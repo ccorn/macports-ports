@@ -2,6 +2,7 @@
 
 PortSystem          1.0
 PortGroup           wxWidgets 1.0
+PortGroup           cxx11 1.1
 
 fetch.type          svn
 svn.url             svn://svn.code.sf.net/p/codeblocks/code/trunk
@@ -48,6 +49,8 @@ depends_build-append \
 # FileManager requires "gamin" to be installed when using wxGTK,
 # not sure whether it works with Carbon/Cocoa at all,
 # so it was disabled for now
+configure.libs      -lboost_system-mt
+configure.cmd       {LIBS="$(pkg-config --libs hunspell) $LIBS";} ${configure.cmd}
 configure.args      --with-contrib-plugins=all,-FileManager
 
 post-extract {

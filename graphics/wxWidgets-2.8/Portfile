@@ -4,6 +4,7 @@ PortSystem          1.0
 PortGroup           active_variants 1.1
 PortGroup           select          1.0
 PortGroup           wxWidgets       1.0
+PortGroup           cxx11           1.1
 
 name                wxWidgets-2.8
 version             2.8.12
@@ -78,6 +79,7 @@ worksrcdir          ${distname}-${version}/build
 
 patchfiles          patch-chkconf.diff \
                     patch-configure.diff \
+                    patch-conversion.diff \
                     patch-sdl.diff \
                     patch-src-gtk-app.cpp.diff
 patch.dir           ${workpath}/${distname}-${version}
