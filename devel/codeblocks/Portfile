@@ -6,10 +6,10 @@ PortGroup           cxx11 1.1
 
 fetch.type          svn
 svn.url             svn://svn.code.sf.net/p/codeblocks/code/trunk
-svn.revision        11098
+svn.revision        11245
 # Get the svn last changed date by running the following command:
 # svn info http://svn.code.sf.net/p/codeblocks/code/trunk| grep "^Last Changed Date:" | cut -d" " -f4,5
-set LCD             "2017-06-21 13:35:48"
+set LCD             "2017-11-23 20:59:18"
 
 name                codeblocks
 version             16.01-${svn.revision}
@@ -60,6 +60,7 @@ post-extract {
 }
 
 post-destroot {
+    if {0} {
     # TODO: this might need a review
     system "strip -S ${destroot}${prefix}/bin/codeblocks"
     system "strip -S ${destroot}${prefix}/lib/libcodeblocks*.so || true"
@@ -69,6 +70,7 @@ post-destroot {
 #   system "strip -S ${destroot}${prefix}/lib/wxSmithContribItems/lib*.so || true"
 #   system "strip -S ${destroot}${prefix}/lib/wxSmithContribItems/lib*.dylib || true"
 #    system "strip -S ${destroot}${prefix}/lib/codeblocks/plugins/*.so"
+    }
 
     set appPath ${destroot}${applications_dir}/CodeBlocks.app/Contents
     xinstall -d -m 0755 ${destroot}${applications_dir}
@@ -91,6 +93,7 @@ post-destroot {
     delete ${destroot}${prefix}/share/mime/packages/codeblocks.xml
     delete ${destroot}${prefix}/share/pixmaps/codeblocks.png
 
+    if {0} {
     # TODO without the following block the app fails to start and throws the following error:
     #
     # Cannot find resources...
@@ -101,6 +104,7 @@ post-destroot {
     # but this seems like a bug
     xinstall -d -m 0755 ${appPath}/MacOS/share
     ln -sf ${prefix}/share/codeblocks ${appPath}/MacOS/share
+    }
 }
 
 # disable precompiled headers for the universal build
