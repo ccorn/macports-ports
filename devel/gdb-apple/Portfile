@@ -28,7 +28,6 @@ can run on most popular UNIX and Microsoft Windows variants.
 
 homepage        http://opensource.apple.com/source/gdb
 platforms       darwin
-supported_archs x86_64 i386
 
 # xm.h can be created out of order
 use_parallel_build no
@@ -64,10 +63,12 @@ configure.args \
 
 build.args \
     MAKEINFO="/usr/bin/makeinfo" \
+    LDFLAGS="-L${prefix}/lib" \
     LEXLIB="${prefix}/lib/libfl.a"
 
 destroot.args \
     MAKEINFO="/usr/bin/makeinfo" \
+    LDFLAGS="-L${prefix}/lib" \
     LEXLIB="${prefix}/lib/libfl.a"
 
 post-destroot {

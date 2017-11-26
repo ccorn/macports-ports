@@ -9,3 +9,107 @@
  #include <sys/types.h>
  #include <unistd.h>
  #include <signal.h>
+@@ -2701,6 +2701,7 @@ macosx_get_thread_name (ptid_t ptid)
+   if (tp->private == NULL || tp->private->app_thread_port == 0)
+     return NULL;
+ 
++#if defined(THREAD_IDENTIFIER_INFO_COUNT) && defined(THREAD_IDENTIFIER_INFO)
+   thread_identifier_info_data_t tident;
+   unsigned int info_count;
+   kern_return_t kret;
+@@ -2728,6 +2729,7 @@ macosx_get_thread_name (ptid_t ptid)
+             }
+         }
+     }
++#endif
+   return buf;
+ }
+ 
+--- gdb/macosx/macosx-nat-infthread.c.orig	2012-09-21 01:04:03.000000000 +0200
++++ gdb/macosx/macosx-nat-infthread.c	2017-11-25 23:06:26.000000000 +0100
+@@ -810,6 +810,7 @@ print_thread_info (thread_t tid, int *gd
+     print_stack_frame (get_selected_frame (NULL), 0, LOCATION);
+     switch_to_thread (current_ptid);
+ 
++#if defined(THREAD_IDENTIFIER_INFO_COUNT) && defined(THREAD_IDENTIFIER_INFO)
+   thread_identifier_info_data_t tident;
+   info_count = THREAD_IDENTIFIER_INFO_COUNT;
+   kret = thread_info (tid, THREAD_IDENTIFIER_INFO, (thread_info_t) &tident, 
+@@ -879,6 +880,7 @@ print_thread_info (thread_t tid, int *gd
+       printf_filtered ("\tcurrent priority: %d\n", pth.pth_priority);
+       printf_filtered ("\tmax priority: %d\n", pth.pth_maxpriority);
+     }
++#endif
+ 
+   printf_filtered ("\tsuspend count: %d", info.suspend_count);
+ 
+@@ -1176,6 +1178,7 @@ macosx_print_thread_details (struct ui_o
+   ui_out_field_fmt (uiout, "mach-port-number", "0x%s", 
+                     paddr_nz (app_thread_name));
+ 
++#if defined(THREAD_IDENTIFIER_INFO_COUNT) && defined(THREAD_IDENTIFIER_INFO)
+   thread_identifier_info_data_t tident;
+   info_count = THREAD_IDENTIFIER_INFO_COUNT;
+   kret = thread_info (tid, THREAD_IDENTIFIER_INFO, (thread_info_t) &tident, 
+@@ -1208,6 +1211,7 @@ macosx_print_thread_details (struct ui_o
+                               paddr_nz (struct_addr));
+         }
+     }
++#endif
+ }
+ 
+ 
+--- gdb/macosx/macosx-nat-dyld.c.orig	2011-11-30 00:49:03.000000000 +0100
++++ gdb/macosx/macosx-nat-dyld.c	2017-11-25 22:12:08.000000000 +0100
+@@ -791,7 +791,7 @@ macosx_locate_dyld_via_taskinfo (macosx_
+        }
+      else
+        {
+-#if defined (NM_NEXTSTEP)
++#if 0
+           if (macosx_status->task == TASK_NULL)
+             return 0;
+ 
+@@ -2066,7 +2066,9 @@ dyld_info_process_raw (struct macosx_dyl
+     case MH_DYLIB:
+     case MH_DYLINKER:
+     case MH_BUNDLE:
++#ifdef MH_KEXT_BUNDLE
+     case MH_KEXT_BUNDLE:
++#endif
+       break;
+     case MH_FVMLIB:
+     case MH_PRELOAD:
+@@ -2390,7 +2392,9 @@ dyld_info_process_raw (struct macosx_dyl
+       break;
+     case MH_DYLINKER:
+     case MH_BUNDLE:
++#ifdef MH_KEXT_BUNDLE
+     case MH_KEXT_BUNDLE:
++#endif
+       entry->reason = dyld_reason_dyld;
+       break;
+     default:
+--- gdb/macosx/macosx-nat-dyld-process.c.orig	2011-11-30 00:49:03.000000000 +0100
++++ gdb/macosx/macosx-nat-dyld-process.c	2017-11-25 22:16:04.000000000 +0100
+@@ -404,7 +404,9 @@ dyld_resolve_filename_image (const struc
+     case MH_DYLIB:
+       break;
+     case MH_BUNDLE:
++#ifdef MH_KEXT_BUNDLE
+     case MH_KEXT_BUNDLE:
++#endif
+       break;
+     default:
+       return;
+--- gdb/macosx/macosx-tdep.c.orig	2012-07-18 00:14:03.000000000 +0200
++++ gdb/macosx/macosx-tdep.c	2017-11-25 23:17:33.000000000 +0100
+@@ -1558,7 +1558,7 @@ macosx_locate_executable_by_dbg_shell_co
+   if (plist_data == NULL)
+     return NULL;
+ 
+-  CFPropertyListRef plist = CFPropertyListCreateWithData (kCFAllocatorDefault, plist_data, kCFPropertyListImmutable, NULL, NULL);
++  CFPropertyListRef plist = NULL;
+ 
+   if (plist == NULL || CFGetTypeID (plist) != CFDictionaryGetTypeID())
+     {
