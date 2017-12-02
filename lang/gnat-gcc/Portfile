@@ -52,12 +52,26 @@ worksrcdir		build
 dist_subdir		gcc44
 
 # the generated compiler doesn't accept -arch
-if {[info exists build_arch] && ${os.platform} eq "darwin"} {
+platform darwin {
     configure.cc_archflags
     configure.cxx_archflags
     configure.objc_archflags
+    configure.objcxx_archflags
+    configure.ld_archflags
     configure.pre_args-append --build=${build_arch}-apple-darwin${os.major}
 }
+configure.env-append \
+    CPP="${configure.cc} -E" \
+    CXXCPP="${configure.cxx} -E" \
+    OBJCXXFLAGS=${configure.optflags} \
+    LDFLAGS="-L${prefix}/lib -Wl,-headerpad_max_install_names" \
+    MAKEINFO=/usr/bin/makeinfo
+build.env-append \
+    CPP="${configure.cc} -E" \
+    CXXCPP="${configure.cxx} -E" \
+    OBJCXXFLAGS=${configure.optflags} \
+    LDFLAGS="-L${prefix}/lib -Wl,-headerpad_max_install_names" \
+    MAKEINFO=/usr/bin/makeinfo
 
 post-extract {
 	file mkdir ${worksrcpath}
@@ -302,7 +316,7 @@ variant odcctools \
 #
 variant macada									\
     description "Uses MacAda compiler (http://www.macada.org) to bootstrap!"	{
-    set bootprefix /usr/local/ada-4.3
+    set bootprefix /usr/local/ada
     if {![file executable ${bootprefix}/bin/gnat]} {
         ui_msg "####################################################################"
         ui_msg "#  Ada is self hosted (http://en.wikipedia.org/wiki/Self-hosting)  #"
@@ -322,7 +336,7 @@ variant macada									\
 
 variant gnatgpl										\
     description "Uses GNAT/GPL compiler (http://libre.adacore.com) to bootstrap!"	{
-    set bootprefix /opt/gnat-2009-x86_64-apple-darwin9.6.0-bin
+    set bootprefix /usr/local/gnat-2009
     if {![file executable ${bootprefix}/bin/gnat]} {
         ui_msg "####################################################################"
         ui_msg "#  Ada is self hosted (http://en.wikipedia.org/wiki/Self-hosting)  #"
