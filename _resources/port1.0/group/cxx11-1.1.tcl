@@ -45,11 +45,11 @@ if {${cxx_stdlib} eq "libstdc++" } {
     configure.cxx_stdlib macports-libstdc++
 
     proc register_gcc_dependents {} {
-        global os.major
+        global os.major os.platform
         depends_lib-delete port:libgcc
         depends_lib-append port:libgcc
         # ensure desired compiler flags are present
-        if { ${os.major} < 13 } {
+        if {${os.platform} eq "darwin" && ${os.major} < 13} {
             configure.cxxflags-delete    -D_GLIBCXX_USE_CXX11_ABI=0
             configure.cxxflags-append    -D_GLIBCXX_USE_CXX11_ABI=0
             configure.objcxxflags-delete -D_GLIBCXX_USE_CXX11_ABI=0
@@ -73,10 +73,10 @@ if {${cxx_stdlib} eq "libstdc++" } {
     # see https://trac.macports.org/ticket/54766
     depends_lib-append port:libgcc
 
-    if { ${os.major} < 13 } {
+    if {${os.platform} eq "darwin" && ${os.major} < 13} {
         # prior to OS X Mavericks, libstdc++ was the default C++ runtime, so
-        #    assume MacPorts libstdc++ must be ABI compatable with system libstdc++
-        # for OS X Maverick and above, users must select libstdc++, so
+        #    assume MacPorts libstdc++ must be ABI compatible with system libstdc++
+        # for OS X Mavericks and above, users must select libstdc++, so
         #    assume they want default ABI compatibility
         # see https://gcc.gnu.org/onlinedocs/gcc-5.2.0/libstdc++/manual/manual/using_dual_abi.html
         configure.cxxflags-append -D_GLIBCXX_USE_CXX11_ABI=0

@@ -31,7 +31,7 @@ version             4.19.6
 # removed or the order changed then the major number must be
 # incremented and the minor number set to 0.
 #
-# SIP 4.19.[4-5] provides SIP API 12.3
+# SIP 4.19.[4-6] provides SIP API 12.3
 # SIP 4.19.3 provides SIP API 12.2
 # SIP 4.19.[1-2] provides SIP API 12.1
 # SIP 4.19.0 provides SIP API 12.0

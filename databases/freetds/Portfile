@@ -4,7 +4,7 @@ PortSystem          1.0
 
 name                freetds
 epoch               1
-version             1.00.70
+version             1.00.79
 categories          databases
 platforms           darwin
 maintainers         {ryandesign @ryandesign} openmaintainer
@@ -27,16 +27,14 @@ homepage            http://www.freetds.org/
 master_sites        ftp://ftp.freetds.org/pub/${name}/stable/
 use_bzip2           yes
 
-checksums           rmd160  a247875106c3ecd88a272e9f854562287094d185 \
-                    sha256  f76319f65beadc2a189a99adb79faffef2564f5378aea9b881dc2c9b1003b0f9 \
-                    size    2150135
+checksums           rmd160  241db7838186cfa5dcd2f896283aadde05643dd8 \
+                    sha256  6be4b124372b4664b1be377f268cf44e8e5b054ade41fc0de8763e5f33d66d4a \
+                    size    2152069
 
 depends_lib         port:libiconv \
                     port:ncurses \
                     path:lib/libssl.dylib:openssl \
                     port:readline
-
-patchfiles          nawk.patch
 
 configure.args      --disable-silent-rules \
                     --includedir=${prefix}/include/${name} \
