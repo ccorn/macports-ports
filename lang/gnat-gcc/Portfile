@@ -53,6 +53,9 @@ dist_subdir		gcc44
 
 configure.ccache no
 
+eval configure.cmd {PATH="\${ADABOOT+\$ADABOOT/bin:}\$PATH"} ${configure.cmd}
+eval build.cmd {PATH="\${ADABOOT+\$ADABOOT/bin:}\$PATH"} ${build.cmd}
+
 # the generated compiler doesn't accept -arch
 platform darwin {
     configure.cc_archflags
@@ -318,7 +321,7 @@ variant odcctools \
 #
 variant macada									\
     description "Uses MacAda compiler (http://www.macada.org) to bootstrap!"	{
-    set bootprefix /usr/local/ada
+    set bootprefix /usr/local/ada-4.3
     if {![file executable ${bootprefix}/bin/gnat]} {
         ui_msg "####################################################################"
         ui_msg "#  Ada is self hosted (http://en.wikipedia.org/wiki/Self-hosting)  #"
@@ -331,9 +334,10 @@ variant macada									\
     configure.cpp		${bootprefix}/bin/cpp
     configure.cxx		${bootprefix}/bin/g++
     configure.objc		${bootprefix}/bin/gcc
-    configure.env-append	PATH=${bootprefix}/bin:$env(PATH)
-    configure.env-append	GNATMAKE=${bootprefix}/bin/gnatmake
-    configure.env-append	GNATBIND=${bootprefix}/bin/gnatbind
+    configure.env-append        ADABOOT=${bootprefix}
+    configure.env-append        GNATMAKE=${bootprefix}/bin/gnatmake
+    configure.env-append        GNATBIND=${bootprefix}/bin/gnatbind
+    build.env-append            ADABOOT=${bootprefix}
 }
 
 variant gnatgpl										\
@@ -351,9 +355,10 @@ variant gnatgpl										\
     configure.cpp		${bootprefix}/bin/cpp
     configure.cxx		${bootprefix}/bin/g++
     configure.objc		${bootprefix}/bin/gcc
-    configure.env-append	PATH=${bootprefix}/bin:$env(PATH)
-    configure.env-append	GNATMAKE=${bootprefix}/bin/gnatmake
-    configure.env-append	GNATBIND=${bootprefix}/bin/gnatbind
+    configure.env-append        ADABOOT=${bootprefix}
+    configure.env-append        GNATMAKE=${bootprefix}/bin/gnatmake
+    configure.env-append        GNATBIND=${bootprefix}/bin/gnatbind
+    build.env-append            ADABOOT=${bootprefix}
 }
 
 variant gnuada											\
@@ -371,9 +376,10 @@ variant gnuada											\
     configure.cpp		${bootprefix}/bin/cpp-gnat-4.4
     configure.cxx		${bootprefix}/bin/g++-gnat-4.4
     configure.objc		${bootprefix}/bin/gcc-gnat-4.4
-    configure.env-append	PATH=${bootprefix}/bin:$env(PATH)
-    configure.env-append	GNATMAKE=${bootprefix}/bin/gnatmake
-    configure.env-append	GNATBIND=${bootprefix}/bin/gnatbind
+    configure.env-append        ADABOOT=${bootprefix}
+    configure.env-append        GNATMAKE=${bootprefix}/bin/gnatmake
+    configure.env-append        GNATBIND=${bootprefix}/bin/gnatbind
+    build.env-append            ADABOOT=${bootprefix}
 }
 
 variant ada											\
@@ -396,9 +402,10 @@ variant ada											\
     configure.cpp		${prefix}/bin/cpp
     configure.cxx		${prefix}/bin/g++
     configure.objc		${prefix}/bin/gcc
-    configure.env-append	PATH=${prefix}/bin:$env(PATH)
-    configure.env-append	GNATMAKE=${prefix}/bin/gnatmake
-    configure.env-append	GNATBIND=${prefix}/bin/gnatbind
+    configure.env-append        ADABOOT=${prefix}
+    configure.env-append        GNATMAKE=${prefix}/bin/gnatmake
+    configure.env-append        GNATBIND=${prefix}/bin/gnatbind
+    build.env-append            ADABOOT=${prefix}
 }
 
 pre-configure {
