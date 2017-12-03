@@ -51,6 +51,8 @@ set major		4.4
 worksrcdir		build
 dist_subdir		gcc44
 
+configure.ccache no
+
 # the generated compiler doesn't accept -arch
 platform darwin {
     configure.cc_archflags
