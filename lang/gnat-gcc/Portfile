@@ -342,7 +342,8 @@ variant macada									\
 
 variant gnatgpl										\
     description "Uses GNAT/GPL compiler (http://libre.adacore.com) to bootstrap!"	{
-    set bootprefix /usr/local/gnat-2009
+    #set bootprefix /usr/local/gnat-2009
+    set bootprefix /opt/gnat-gpl-2007
     if {![file executable ${bootprefix}/bin/gnat]} {
         ui_msg "####################################################################"
         ui_msg "#  Ada is self hosted (http://en.wikipedia.org/wiki/Self-hosting)  #"

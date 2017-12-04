@@ -5,10 +5,11 @@ PortGroup select 1.0
 PortGroup compiler_blacklist_versions 1.0
 
 name                gcc7
-subport             libgcc { revision 1 }
+subport             libgcc { revision 2 }
 
 epoch               2
 version             7.2.0
+revision            2
 
 platforms           darwin
 categories          lang
@@ -58,6 +59,7 @@ platform darwin powerpc {
     patchfiles-append         patch-darwin-ppc-remove-lr-use.diff
     # Patch 3 seems reasonable, patch 4 is for Ada only.
     patchfiles-append         patch-darwin-ppc-longjmp-noreturn.diff
+    patchfiles-append         patch-darwin-adathreads.diff
 }
 
 platform darwin {
@@ -114,6 +116,8 @@ configure.env-append \
                     OTOOL=${prefix}/bin/otool \
                     OTOOL64=${prefix}/bin/otool
 
+eval configure.cmd {PATH="\${ADABOOT+\$ADABOOT/bin:}\$PATH"} ${configure.cmd}
+eval build.cmd {PATH="\${ADABOOT+\$ADABOOT/bin:}\$PATH"} ${build.cmd}
 pre-configure {
     configure.args-append --with-pkgversion="MacPorts ${name} ${version}_${revision}${portvariants}"
 
@@ -241,6 +245,17 @@ if {${subport} eq "libgcc"} {
 
         # For binary compatibility with binaries that linked against the old libstdcxx port
         ln -s libgcc/libstdc++.6.dylib ${destroot}${prefix}/lib/libstdc++.6.dylib
+
+        # Ada stuff
+        set dest_src_dir ${destroot}${prefix}/src/gnat
+        set src_ada_dir ${workpath}/gcc-${version}/gcc/ada
+        set src_c_dir   ${workpath}/gcc-${version}/gcc
+        set target_ada_dir ${build.dir}/gcc/ada
+
+        xinstall -m 775 -d ${dest_src_dir}
+        xinstall -m 664 -W ${src_ada_dir} [glob -tails -directory ${src_ada_dir} *.ads *.adb] ${dest_src_dir}
+        xinstall -m 664 -W ${src_c_dir} version.c version.h ${dest_src_dir}
+        xinstall -m 664 -W ${target_ada_dir} sdefault.adb ${dest_src_dir}
     }
 } else {
 depends_run-append         port:gcc_select
@@ -280,6 +295,108 @@ select.file         ${filespath}/mp-${name}
 
 }
 
+variant ada description {Build GNAT, requires some GNAT for bootstrapping} {
+    configure.args-replace --enable-languages=c,c++,objc,obj-c++,lto,fortran \
+                           --enable-languages=c,c++,objc,obj-c++,lto,fortran,ada
+    configure.ccache no
+}
+#
+# Ada is the only language apart from C which is self hosted - meaning: you need
+# an ada compiler to compile ada. hence it is just a variant.
+#
+variant macada requires ada conflicts gnat gnatgpl gnuada \
+    description "Uses MacAda compiler (http://www.macada.org) to bootstrap"	{
+    set bootprefix /usr/local/ada-4.3
+    if {![file executable ${bootprefix}/bin/gnat]} {
+        ui_msg "####################################################################"
+        ui_msg "#  Ada is self hosted (http://en.wikipedia.org/wiki/Self-hosting)  #"
+        ui_msg "#                                                                  #"
+        ui_msg "#  Bootstrap compiler not found. Please download and install from  #"
+        ui_msg "#  http://www.macada.org                                           #"
+        ui_msg "####################################################################"
+    }
+    configure.cc                ${bootprefix}/bin/gcc
+    configure.cpp               ${bootprefix}/bin/cpp
+    #configure.cxx              ${bootprefix}/bin/g++
+    configure.objc              ${bootprefix}/bin/gcc
+    configure.env-append        ADABOOT=${bootprefix}
+    configure.env-append        GNATMAKE=${bootprefix}/bin/gnatmake
+    configure.env-append        GNATBIND=${bootprefix}/bin/gnatbind
+    build.env-append            ADABOOT=${bootprefix}
+}
+
+variant gnatgpl	requires ada conflicts gnat gnuada macada \
+    description "Uses GNAT/GPL compiler (http://libre.adacore.com) to bootstrap"	{
+    set bootprefix /usr/local/gnat-2009
+    if {![file executable ${bootprefix}/bin/gnat]} {
+        ui_msg "####################################################################"
+        ui_msg "#  Ada is self hosted (http://en.wikipedia.org/wiki/Self-hosting)  #"
+        ui_msg "#                                                                  #"
+        ui_msg "#  Bootstrap compiler not found. Please download and install from  #"
+        ui_msg "#  http://libre.adacore.com                                        #"
+        ui_msg "####################################################################"
+    }
+    configure.cc                ${bootprefix}/bin/gcc
+    configure.cpp               ${bootprefix}/bin/cpp
+    #configure.cxx              ${bootprefix}/bin/g++
+    configure.objc              ${bootprefix}/bin/gcc
+    configure.env-append        ADABOOT=${bootprefix}
+    configure.env-append        GNATMAKE=${bootprefix}/bin/gnatmake
+    configure.env-append        GNATBIND=${bootprefix}/bin/gnatbind
+    build.env-append            ADABOOT=${bootprefix}
+}
+
+variant gnuada requires ada conflicts gnat gnatgpl macada \
+    description "Uses the GnuAda (http://gnuada.sourceforge.net/) compiler to bootstrap"	{
+    set bootprefix /opt/local
+    if {![file executable ${bootprefix}/bin/gnat]} {
+        ui_msg "####################################################################"
+        ui_msg "#  Ada is self hosted (http://en.wikipedia.org/wiki/Self-hosting)  #"
+        ui_msg "#                                                                  #"
+        ui_msg "#  Bootstrap compiler not found. Please download and install from  #"
+        ui_msg "#  http://gnuada.sourceforge.net                                   #"
+        ui_msg "####################################################################"
+    }
+    configure.cc                ${bootprefix}/bin/gcc-gnat-4.4
+    configure.cpp               ${bootprefix}/bin/cpp-gnat-4.4
+    configure.cxx               ${bootprefix}/bin/g++-gnat-4.4
+    configure.objc              ${bootprefix}/bin/gcc-gnat-4.4
+    configure.env-append        ADABOOT=${bootprefix}
+    configure.env-append        GNATMAKE=${bootprefix}/bin/gnatmake
+    configure.env-append        GNATBIND=${bootprefix}/bin/gnatbind
+    build.env-append            ADABOOT=${bootprefix}
+}
+
+variant gnat requires ada conflicts gnatgpl gnuada macada \
+    description "Uses the MacPorts Ada (http://www.macports.org/) compiler to bootstrap"	{
+    if {![file executable ${prefix}/bin/gnat]} {
+        ui_msg "####################################################################"
+        ui_msg "#  Ada is self hosted (http://en.wikipedia.org/wiki/Self-hosting)  #"
+        ui_msg "#                                                                  #"
+        ui_msg "#  For the first intital installation you need to choose one       #"
+        ui_msg "#  one of the other variants                                       #"
+        ui_msg "####################################################################"
+    } else {
+        ui_msg "######################################################################"
+        ui_msg "#  To use this variant you need activate the existing compiler with: #"
+        ui_msg "#                                                                    #"
+        ui_msg "#  sudo port select --set gcc gnat-gcc                               #"
+        ui_msg "######################################################################"
+    }
+    configure.cc                ${prefix}/bin/gcc
+    configure.cpp               ${prefix}/bin/cpp
+    configure.cxx               ${prefix}/bin/g++
+    configure.objc              ${prefix}/bin/gcc
+    configure.env-append        ADABOOT=${prefix}
+    configure.env-append        GNATMAKE=${prefix}/bin/gnatmake
+    configure.env-append        GNATBIND=${prefix}/bin/gnatbind
+    build.env-append            ADABOOT=${prefix}
+}
+
+if {[variant_isset ada] && ![variant_isset macada] && ![variant_isset gnatgpl] && ![variant_isset gnuada] && ![variant_isset gnat]} {
+    default_variants +gnat
+}
+
 # There may be incompatibilities between the native C++ runtime
 # and the newer g++ runtimes, particularly related to exception handling.
 # Use one or both of +defaultabi4 and +staticlibgcc.
@@ -314,9 +431,7 @@ configure.env-append \
 build.env-append \
     CPP="${configure.cc} -E" \
     CXXCPP="${configure.cxx} -E"
-configure.cc-append [get_canonical_archflags]
 configure.cc_archflags
-configure.cxx-append ${configure.cxx_archflags}
 configure.cxx_archflags
 configure.objc_archflags
 configure.ld_archflags
