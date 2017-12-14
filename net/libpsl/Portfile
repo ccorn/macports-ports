@@ -22,6 +22,7 @@ depends_build-append \
                     port:libtool \
                     port:gtk-doc \
                     port:python27
+depends_skip_archcheck  pkgconfig automake autoconf libtool gtk-doc python27
 
 depends_lib-append  path:lib/pkgconfig/glib-2.0.pc:glib2 \
                     port:gettext \
