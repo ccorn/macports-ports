@@ -41,7 +41,7 @@ set psl_data_archive    ${psl_data_commit}.zip
 set psl_data_url        https://github.com/publicsuffix/list/archive
 
 post-extract {
-    curl fetch ${psl_data_url}/${psl_data_archive} ${psl_data_dir}/${psl_data_archive}
+    system "cd ${workpath} && curl -L -O ${psl_data_url}/${psl_data_archive}"
     system "/usr/bin/unzip -d ${worksrcpath} ${psl_data_dir}/${psl_data_archive}"
     delete ${worksrcpath}/list
     move ${worksrcpath}/list-${psl_data_commit} ${worksrcpath}/list
