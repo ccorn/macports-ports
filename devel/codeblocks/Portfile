@@ -6,10 +6,10 @@ PortGroup           cxx11 1.1
 
 fetch.type          svn
 svn.url             svn://svn.code.sf.net/p/codeblocks/code/trunk
-svn.revision        11245
+svn.revision        11246
 # Get the svn last changed date by running the following command:
 # svn info http://svn.code.sf.net/p/codeblocks/code/trunk| grep "^Last Changed Date:" | cut -d" " -f4,5
-set LCD             "2017-11-23 20:59:18"
+set LCD             "2017-12-07 19:34:57"
 
 name                codeblocks
 version             16.01-${svn.revision}
