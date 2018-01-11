@@ -22,6 +22,7 @@ checksums       md5 1c24ba41cf1ef532415f13a04f279099 \
                 sha256 222a84cc91967abce4d86fb4ed8ba43455b818aecdb8487b0fe52d76ade29a83
 
 wxWidgets.use   wxWidgets-3.0
+depends_run     port:xdg-utils
 depends_lib     port:bzip2
 
 configure.args  --with-wxdir=${wxWidgets.wxdir} --disable-desktopfiles
