@@ -1,0 +1,27 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:filetype=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem      1.0
+PortGroup       wxWidgets 1.0
+
+name            freedink-dfarc
+version         3.12
+categories      games
+description     Dmod frontend for the FreeDink engine
+long_description \
+                DFArc is an integrated frontend, .dmod installer and .dmod \
+                archiver for the FreeDink game engine.
+license         gpl-3
+homepage        https://savannah.gnu.org/projects/freedink
+platforms       darwin freebsd
+maintainers     1tein.de:pkg (Christian Cornelssen)
+master_sites    http://ftp.gnu.org/pub/gnu/freedink/
+distname        dfarc-${version}
+checksums       md5 1c24ba41cf1ef532415f13a04f279099 \
+                sha1 d597f6203dec3db4e3f4199c64ec2113d20018bb \
+                rmd160 a1020579450459c65fbe47023acb4914e894bb0d \
+                sha256 222a84cc91967abce4d86fb4ed8ba43455b818aecdb8487b0fe52d76ade29a83
+
+wxWidgets.use   wxWidgets-3.0
+depends_lib     port:bzip2
+
+configure.args  --with-wxdir=${wxWidgets.wxdir} --disable-desktopfiles
