@@ -39,12 +39,12 @@ PortGroup compiler_blacklist_versions 1.0
 
 # Compilers supporting C++11 are GCC >= 4.6 and clang >= 3.3.
 
-if {${cxx_stdlib} eq "libstdc++" } {
+if {${configure.cxx_stdlib} eq "libstdc++"} {
 
     # see https://trac.macports.org/ticket/53194
     configure.cxx_stdlib macports-libstdc++
 
-    proc register_gcc_dependents {} {
+    proc cxx11.add_dependencies {} {
         global os.major os.platform
         depends_lib-delete port:libgcc
         depends_lib-append port:libgcc
@@ -57,12 +57,12 @@ if {${cxx_stdlib} eq "libstdc++" } {
         }
     }
     # do not force all Portfiles to switch from depends_lib to depends_lib-append
-    port::register_callback register_gcc_dependents
+    port::register_callback cxx11.add_dependencies
 
-    if {${build_arch} eq "ppc" || ${build_arch} eq "ppc64"} {
-        # ports will build on powerpc with gcc6, gcc4ABI-compatible
+    if {(${os.platform} eq "darwin" && ${os.major} < 10) || ${build_arch} eq "ppc" || ${build_arch} eq "ppc64"} {
+        # ports will build with gcc6, gcc4ABI-compatible
         pre-configure {
-            ui_msg "PowerPC C++11 ports are compiling with GCC. EXPERIMENTAL."
+            ui_msg "C++11 ports are compiling with GCC. EXPERIMENTAL."
         }
         compiler.whitelist  macports-gcc-6
         universal_variant   no

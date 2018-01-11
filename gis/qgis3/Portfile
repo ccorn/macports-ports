@@ -6,9 +6,9 @@ PortGroup           github  1.0
 PortGroup           qt5     1.0
 
 name                qgis3
-set commit          1c1de3a
+set commit          b95363c
 github.setup        qgis QGIS ${commit}
-version             2.99.20171201
+version             2.99.20180110
 categories          gis
 maintainers         vince
 description         QGIS 3 is a user-friendly GIS based on Qt 5
@@ -24,15 +24,17 @@ use_parallel_build  no
 homepage            http://www.qgis.org/
 
 patchfiles          patch-app_info_plist_in.diff \
-                    patch-CMakelists_txt.diff
+                    patch-CMakelists_txt.diff \
+                    patch-FindPyQt5_py.diff
 
-checksums           rmd160  a3d9d07479c61da4ce96e6e645eaf9a23c294c65 \
-                    sha256  61d69356a7c53b201d733c1eb6e366c13f181bc022a7429fc17e38418e07bec0
+checksums           rmd160  7edb619f0d85d55949dfca606ba04f8599afad81 \
+                    sha256  796ac70fde5f3ef40797c7b71e058a03c55a39ec107a8fffbae59d06865a8a6d
 
 worksrcdir          QGIS-${commit}
 
 depends_lib-append  port:libiconv \
                     port:expat \
+                    port:libtasn1 \
                     port:libzip \
                     path:lib/libssl.dylib:openssl \
                     port:gsl \
@@ -47,6 +49,8 @@ depends_lib-append  port:libiconv \
                     port:qt5-qtwebkit \
                     port:qt5-qtscript \
                     port:qt5-sqlite-plugin \
+                    port:qt5-qtscxml \
+                    port:qt5-qtxmlpatterns \
                     port:qca-qt5 \
                     port:qca-qt5-ossl \
                     port:qtkeychain-qt5 \
@@ -62,8 +66,15 @@ post-extract {
 }
 
 post-patch {
-    reinplace -E "s|@@@|${prefix}|g" \
+    reinplace -E "s|@PREFIX@|${prefix}|g" \
         ${worksrcpath}/mac/app.info.plist.in
+
+    reinplace -E "s|@FRAMEWORKS_DIR@|${frameworks_dir}|g" \
+        ${worksrcpath}/cmake/FindPyQt5.py
+
+    # Handle QGIS Fix #11399 which doesn’t seem to work anymore
+    reinplace -E "s|#ifdef Q_OS_MAC$|#if 0|" \
+        ${worksrcpath}/src/app/layout/qgslayoutdesignerdialog.cpp
 
     # Handle legacy OS/XCode
     if {[vercmp $xcodeversion 4.6.3] <= 0} {
@@ -75,7 +86,6 @@ post-patch {
 configure.args-append  "-DWITH_GRASS=OFF"
 configure.args-append  "-DWITH_GRASS7=OFF"
 #configure.args-append  "--trace"
-
 
 configure.ldflags       "-Wl,-rpath,${prefix}/libexec/qt5/lib"
 configure.args-append   "-DWITH_3D=ON"
@@ -92,7 +102,7 @@ configure.args-append   "-DWITH_QWTPOLAR=ON"
 configure.args-append   "-DQT_LRELEASE_EXECUTABLE=${prefix}/libexec/qt5/bin/lrelease"
 
 # Server does not build so far
-configure.args-append   "-DWITH_SERVER=FALSE"
+configure.args-append   "-DWITH_SERVER=OFF"
 
     
 # Database variants (from the GDAL port)
@@ -147,14 +157,27 @@ foreach pyver ${python_suffixes} {
                                     port:py${pyver}-pyqt5 \
                                     port:py${pyver}-qscintilla-qt5 \
                                     port:py${pyver}-gdal \
-                                    port:py${pyver}-six
+                                    port:py${pyver}-six 
 
             depends_build-append    port:py${pyver}-sip
 
             depends_run-append      port:py${pyver}-psycopg2 \
-                                    port:py${pyver}-requests
+                                    port:py${pyver}-requests \
+                                    port:py${pyver}-owslib \
+                                    port:py${pyver}-yaml \
+                                    port:py${pyver}-jinja2 \
+                                    port:py${pyver}-pygments
+
 
             configure.args-append   -DPYTHON_EXECUTABLE=${prefix}/bin/python${pyversion}
+            configure.args-append   -DWITH_BINDINGS=ON
+            configure.args-append   -DPYUIC_PROGRAM=${prefix}/bin/pyuic5-${pyversion}
+            configure.args-append   -DPYRCC_PROGRAM=${prefix}/bin/pyrcc5-${pyversion}
+
+            post-patch {
+                reinplace -E \"s|@PYVERSION@|${pyversion}|\" \
+                    ${worksrcpath}/cmake/FindPyQt5.py
+            }
         "
 }
 
@@ -202,7 +225,7 @@ configure.args-append  "-DGSL_CONFIG=${prefix}/bin/gsl-config"
 configure.args-append  "-DPROJ_INCLUDE_DIR=${prefix}/include"
 configure.args-append  "-DPROJ_LIBRARY=${prefix}/lib/libproj.dylib"
 configure.args-append  "-DSPATIALITE_LIBRARY=${prefix}/lib/libspatialite.dylib"
-configure.args-append  "-DSPATIALITE_INCLUDE_DIR=${prefix}/include/spatialite"
+configure.args-append  "-DSPATIALITE_INCLUDE_DIR=${prefix}/include"
 configure.args-append  "-DSPATIALINDEX_LIBRARY=${prefix}/lib/libspatialindex.dylib"
 #configure.args-append  "-DCMAKE_BUILD_TYPE=DEBUG"
 configure.args-append  "-DCMAKE_BUILD_TYPE=RELEASE"
