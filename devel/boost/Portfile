@@ -67,6 +67,35 @@ patchfiles      patch-tools-build-src-engine-build.sh.diff \
 
 patchfiles-append patch-export_serialization_explicit_template_instantiations.diff
 
+proc write_jam s {
+    global worksrcpath
+    set config [open ${worksrcpath}/user-config.jam a]
+    puts ${config} ${s}
+    close ${config}
+}
+
+# clang++ produces broken boost libraries (https://trac.macports.org/ticket/31525)
+# If Apple's clang is used on 32-bit systems, it seems to silently ignore the '-march=i386' flag.
+# (https://trac.macports.org/ticket/38157)
+compiler.blacklist {clang < 421} macports-clang-2.9 macports-clang-3.0 *llvm-gcc-4.2 *gcc-4.0 gcc-3.3
+
+compilers.choose   cc cxx
+mpi.setup          -gcc44 -gcc45 -gcc46 \
+                   -clang33 -clang34 -clang35 \
+                   -llvm -dragonegg33 -dragonegg34
+# compiler.setup does not set configure.compiler, but we need it
+# for proper archflags and to avoid weird fallbacks when blacklisting.
+if {[info exists cdb([c_variant_name],compiler)]} {
+    configure.compiler.add_deps no
+    configure.compiler  $cdb([c_variant_name],compiler)
+}
+
+# It turns out that ccache and distcc can produce boost libraries that, although they
+# compile without warning, have all sorts of runtime errors especially with pointer corruption.
+# Since most people will now use MacPorts' pre-compiled boost, this should not be a problem.
+configure.ccache    no
+configure.distcc    no
+
 post-patch {
     # Prepare compiler wrappers capable of handling one or more -arch options
     file copy -force ${filespath}/wrapper-template \
@@ -75,10 +104,6 @@ post-patch {
         ${worksrcpath}/f-wrapper
     file copy -force ${filespath}/wrapper-template \
         ${worksrcpath}/cxx-wrapper
-
-    # Need a recent C++ compiler version, choosing the one used for libstdcxx
-    configure.compiler macports-gcc-7
-    configure.cxxflags-append -Wno-unused-local-typedefs
 
     reinplace   "s|@@@|${configure.cc}|" ${worksrcpath}/c-wrapper
     reinplace   "s|---|\\\\.c|" ${worksrcpath}/c-wrapper
@@ -100,27 +125,6 @@ post-patch {
     reinplace "s|%%CONFIGURE.CC%%|${configure.cc}|g" ${worksrcpath}/tools/build/src/engine/build.jam \
                                                      ${worksrcpath}/tools/build/src/engine/build.sh
 }
-
-proc write_jam s {
-    global worksrcpath
-    set config [open ${worksrcpath}/user-config.jam a]
-    puts ${config} ${s}
-    close ${config}
-}
-
-# clang++ produces broken boost libraries (https://trac.macports.org/ticket/31525)
-# If Apple's clang is used on 32-bit systems, it seems to silently ignore the '-march=i386' flag.
-# (https://trac.macports.org/ticket/38157)
-compiler.blacklist {clang < 421} macports-clang-2.9 macports-clang-3.0 *llvm-gcc-4.2 *gcc-4.0 gcc-3.3
-
-compilers.choose   cc cxx
-mpi.setup          -gcc -dragonegg
-
-# It turns out that ccache and distcc can produce boost libraries that, although they
-# compile without warning, have all sorts of runtime errors especially with pointer corruption.
-# Since most people will now use MacPorts' pre-compiled boost, this should not be a problem.
-configure.ccache    no
-configure.distcc    no
 
 configure.cmd       ./bootstrap.sh
 configure.args      --without-libraries=python \
