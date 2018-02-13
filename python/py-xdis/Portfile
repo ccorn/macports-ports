@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-xdis
-version             3.6.3
+version             3.6.11
 platforms           darwin
 license             GPL-2
 maintainers         {khindenburg @kurthindenburg} openmaintainer
@@ -24,8 +24,9 @@ homepage            https://pypi.python.org/pypi/${python.rootname}/
 master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  323bcd2b3a9d2f1f38d86b95b6391747658d2fc3 \
-                    sha256  e03eb0afe27c65ac0452dc5c5010de2391624c199bb3b40cd2e82b1cd3881f22
+checksums           rmd160  e6e2f785ed34f021b4fd40448e63b157b3b56cd7 \
+                    sha256  15dacbee4e86b80e4ab8e1734b0f35fb3b884d7a4e19db70a129f17bb8cddfe2 \
+                    size    168216
 
 python.versions     27 34 35 36
 

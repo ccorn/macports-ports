@@ -36,11 +36,11 @@ provides the release version, which is typically updated every month or so.
 
 subport volk-devel {
 
-    github.setup    gnuradio volk 921c240b88a319c8f1a2ea7a988dea5e03adb776
-    version         20180105
+    github.setup    gnuradio volk 945a82d83debccae1997b9e22e7587b8346c0e76
+    version         20180211
     checksums       \
-        rmd160 c8be9ba75db0b3e42e03d64cd73ae7948caa8a25 \
-        sha256 3b5b83b8c4e535dcc29c141832ccabdf54561633fdc8c02afa6f1a6349b5a66f
+        rmd160 ce261864c72b6e26ca343bd6708c5ea63e0f88fe \
+        sha256 0c644279c8e302853a1925b291bb8aecce7cba1b8af8b4cff9cb7e29123a5d81
 
     conflicts       volk
     long_description ${long_description} ${subport} \
@@ -51,6 +51,12 @@ provides the Volk GIT maint or master branch, depending on which is more advance
     # while a prior version is already installed.
     patchfiles-append patch-CMakeLists.txt.diff
     patch.pre_args -p1
+
+    # fix naming of *Clang compiler to just "Clang" for internal use
+    patchfiles-append patch-fix-clang.diff
+
+    # fix C++11 for internal use only
+    patchfiles-append patch-fix-cxx11.diff
 
 }
 

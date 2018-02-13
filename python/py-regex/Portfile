@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-regex
-version             2017.12.12
+version             2018.02.08
 revision            0
 categories-append   devel
 platforms           darwin
@@ -22,8 +22,8 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  e0683c5071d42b83d6ded826ced9ab36cc42c2a8 \
-                    sha256  ee069308c2757e565cc2b6f417ba5288e76cfe4c1764b6826063f4fbd53219d7
+checksums           rmd160  1cc8dc0acd573378c909ac2a28821241e14b4ed2 \
+                    sha256  2353c0e983c4029caf32016f1dddef623c3117ac282a818468c6d2f5d541698d
 
 if {${name} ne ${subport}} {
     livecheck.type      none

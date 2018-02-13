@@ -28,6 +28,8 @@ if {${name} eq ${subport}} {
 
     patchfiles          patch-src-clock_cpp.diff
     conflicts           zmq-devel zmq22 zmq3
+    configure.args-append --disable-libunwind --disable-cxx11
+    patchfiles-append   patch-cxx11.release.diff
 }
 
 # Legacy subport (no longer supported)
@@ -52,12 +54,14 @@ subport zmq22 {
 }
 
 subport zmq-devel {
-    github.setup        zeromq libzmq cea60575f3c7c64a884d02caac1a2f7bde68420b
-    version             20171219
-    checksums           rmd160 656a19b65091d4a7242c3a3ada9dbbeef1c435d2 \
-                        sha256 63c16980e06daedbf3951083460ff45b7f691a9e9697c9291eb88538eab2599d
+    github.setup        zeromq libzmq a30133d8f5e731e0cf5f635371a48ad4ea494a9d
+    version             20180211
+    checksums           rmd160 921ce173753a986663d59e9887dbcb7da5a45924 \
+                        sha256 97d231562a5e892dcd53aa17aa141814a5c08d362e8d8f7f7b1a7c9b06b390a1
 
     conflicts           zmq zmq22 zmq3
+    configure.args-append --disable-libunwind --disable-cxx11
+    patchfiles-append   patch-cxx11.devel.diff
 }
 
 # override github information
@@ -74,7 +78,7 @@ use_autoconf        yes
 autoconf.cmd        ./autogen.sh
 depends_build-append port:automake port:autoconf
 
-configure.args      --disable-silent-rules
+configure.args-append --disable-silent-rules
 
 # macports libtool allows linking against libc++,
 # the libtool in the distribution does not

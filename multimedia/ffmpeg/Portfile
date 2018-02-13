@@ -10,7 +10,7 @@ name                ffmpeg
 conflicts           ffmpeg-devel
 epoch               1
 version             3.4.1
-revision            2
+revision            4
 license             LGPL-2.1+
 categories          multimedia
 maintainers         {devans @dbevans} {jeremyhu @jeremyhu} openmaintainer
@@ -53,7 +53,8 @@ master_sites        http://www.ffmpeg.org/releases/
 use_xz              yes
 
 checksums           rmd160  0cad66d5bee31586fa1885794140ccad1a348b0b \
-                    sha256  5a77278a63741efa74e26bf197b9bb09ac6381b9757391b922407210f0f991c0
+                    sha256  5a77278a63741efa74e26bf197b9bb09ac6381b9757391b922407210f0f991c0 \
+                    size    8481964
 
 # root directory of extracted tarball is owned by root and has permissions 700
 # set to 755 to facilitate maintenance
@@ -66,10 +67,8 @@ depends_build       port:pkgconfig \
                     port:gmake \
                     port:texinfo
 
-# libvpx is static only so can be considered a build dependency (#47934)
-
-depends_build-append \
-                    port:libvpx
+# libvpx 1.7.0 now provides a shared library
+# move dependency from depends_build to depends_lib
 
 depends_lib         port:lame \
                     port:libiconv \
@@ -81,6 +80,7 @@ depends_lib         port:lame \
                     port:libmodplug \
                     port:libass \
                     port:libbluray \
+                    port:libvpx \
                     port:gnutls \
                     port:openjpeg \
                     port:fontconfig \
@@ -140,6 +140,7 @@ configure.args      --enable-swscale \
                     --enable-fontconfig \
                     --enable-libfreetype \
                     --enable-libfribidi \
+                    --disable-jack \
                     --disable-libopencore-amrnb \
                     --disable-libopencore-amrwb \
                     --disable-libxcb \
@@ -327,6 +328,13 @@ if {[variant_isset high10]} {
     require_active_variants x264 high10
 } else {
     require_active_variants x264 "" high10
+}
+
+variant jack description {Enable jack library and indev support} {
+# jack will autoconfigure if not disabled
+    depends_lib-append      port:jack
+    configure.args-delete   --disable-jack \
+                            --disable-indev=jack
 }
 
 variant gpl2 description {Enable GPL code, license will be GPL-2+} {

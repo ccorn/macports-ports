@@ -4,8 +4,8 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-pytest
-version             3.3.1
-revision            1
+version             3.4.0
+revision            0
 categories-append   devel
 platforms           darwin
 license             MIT
@@ -25,8 +25,8 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  1f467ab301153a0c324b4991b5c2168043d36773 \
-                    sha256  cf8436dc59d8695346fcd3ab296de46425ecab00d64096cebe79fb51ecb2eb93
+checksums           rmd160  4a5da71ed58d921206be35b97f9758e56ac25e6b \
+                    sha256  6074ea3b9c999bd6d0df5fa9d12dd95ccd23550df2a582f5f5b848331d2e82ca
 
 if {${name} ne ${subport}} {
     depends_build-append \
