@@ -13,7 +13,7 @@ set LCD             "2017-12-07 19:34:57"
 
 name                codeblocks
 version             16.01-${svn.revision}
-revision            1
+revision            2
 platforms           darwin freebsd
 categories          devel aqua x11
 license             GPL-3+
