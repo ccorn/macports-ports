@@ -63,10 +63,11 @@ if {${subport} eq ${name}} {
 
     # devel
 
-    version         20180218
-    set commit      a99ff558afbee4578cf0fe05619978cbbbc03d38
-    checksums       rmd160 f44cfb2443f75697d95e76a0207b19903805ed7a \
-                    sha256 52ba02944e8685418cfd7cf4199d569ffa994da9bb10b8405e85c419fd05553a
+    version         20180305
+    set commit      49e777aeb1dbb141383faf1e5cb20c7443952302
+    checksums       rmd160 b342a5f2c866c935029034a6cff87a21c8edc3af \
+                    sha256 bb6e680392e79cd591385fc84df527bb1e5e1278036a444de0c528793f54ff5a \
+                    size 6225686
 
     use_bzip2       yes
     master_sites    https://gitlab.kitware.com/cmake/cmake/repository/archive${extract.suffix}?ref=${commit}&
