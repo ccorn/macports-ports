@@ -110,8 +110,6 @@ post-patch {
     file copy -force ${filespath}/wrapper-template \
         ${worksrcpath}/c-wrapper
     file copy -force ${filespath}/wrapper-template \
-        ${worksrcpath}/f-wrapper
-    file copy -force ${filespath}/wrapper-template \
         ${worksrcpath}/cxx-wrapper
 
     reinplace   "s|@@@|${configure.cc}|" ${worksrcpath}/c-wrapper
@@ -123,13 +121,8 @@ post-patch {
         ${worksrcpath}/cxx-wrapper
     reinplace   "s|&&&|${prefix}|" ${worksrcpath}/cxx-wrapper
 
-    reinplace   "s|@@@|${configure.f90}|" ${worksrcpath}/f-wrapper
-    reinplace   "s|---|\\\\.f|" ${worksrcpath}/f-wrapper
-    reinplace   "s|&&&|${prefix}|" ${worksrcpath}/f-wrapper
-
     configure.cc ${worksrcpath}/c-wrapper
     configure.cxx ${worksrcpath}/cxx-wrapper
-    configure.f90 ${worksrcpath}/f-wrapper
 
     reinplace "s|%%CONFIGURE.CC%%|${configure.cc}|g" ${worksrcpath}/tools/build/src/engine/build.jam \
                                                      ${worksrcpath}/tools/build/src/engine/build.sh
