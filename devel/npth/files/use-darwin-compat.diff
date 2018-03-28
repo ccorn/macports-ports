@@ -1,0 +1,21 @@
+--- ./src/Makefile.am.orig	2017-05-16 09:21:06.000000000 +0200
++++ ./src/Makefile.am	2018-03-29 00:19:25.000000000 +0200
+@@ -31,6 +31,7 @@
+ endif
+ 
+ libnpth_la_SOURCES = npth.h npth.c npth-sigev.c
++libnpth_la_SOURCES += darwin_compat.h darwin_compat.c
+ 
+ # AM_CPPFLAGS =
+ # AM_CFLAGS =
+--- ./src/npth.c.orig	2017-06-02 10:34:22.000000000 +0200
++++ ./src/npth.c	2018-03-29 00:26:31.000000000 +0200
+@@ -63,7 +63,7 @@
+   return 0;
+ }
+ #else
+-# include <semaphore.h>
++# include "darwin_compat.h"
+ #endif
+ #ifdef HAVE_UNISTD_H
+ # include <unistd.h>
