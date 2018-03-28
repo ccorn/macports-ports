@@ -32,6 +32,7 @@ depends_lib         port:sgml-common \
                     port:openjade \
                     port:docbook-dsssl \
                     port:docbook-sgml-4.2
+depends_skip_archcheck-append p${perl5.major}-sgmlspm
 
 configure.args-append --mandir=${prefix}/share/man
 
