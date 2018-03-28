@@ -73,7 +73,15 @@ configure.args      --enable-languages="${languages}" \
                     --disable-gpg-test
 
 post-configure {
-    reinplace "s|CC -dynamiclib|CC -dynamiclib [get_canonical_archflags]|g" ${worksrcpath}/libtool
+    if {[variant_isset universal]} {
+        #set suffixes [lmap arch ${universal_archs_to_use} {string cat - $arch}]
+        set suffixes [eval list -[string map {{ } { -}} ${universal_archs_to_use}]]
+    } else {
+        set suffixes {}
+    }
+    foreach suffix ${suffixes} {
+        reinplace "s|CC -dynamiclib|CC -dynamiclib [get_canonical_archflags]|g" ${worksrcpath}${suffix}/libtool
+    }
 }
 
 post-destroot {
