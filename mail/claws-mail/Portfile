@@ -1,7 +1,7 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem      1.0
-PortGroup       active_variants 1.1
+PortGroup       app 1.0
 
 name            claws-mail
 version         3.16.0
@@ -17,7 +17,8 @@ long_description Currently, many features are supported in Claws Mail \
                 threading, filtering, MIME attachments, APOP, SMTP \
                 AUTH, SSL, IPv6, GnuPG, internalization, plugins, \
                 a filtering/processing mechanism, extra folder \
-                properties and much more.
+                properties and much more. Each shipped plugin is enabled \
+                by the corresponding variant of this port.
 
 homepage        http://www.claws-mail.org/
 master_sites    ${homepage}releases/
@@ -29,43 +30,377 @@ use_xz          yes
 
 use_autoreconf  yes
 autoreconf.args -fvi
-depends_build-append    port:pkgconfig
 
-depends_lib     port:gtk2 \
-                port:libetpan \
-                port:gpgme \
-                port:compface \
-                port:gtkspell2 \
-                port:aspell \
-                port:gnutls \
-                port:libgcrypt \
-                port:libarchive \
-                port:libgdata \
-                port:librsvg \
-                port:libical \
-                port:enchant \
-                port:poppler \
-                port:ghostscript \
-                port:bogofilter \
-                port:webkit2-gtk
+patchfiles      patch-Makefile.am-FLAGS.diff patch-crash_c.diff \
+                patch-managesieve_sieve_prefs_c-sscanf.diff
 
-# claws uses gdk/gdkx.h, which is not installed by gtk2 +quartz.
-require_active_variants \
-                gtk2 x11
+# App settings
+# Empty launcher disables app creation
+set launcher    ""
+app.create      no
+app.name        Claws-Mail
+app.executable  claws-mail
+app.icon        claws-mail-128x128.png
 
-configure.args  --disable-jpilot \
+# claws-mail encrypts its passwords using DES in CFB mode, or a GNUTLS cipher.
+# Default key is "passkey0".
+set password    random8c
+
+post-patch {
+    reinplace {s/ -Wl,-export[-_]dynamic//g} ${worksrcpath}/configure.ac
+}
+
+# Basic dependencies
+depends_build   port:pkgconfig
+depends_skip_archcheck-append pkgconfig
+depends_lib     port:libiconv \
+                port:gtk2
+
+# Disable extensions by default, enable them by variants
+configure.args  --with-sysroot=${prefix} \
+                --with-passcrypt-key="${password}" \
+                --disable-alternate-addressbook \
+                --disable-compface \
+                --disable-crash-dialog \
+                --disable-dbus \
+                --disable-enchant \
+                --disable-generic-umpc \
+                --disable-gnutls \
+                --disable-gtk3 \
+                --disable-ipv6 \
+                --disable-jpilot \
+                --disable-ldap \
+                --disable-libetpan \
+                --disable-libsm \
+                --disable-manual \
+                --disable-networkmanager \
+                --disable-nls \
+                --disable-pthread \
+                --disable-startup-notification \
+                --disable-svg \
+                --disable-valgrind \
                 --disable-acpi_notifier-plugin \
+                --disable-address_keeper-plugin \
+                --disable-archive-plugin \
+                --disable-att_remover-plugin \
+                --disable-attachwarner-plugin \
+                --disable-bogofilter-plugin \
                 --disable-bsfilter-plugin \
                 --disable-clamd-plugin \
+                --disable-fancy-plugin \
+                --disable-fetchinfo-plugin \
+                --disable-gdata-plugin \
+                --disable-libravatar-plugin \
+                --disable-mailmbox-plugin \
+                --disable-managesieve-plugin \
+                --disable-newmail-plugin \
                 --disable-notification-plugin \
+                --disable-pdf_viewer-plugin \
                 --disable-perl-plugin \
                 --disable-python-plugin \
+                --disable-pgpcore-plugin \
+                --disable-pgpmime-plugin \
+                --disable-pgpinline-plugin \
+                --disable-rssyl-plugin \
+                --disable-smime-plugin \
                 --disable-spamassassin-plugin \
                 --disable-spam_report-plugin \
-                --disable-startup-notification \
                 --disable-tnef_parse-plugin \
-                --enable-manual \
-                --enable-ipv6 \
-                --enable-crash-dialog
+                --disable-vcalendar-plugin
 
-livecheck.regex ${name}-(\[0-9.\]+)${extract.suffix}
+# Available variants
+variant alt_ab description {use another addressbook implementation} {
+    configure.args-delete   --disable-alternate-addressbook
+    configure.args-append   --enable-alternate-addressbook
+}
+variant compface description {include support for face icons} {
+    depends_lib-append      port:compface
+    configure.args-delete   --disable-compface
+    configure.args-append   --enable-compface
+}
+variant crash_dialog description {include crash handler GUI} {
+    configure.args-delete   --disable-crash-dialog
+    configure.args-append   --enable-crash-dialog
+}
+variant dbus description {include dbus support} {
+    depends_lib-append      port:dbus
+    configure.args-delete   --disable-dbus
+    configure.args-append   --enable-dbus
+}
+variant enchant description {include spell checker interface enchant} {
+    depends_lib-append      port:enchant
+    configure.args-delete   --disable-enchant
+    configure.args-append   --enable-enchant
+}
+variant gnupw requires gnutls description {use GNUTLS for password encryption} {
+    configure.args-append   --with-password-encryption=gnutls
+}
+variant gnutls description {use GNUTLS for transport security} {
+    depends_lib-append      port:gnutls
+    configure.args-delete   --disable-gnutls
+    configure.args-append   --enable-gnutls
+}
+variant gtk3 description {enable GTK3 and Webkit support} {
+    depends_lib-append      port:gtk3 port:webkit2-gtk
+    configure.args-delete   --disable-gtk3
+    configure.args-append   --enable-gtk3
+}
+variant gtk_disable_deprecated description {disable deprecated GTK functions} {
+    configure.args-append   --disable-deprecated
+}
+variant imap4 description {include IMAP4/NNTP support using libetpan} {
+    depends_lib-append      port:libetpan
+    configure.args-delete   --disable-libetpan
+    configure.args-append   --enable-libetpan
+}
+variant ipv6 description {include IPv6 support} {
+    configure.args-delete   --disable-ipv6
+    configure.args-append   --enable-ipv6
+}
+variant jpilot description {include PalmPilot sync support} {
+    depends_lib-append      port:pilot-links
+    configure.args-delete   --disable-jpilot
+    configure.args-append   --enable-jpilot
+}
+variant ldap requires threads description {enable LDAP lookups by OpenLDAP} {
+    depends_lib-append      port:openldap
+    configure.args-delete   --disable-ldap
+    configure.args-append   --enable-ldap
+}
+variant networkmanager description {listen to NetworkManager events} {
+    configure.args-delete   --disable-networkmanager
+    configure.args-append   --enable-networkmanager
+}
+variant nls description {include national language support} {
+    depends_lib-append      port:gettext
+    configure.args-delete   --disable-nls
+    configure.args-append   --enable-nls
+}
+variant manual description {install manual} {
+    depends_build-append    port:docbook-utils
+    depends_skip_archcheck-append docbook-utils
+    configure.args-delete   --disable-manual
+    configure.args-append   --enable-manual
+}
+variant session description {enable use of X11 SessionManager} {
+    depends_lib-append      port:xorg-libsm
+    configure.args-delete   --disable-libsm
+    configure.args-append   --enable-libsm
+}
+variant startup_notification description {use StartupNotification API} {
+    depends_lib-append      port:startup-notification
+    configure.args-delete   --disable-startup-notification
+    configure.args-append   --enable-startup-notification
+}
+variant svg description {include SVG support} {
+    depends_lib-append      port:librsvg
+    configure.args-delete   --disable-svg
+    configure.args-append   --enable-svg
+}
+variant threads description {include POSIX threads support} {
+    configure.args-delete   --disable-pthread
+    configure.args-append   --enable-pthread
+}
+variant umpc description {enable generic UMPC code} {
+    configure.args-delete   --disable-generic-umpc
+    configure.args-append   --enable-generic-umpc
+}
+# Plugins
+variant acpi_notifier description {include ACPI notifier (Mail LED) plugin} {
+    configure.args-delete   --disable-acpi_notifier-plugin
+    configure.args-append   --enable-acpi_notifier-plugin
+}
+variant address_keeper description {include adress keeper plugin} {
+    configure.args-delete   --disable-address_keeper-plugin
+    configure.args-append   --enable-address_keeper-plugin
+}
+variant archive description {include mail archiver plugin} {
+    depends_lib-append      port:libarchive
+    configure.args-delete   --disable-archive-plugin
+    configure.args-append   --enable-archive-plugin
+}
+variant att_remover description {include attachment remover plugin} {
+    configure.args-delete   --disable-att_remover-plugin
+    configure.args-append   --enable-att_remover-plugin
+}
+variant attachwarner description {include forgot-attachment warner plugin} {
+    configure.args-delete   --disable-attachwarner-plugin
+    configure.args-append   --enable-attachwarner-plugin
+}
+variant bogofilter description {include bogofilter anti-spam plugin} {
+    depends_run-append      bin:bogofilter:bogofilter
+    depends_skip_archcheck-append bogofilter
+    configure.args-delete   --disable-bogofilter-plugin
+    configure.args-append   --enable-bogofilter-plugin
+}
+variant bsfilter description {include bsfilter anti-spam plugin} {
+    configure.args-delete   --disable-bsfilter-plugin
+    configure.args-append   --enable-bsfilter-plugin
+}
+variant clamd description {include ClamAV plugin} {
+    configure.args-delete   --disable-clamd-plugin
+    configure.args-append   --enable-clamd-plugin
+}
+variant fancy description {include fancy (HTML) plugin} {
+    depends_lib-append      port:webkit-gtk
+    configure.args-delete   --disable-fancy-plugin
+    configure.args-append   --enable-fancy-plugin
+}
+variant fetchinfo description {include fetchinfo plugin,\
+    which adds headers useful for filtering} {
+    configure.args-delete   --disable-fetchinfo-plugin
+    configure.args-append   --enable-fetchinfo-plugin
+}
+variant gdata description {include gdata plugin} {
+    depends_lib-append      port:libgdata
+    configure.args-delete   --disable-gdata-plugin
+    configure.args-append   --enable-gdata-plugin
+}
+variant gpg description {include GnuPG crypto plugins} {
+    configure.args-delete   --disable-pgpinline-plugin
+    configure.args-delete   --disable-pgpmime-plugin
+    configure.args-delete   --disable-pgpcore-plugin
+    configure.args-append   --enable-pgpcore-plugin
+    configure.args-append   --enable-pgpmime-plugin
+    configure.args-append   --enable-pgpinline-plugin
+    depends_lib-append      port:gpgme
+    depends_run-append      port:pinentry \
+                            port:gnupg2
+    depends_skip_archcheck-append pinentry gnupg2
+}
+variant avatar description {include avatar plugin} {
+#   depends_lib-append      port:libravatar
+    configure.args-delete   --disable-libravatar-plugin
+    configure.args-append   --enable-libravatar-plugin
+}
+variant mbox description {include mbox format plugin} {
+    configure.args-delete   --disable-mailmbox-plugin
+    configure.args-append   --enable-mailmbox-plugin
+}
+variant managesieve description {include managesieve plugin} {
+    configure.args-delete   --disable-managesieve-plugin
+    configure.args-append   --enable-managesieve-plugin
+}
+variant newmail description {include new-mail logfile plugin} {
+    configure.args-delete   --disable-newmail-plugin
+    configure.args-append   --enable-newmail-plugin
+}
+variant notification description {include notification plugin} {
+#    depends_lib-append      port:libindicator
+    depends_lib-append      port:libcanberra
+    configure.args-delete   --disable-notification-plugin
+    configure.args-append   --enable-notification-plugin
+}
+variant pdf description {include PDF viewer plugin} {
+    # claws pdf_viewer uses gdk/gdkx.h, which is not installed by gtk2 +quartz.
+    require_active_variants gtk2 x11
+    depends_lib-append      port:ghostscript port:poppler
+    configure.args-delete   --disable-pdf_viewer-plugin
+    configure.args-append   --enable-pdf_viewer-plugin
+}
+variant perl description {include perl-based filtering plugin} {
+    configure.args-delete   --disable-perl-plugin
+    configure.args-append   --enable-perl-plugin
+}
+variant python description {include python-based action scripting plugin} {
+    configure.args-delete   --disable-python-plugin
+    configure.args-append   --enable-python-plugin
+}
+variant rss description {include RSS plugin} {
+    configure.args-delete   --disable-rssyl-plugin
+    configure.args-append   --enable-rssyl-plugin
+}
+variant smime description {include S/MIME plugin} {
+    configure.args-delete   --disable-smime-plugin
+    configure.args-append   --enable-smime-plugin
+    depends_lib-append      port:gpgme
+    depends_run-append      port:pinentry \
+                            port:gnupg2
+    depends_skip_archcheck-append pinentry gnupg2
+}
+variant spam_report description {include spam reporting plugin} {
+    configure.args-delete   --disable-spam_report-plugin
+    configure.args-append   --enable-spam_report-plugin
+}
+variant spamassassin description {include SpamAssassin plugin} {
+    depends_run-append      bin:spamc:p5-mail-spamassassin
+    depends_skip_archcheck-append p5-mail-spamassassin
+    configure.args-delete   --disable-spamassassin-plugin
+    configure.args-append   --enable-spamassassin-plugin
+}
+variant tnef description {include TNEF parser plugin} {
+    # Disabled by default due to missing libytnef
+    configure.args-delete   --disable-tnef_parse-plugin
+    configure.args-append   --enable-tnef_parse-plugin
+}
+variant vcalendar description {include vcalendar plugin} {
+    depends_lib-append      port:libical
+    configure.args-delete   --disable-vcalendar-plugin
+    configure.args-append   --enable-vcalendar-plugin
+}
+
+# Mac OS X variants
+platform macosx {
+    variant app_term conflicts app_x11_system app_x11 \
+        description {Create application invoking the program via Terminal.app} {
+        set launcher /Applications/Utilities/Terminal.app
+        app.create  yes
+    }
+    variant app_x11_system conflicts app_term app_x11 \
+        description {Create application invoking the program via Utilities/X11.app} {
+        set launcher /Applications/Utilities/X11.app
+        app.create  yes
+    }
+    variant app_x11 conflicts app_term app_x11_system \
+        description {Create application invoking the program via MacPorts X11.app} {
+        depends_run-append  port:xorg-server
+	depends_skip_archcheck-append xorg-server
+        set launcher ${applications_dir}/X11.app
+        app.create  yes
+   }
+}
+
+# As of 3.11.1, +pdf requires gdkx.h (GTK-X11?)
+# As of 3.11.1, +rss causes duplicate symbol error on linking
+# As of 3.11.1, +universal 64-bit build corrupts socket open results
+# => "Another instance of Claws-Mail is already running"
+default_variants    +address_keeper +archive +att_remover +attachwarner \
+                    +compface +enchant +fetchinfo +gnupw +gnutls +gpg \
+                    +imap4 +ipv6 +manual +mbox +newmail +nls +rss +smime +svg \
+                    +threads +vcalendar
+
+post-destroot {
+    # Avoid collision with sylpheed port
+    file delete ${destroot}${prefix}/bin/sylpheed-claws
+
+    if {${launcher} ne ""} {
+        # An app has been created that launches the program directly.
+        # GPG2's pinentry requires a tty or DISPLAY,
+        # so we need to open the binary with Terminal.app or X11.app;
+        # therefore, replace the symlink to the program with a shell script.
+        # In the script, "$@" by launchd is e.g. -psn_0_569483, ignore that;
+        # stdout/err seem to be piped to syslog;
+        # stdin seems to be closed or /dev/null.
+        set startcmd ${destroot}${applications_dir}/${app.name}.app/Contents/MacOS/${app.name}
+        delete ${startcmd}
+        set fp [open ${startcmd} w 0755]
+        puts $fp "#! /bin/bash
+/usr/bin/open -a '${launcher}' '${prefix}/bin/${app.executable}'"
+        close $fp
+    }
+}
+
+post-activate {
+    # Provide ${prefix}/etc/mime.types
+    system "if test ! -e \"${prefix}/etc/mime.types\"\
+            && test -e /etc/httpd/mime.types; then\
+                rm -f \"${prefix}/etc/mime.types\"\
+                && ln -s /etc/httpd/mime.types \"${prefix}/etc/mime.types\";\
+            fi"
+    # Refresh GNOME's icon cache
+    system "gtk-update-icon-cache -f -t ${prefix}/share/icons/hicolor"
+}
+
+livecheck.type  regex
+livecheck.url   ${homepage}/releases.php
+livecheck.regex {Latest Release: <a href='/releases.php'>([\d.]+)</a>}

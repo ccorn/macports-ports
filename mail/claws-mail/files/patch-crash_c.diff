@@ -1,0 +1,15 @@
+--- src/crash.c.orig	2017-12-17 12:48:38.000000000 +0100
++++ src/crash.c	2018-03-29 02:32:39.000000000 +0200
+@@ -501,8 +501,11 @@ static void crash_handler(int sig)
+ 	 * let's hope argv0 aren't trashed.
+ 	 * both are defined in main.c.
+ 	 */
++#ifdef HAVE_LIBSM
+ 	extern gchar *argv0;
+-
++#else
++	gchar *argv0 = "claws-mail";
++#endif
+ 
+ 	/*
+ 	 * besides guarding entrancy it's probably also better 
