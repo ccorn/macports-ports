@@ -110,7 +110,7 @@ configure.args  --with-sysroot=${prefix} \
                 --disable-vcalendar-plugin
 
 # Available variants
-variant alt_ab description {use another addressbook implementation} {
+variant alternate_addressbook description {use another addressbook implementation} {
     configure.args-delete   --disable-alternate-addressbook
     configure.args-append   --enable-alternate-addressbook
 }
@@ -142,7 +142,7 @@ variant gnutls description {use GNUTLS for transport security} {
     configure.args-append   --enable-gnutls
 }
 variant gtk3 description {enable GTK3 and Webkit support} {
-    depends_lib-append      port:gtk3 port:webkit2-gtk
+    depends_lib-append      port:gtk3
     configure.args-delete   --disable-gtk3
     configure.args-append   --enable-gtk3
 }
@@ -243,7 +243,7 @@ variant clamd description {include ClamAV plugin} {
     configure.args-append   --enable-clamd-plugin
 }
 variant fancy description {include fancy (HTML) plugin} {
-    depends_lib-append      port:webkit-gtk
+    depends_lib-append      port:webkit2-gtk
     configure.args-delete   --disable-fancy-plugin
     configure.args-append   --enable-fancy-plugin
 }
