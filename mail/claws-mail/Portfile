@@ -141,7 +141,7 @@ variant gnutls description {use GNUTLS for transport security} {
     configure.args-delete   --disable-gnutls
     configure.args-append   --enable-gnutls
 }
-variant gtk3 description {enable GTK3 and Webkit support} {
+variant gtk3 description {enable GTK3 support} {
     depends_lib-append      port:gtk3
     configure.args-delete   --disable-gtk3
     configure.args-append   --enable-gtk3
@@ -242,7 +242,7 @@ variant clamd description {include ClamAV plugin} {
     configure.args-delete   --disable-clamd-plugin
     configure.args-append   --enable-clamd-plugin
 }
-variant fancy description {include fancy (HTML) plugin} {
+variant fancy requires gtk3 description {include fancy (HTML) plugin} {
     depends_lib-append      port:webkit2-gtk
     configure.args-delete   --disable-fancy-plugin
     configure.args-append   --enable-fancy-plugin
