@@ -37,4 +37,6 @@ post-patch {
         reinplace s|@PREFIX@|${prefix}|g ${worksrcpath}/src/paths.c
 }
 
-configure.args          --disable-sdltest
+configure.args      --disable-sdltest
+
+livecheck.url       https://ftp.gnu.org/gnu/freedink/

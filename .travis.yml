@@ -2,7 +2,7 @@ language: c
 matrix:
   include:
   - os: osx
-    osx_image: xcode9.3beta
+    osx_image: xcode9.3
   - os: osx
     osx_image: xcode8.3
   - os: osx
@@ -13,3 +13,5 @@ before_install:
 - source ./_ci/bootstrap.sh
 script:
 - sudo ./runner
+notifications:
+  webhooks: https://infra.macports.org/pr-bot/travis

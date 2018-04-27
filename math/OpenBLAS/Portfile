@@ -7,7 +7,7 @@ PortGroup           muniversal 1.0
 name                OpenBLAS
 categories          math science
 license             BSD
-maintainers         nicos {michaelld @michaelld} openmaintainer
+maintainers         {nicos @NicosPavlov} {michaelld @michaelld} openmaintainer
 description         OpenBLAS is an optimized BLAS library based on GotoBLAS2
 long_description    ${description}
 platforms           darwin
@@ -19,11 +19,11 @@ archive_sites
 subport OpenBLAS-devel {}
 if {[string first "-devel" $subport] > 0} {
 
-    github.setup    xianyi OpenBLAS 2c7392f07bb8023adbc7b85c049d16607ade77e1
-    version         20180304
-    checksums       rmd160 f9e54ea1068f766f1d9978364c8609b8187d837a \
-                    sha256 4c4e90f9707e97869a2cee6679868a786fe3191ea3e039a93350b2c6a8dda3ef \
-                    size   11760340
+    github.setup    xianyi OpenBLAS 8a3b6fa108b15331c2af8777d1ea0206f85673b8
+    version         20180423
+    checksums       rmd160 9fd3e873e9a07dc523339bc9eb496ce0f186be0f \
+                    sha256 589ff60bf00253dfd4b8b98f4db09074f74839d1dab007dbcb4c0b2507182add \
+                    size   11786937
 
     name            ${github.project}-devel
     conflicts       OpenBLAS
@@ -31,7 +31,7 @@ if {[string first "-devel" $subport] > 0} {
     patchfiles      patch-libnoarch.devel.diff \
                     patch-linkLib.devel.diff
 
-    livecheck.url   ${github.homepage}/commits/develop.atom
+    github.livecheck.branch develop
 
 } else {
 

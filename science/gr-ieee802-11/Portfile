@@ -6,11 +6,11 @@ PortGroup           github 1.0
 PortGroup           active_variants 1.1
 PortGroup           cxx11 1.1
 
-github.setup        bastibl gr-ieee802-11 2d3201c7a1d7ac384228121c744bef4365fd8295
-version             20171115
-revision            1
-checksums           rmd160 74c15293871b59c03f8723d5368df50e17ea3a5c \
-                    sha256 405663fde4ab36de0515e013e41b457d7b84c1ef0c55292478df1803d2895124
+github.setup        bastibl gr-ieee802-11 08787e1ddb706b3aa40ed9170d1ab37289d876f4
+version             20180410
+checksums           rmd160 e9dbe0b75d5d4c1fbe0a5bba802f25b1d87f9ad7 \
+                    sha256 7d795af70469b8a2af2530cac319a063450114b49fe6a53044595f5c3422b105 \
+                    size   240442
 
 # allow gr-ieee802-11 to work with both gnuradio and gnuradio-devel ...
 

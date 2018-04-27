@@ -31,15 +31,16 @@ dist_subdir         cmake
 
 subport cmake-devel {}
 
-set branch          3.10
+set branch          3.11
 
 if {${subport} eq ${name}} {
 
     # release
 
-    version         ${branch}.2
-    checksums       rmd160 67170961a29399947a0ed2ea4ffc045650ece802 \
-                    sha256 80d0faad4ab56de07aa21a7fc692c88c4ce6156d42b0579c6962004a70a3218b
+    version         ${branch}.1
+    checksums       rmd160 8bf925456e778b489301d8e1d5cdb1e93d4ccc5c \
+                    sha256 57bebc6ca4d1d42c6385249d148d9216087e0fda57a47dc5c858790a70217d0c \
+                    size   7951125
 
     master_sites    ${homepage}/files/v${branch}/
     conflicts       cmake-devel
@@ -50,10 +51,10 @@ if {${subport} eq ${name}} {
     # release-only patches
     patchfiles-append \
         patch-Modules-FindQt4.cmake.release.diff \
-        patch-Modules-FindFreetype.cmake.release.diff \
         patch-Modules-noArchCheck.release.diff \
         patch-CMakeFindFrameworks.cmake.release.diff \
-        patch-Source_CMakeVersionCompute.cmake.release.diff
+        patch-Source_CMakeVersionCompute.cmake.release.diff \
+        patch-Source_CMakeLists.txt.diff
 
     livecheck.type  regex
     livecheck.regex ${name}-(\[0-9.\]+)${extract.suffix}
@@ -63,11 +64,11 @@ if {${subport} eq ${name}} {
 
     # devel
 
-    version         20180305
-    set commit      49e777aeb1dbb141383faf1e5cb20c7443952302
-    checksums       rmd160 b342a5f2c866c935029034a6cff87a21c8edc3af \
-                    sha256 bb6e680392e79cd591385fc84df527bb1e5e1278036a444de0c528793f54ff5a \
-                    size 6225686
+    version         20180423
+    set commit      3db40923295a6430eb957a3cf6826bbb18a78527
+    checksums       rmd160 ab2fdeedde049e18e492c36327d91382ec613b13 \
+                    sha256 80f1397f5041de764c324f4048052331cccf0d1276fcdaf76d85f56afb961ffd \
+                    size   6233178
 
     use_bzip2       yes
     master_sites    https://gitlab.kitware.com/cmake/cmake/repository/archive${extract.suffix}?ref=${commit}&

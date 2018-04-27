@@ -5,6 +5,7 @@ PortGroup       app 1.0
 
 name            claws-mail
 version         3.16.0
+revision        1
 categories      mail news
 platforms       darwin
 license         GPL-3+

@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        JetBrains kotlin 1.2.30 v
+github.setup        JetBrains kotlin 1.2.40 v
 github.tarball_from releases
 distname            ${name}-compiler-${version}
 categories          lang java
@@ -21,8 +21,8 @@ long_description    Kotlin is a pragmatic programming language for JVM \
 
 homepage            https://kotlinlang.org/
 
-checksums           rmd160  38fac15462d8e599b11192153dce3f00ba9e1846 \
-                    sha256  4d6965877301d44241ca6de36480140992dc8a6b1c1884baeb5239ce2c43e071
+checksums           rmd160  578c9adb8301f03ae8b77fb06ac0cce509c73be9 \
+                    sha256  3498571126c335be0feec24075c359f1954d46bbabccafc729ec49db1a509658
 
 depends_run         bin:java:kaffe
 

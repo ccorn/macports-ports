@@ -4,14 +4,14 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-tqdm
-version             4.19.6
+version             4.23.0
 revision            0
 categories-append   devel
 platforms           darwin
 license             MIT
 supported_archs     noarch
 
-python.versions     27 35 36
+python.versions     27 34 35 36
 
 maintainers         stromnov openmaintainer
 
@@ -23,8 +23,8 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  c90d4a633bd930eb67334899ef471ab9cc9f292f \
-                    sha256  5ec0d4442358e55cdb4a0471d04c6c831518fd8837f259db5537d90feab380df
+checksums           rmd160  a5d0c322be9a5fcc05ffc4000688d4705dce42da \
+                    sha256  fe3d218d5b61993d415aa2a9db6dd64c0e4cefb90164ebb197ef3b1d99f531dc
 
 if {${name} ne ${subport}} {
     depends_lib-append  port:py${python.version}-setuptools

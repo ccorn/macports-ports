@@ -4,23 +4,27 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-boto3
-version             1.6.3
+version             1.7.6
 platforms           darwin
+supported_archs     noarch
 license             Apache-2
-maintainers         {@emcrisostomo gmail.com:enrico.m.crisostomo} openmaintainer
+maintainers         {emcrisostomo @emcrisostomo} openmaintainer
 
 description         The AWS SDK for Python
-long_description    ${description}
+long_description    Boto3 is the Amazon Web Services (AWS) Software \
+                    Development Kit (SDK) for Python, which allows Python \
+                    developers to write software that makes use of services \
+                    like Amazon S3 and Amazon EC2.
 
 homepage            https://github.com/boto/boto3
 master_sites        pypi:b/boto3
 distname            boto3-${version}
 
-checksums           rmd160  ec00cebeb21a311c32ab6916bcdb139935de33d7 \
-                    sha256  cf5768f1b9f26d5f82369ef97e11eee0010d10f8723b081c61ff17a1cd199bea \
-                    size    92970
+checksums           rmd160 c25edee01ca9f910386df8ffbd1e34a7d4436591 \
+                    sha256 069189ce54e1f22e8ffcd9d638f4f36b15d89d0ea31bd11ff0b87a6f5aaee9b6 \
+                    size   92918
 
-python.versions     27 34 35 36
+python.versions     27 35 36
 
 if {${name} ne ${subport}} {
     depends_build-append \

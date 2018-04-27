@@ -4,7 +4,7 @@ PortSystem          1.0
 
 name                balsa
 version             2.5.5
-revision            1
+revision            2
 license             GPL-3
 description         GNOME e-mail client
 long_description    Balsa is an e-mail client for GNOME, highly \
@@ -47,7 +47,7 @@ depends_lib         port:desktop-file-utils \
                     path:lib/libssl.dylib:openssl \
                     port:sqlite3
 
-depends_run         port:gnome-themes-standard \
+depends_run         port:adwaita-icon-theme \
                     port:yelp
                 
 patchfiles          patch-configure.ac.diff \

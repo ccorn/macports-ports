@@ -22,7 +22,7 @@ if {${subport} eq "volk-gnss-sdr"} {
         This port is kept up with the VOLK-GNSS-SDR release, which is typically updated every few months. This version compiles against the gnss-sdr and gnuradio ports.
 
     github.setup        gnss-sdr gnss-sdr 0.0.9 v
-    revision            2
+    revision            3
     checksums           rmd160 695cab70f3fe597e53cc772bfb96096e6fe0d139 \
                         sha256 5110f66c8b8a63ee5db5569f0b1f8040f36e3541a3a249d08f3154bc05317184
     github.tarball_from tags
@@ -44,7 +44,7 @@ subport volk-gnss-sdr-devel {
     name                volk-gnss-sdr-devel
     github.setup        gnss-sdr gnss-sdr 32e4d227af032365cfd7f9291d9f2c2fca57d99d
     version             20170225
-    revision            2
+    revision            3
     checksums           rmd160 695cab70f3fe597e53cc772bfb96096e6fe0d139 \
                         sha256 5110f66c8b8a63ee5db5569f0b1f8040f36e3541a3a249d08f3154bc05317184
 
@@ -62,17 +62,22 @@ subport volk-gnss-sdr-next {
         This port is kept up with the VOLK-GNSS-SDR GIT next branch, which is typically updated daily to weekly.  This version of VOLK-GNSS-SDR generally contains fixes and new features that will be incorporated in an upcoming release, and compiles against the gnss-sdr-next and gnuradio-next ports.  This port may or not compile or function correctly, as it represents a work in progress.  If it does not work, check back in a few days.  Or try deactivating the currently active gnss-sdr and gnuradio ports, cleaning any current builds, and trying again.
 
     name                volk-gnss-sdr-next
-    github.setup        gnss-sdr gnss-sdr 07b25ebb06e0afa0e517b7b063783ce9a5ace11f
-    version             20180303
-    checksums           rmd160 bebfeba96332612d5df51421a199978adeba99c5 \
-                        sha256 93925886724d5981acedd16a8df59e073299b84b825d591f3c9bdef5fa05cb98 \
-                        size   3749132
+    github.setup        gnss-sdr gnss-sdr 8b7bca9ea56a7ff1ab2dc77ce1547f803756923d
+    version             20180423
+    checksums           rmd160 bd46c5e78b411a56937aa2a9966f027b65eeae2c \
+                        sha256 ecfdb1ab6278b82038d3dea1446804bfb9c39c6693aa6f49d5395e3e0f3aeb2e \
+                        size   3410167
 
     conflicts           volk-gnss-sdr volk-gnss-sdr-devel
 
-    # overload the github livecheck URL with the next branch.
+    # overload the github livecheck branch
 
-    livecheck.url   ${github.homepage}/commits/next.atom
+    github.livecheck.branch next
+
+    # temporary patch to fix setting of C++ standard
+
+    patchfiles-append patch-fix_cxx1z.diff
+    patch.pre_args -p1
 
 }
 
@@ -82,7 +87,8 @@ homepage            http://gnss-sdr.org
 
 depends_build-append port:pkgconfig
 
-# can use either the Volk release or devel port
+# can use either the Volk release or devel port.
+# the Volk API is required, not the ABI.
 
 depends_lib-append \
     path:lib/libvolk.dylib:volk \

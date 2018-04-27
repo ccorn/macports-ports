@@ -21,10 +21,11 @@ long_description    \
     protocols and more.
 
 if {${name} eq ${subport}} {
-    github.setup        zeromq libzmq 4.2.3 v
+    github.setup        zeromq libzmq 4.2.5 v
 
-    checksums           rmd160 fb34afb5d30a1b76d03f933b2607816126c9176e \
-                        sha256 57988a1142b50151b81d7b1580adb824b9244d9d01269f52ff2c5b886fe021a1
+    checksums           rmd160 de7e0d1e380991b55031a22c7b2fa482d650a0b4 \
+                        sha256 3a051a265e8b6a676e13e85179af96702c706491de248bc955f4384519faa2aa \
+                        size   714534
 
     patchfiles          patch-src-clock_cpp.diff
     conflicts           zmq-devel zmq22 zmq3
@@ -54,11 +55,11 @@ subport zmq22 {
 }
 
 subport zmq-devel {
-    github.setup        zeromq libzmq 4ea1e78d9d06255db275723bd71501eff6d265ca
-    version             20180305
-    checksums           rmd160 9ff8821e88c5048fcffd823dc05a15adfa8a335b \
-                        sha256 3b2f0124caeccf7fc53957367c32621db07f6046b61e65a09abbb6b97110c4d6 \
-                        size   700000
+    github.setup        zeromq libzmq 7f230b12fe7882c0754b16f9622539536e3c16da
+    version             20180423
+    checksums           rmd160 3f54742c9dbed7510983580731dfe837a47db88c \
+                        sha256 1f7245f5f39c04205b1fb6b89d50cab66da19be86b363341d376e7ca690bf67a \
+                        size   713442
 
     conflicts           zmq zmq22 zmq3
     configure.args-append --disable-libunwind --disable-cxx11
@@ -86,3 +87,14 @@ configure.args-append --disable-silent-rules
 
 depends_build-append port:libtool port:pkgconfig
 build.args          LIBTOOL=${prefix}/bin/glibtool
+
+# special building for PPC/PPC64 for zmq and zmq-devel
+
+if {(${subport} eq "zmq" || ${subport} eq "zmq-devel") &&
+    (${build_arch} eq "ppc" || ${build_arch} eq "ppc64")} {
+
+    # force c++11
+    PortGroup cxx11 1.1
+
+    configure.args-replace --disable-cxx11 --enable-cxx11
+}

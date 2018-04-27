@@ -3,12 +3,12 @@
 PortSystem 1.0
 PortGroup           github 1.0
 
-github.setup        aws amazon-ecs-cli 1.4.0 v
+github.setup        aws amazon-ecs-cli 1.5.0 v
 name                ecs-cli
 
 categories          devel
 license             Apache-2
-maintainers         {@emcrisostomo gmail.com:enrico.m.crisostomo} openmaintainer
+maintainers         {emcrisostomo @emcrisostomo} openmaintainer
 platforms           darwin
 supported_archs     x86_64
 
@@ -34,10 +34,9 @@ distname            ${name}-darwin-amd64-v${version}
 extract.suffix
 extract.only
 
-checksums           md5    8b24ed5c5294beec9dbd4fedb5283747 \
-                    rmd160 88b5b633c4f2d615461a6ac5ef7113d5c7f96af7 \
-                    sha256 c2882dfdb55ad1259601453cf6d468fd558793bc4296d4d9c9add3fb768e28bb \
-                    size   30289712
+checksums           rmd160 3f9d033d1fc3dc377341f6749ac062443ca15a9b \
+                    sha256 645d6f2ea4b34a50920cd5fed2c04c6275f3d5d37b60e055b4daed76aaffcc2e \
+                    size   33927472
 
 use_configure       no
 

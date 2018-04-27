@@ -14,7 +14,7 @@ revision            0
 license             BSD
 categories          science parallel net
 platforms           darwin
-maintainers         eborisch \
+maintainers         {eborisch @eborisch} \
                     sean \
                     openmaintainer
 
@@ -74,7 +74,7 @@ if {[string first "-devel" $subport] > 0} {
 # As MPICH creates compiler wrappers, there are lots of
 # variants for what compiler the user would like to wrap.
 
-# Sup-ports names and corresponding configure.compiler value
+# Subport names and corresponding configure.compiler value
 array set clist {
     clang   {clang}
     clang37 {macports-clang-3.7}
@@ -318,7 +318,7 @@ if {${subport} != ${name}} {
         revision                3
 
         compilers.choose   fc f77 f90
-        compilers.setup    -dragonegg default_fortran
+        compilers.setup    default_fortran
 
         if {[fortran_variant_isset]} {
             configure.args-delete   --disable-fortran

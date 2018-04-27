@@ -7,7 +7,8 @@ PortGroup           gobject_introspection 1.0
 
 name                gegl-0.3
 set gname           gegl
-version             0.3.28
+version             0.3.34
+revision            1
 set branch          [join [lrange [split ${version} .] 0 1] .]
 conflicts           gegl-devel
 license             {GPL-3+ LGPL-3+}
@@ -28,9 +29,9 @@ use_bzip2           yes
 
 distname            ${gname}-${version}
 
-checksums           rmd160  6a81a236c889f3594626ac771e136999b92d9c60 \
-                    sha256  152f87604a5a191775329dfb63764efa1d5c32403d1438da68e242f96b7d23ff \
-                    size    6530569
+checksums           rmd160  d9f4ffbb1be827a8dbd4fc10e828325b4b85e384 \
+                    sha256  5ca2227655ebf1ab2e252cee3eede219c758336394288ef301b93264b9411304 \
+                    size    6707964
 
 depends_build       port:pkgconfig \
                     port:w3m \
@@ -58,6 +59,11 @@ depends_lib         port:babl \
 
 patchfiles          patch-configure.ac.diff
 
+# disable external operation ff-save for now
+# AVFMT_RAWPICTURE removed in ffmpeg-devel
+# https://trac.macports.org/ticket/55389
+patchfiles-append  disable-broken-ffsave.patch
+
 post-patch {
     # http://trac.macports.org/ticket/35148
     if {${os.major} < 10} {
@@ -68,7 +74,8 @@ post-patch {
 gobject_introspection yes
 
 # blacklist compilers that do not support C11 (redefinition of typedef 'GeglDownscale2x2Fun' in gegl-algorithms.h at line 51)
-compiler.blacklist  *gcc* {clang < 300}
+# tweak gcc blacklisting for 10.5 ppc per kencu
+compiler.blacklist  *gcc-3.* *gcc-4.* {clang < 300}
 
 use_autoreconf      yes
 autoreconf.args     -fvi

@@ -1,14 +1,15 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=portfile:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
+PortGroup           muniversal 1.0
 
 name                rust
-version             1.24.0
+version             1.25.0
 categories          lang devel
 platforms           darwin
 supported_archs     i386 x86_64
 license             {MIT Apache-2} BSD zlib NCSA Permissive
-maintainers         g5pw
+maintainers         {g5pw @g5pw} openmaintainer
 
 description         A safe, concurrent, practical language
 
@@ -24,10 +25,10 @@ long_description    Rust is a curly-brace, block-structured expression \
 homepage            https://www.rust-lang.org/
 
 # can use cmake or cmake-devel; default to cmake.
-depends_build       bin:python2.7:python27 \
-                    bin:cmake:cmake
+depends_build       path:bin/cmake:cmake \
+                    bin:python2.7:python27
 
-depends_lib         port:llvm-5.0
+depends_lib         port:llvm-6.0
 
 master_sites        https://static.rust-lang.org/dist
 
@@ -35,49 +36,65 @@ distname            ${name}c-${version}-src
 
 patchfiles          patch-src-librustc-llvm-lib.diff
 
-set rust_platform   ${build_arch}-apple-darwin
+set ruststd_version 1.24.0
+set rustc_version   1.24.0
+set cargo_version   0.25.0
 
-if {${build_arch} eq "i386"} {
-    set rust_platform i686-apple-darwin
+if {![variant_isset universal]} {
+    if {${build_arch} eq "i386"} {
+        set architectures i686
+    } else {
+        set architectures ${build_arch}
+    }
+} else {
+    set architectures {}
+    foreach arch ${universal_archs} {
+        if {${arch} eq "i386"} {
+            lappend architectures i686
+        } else {
+            lappend architectures ${arch}
+        }
+    }
 }
 
-set stage0(ruststd) rust-std-1.23.0-${rust_platform}
-set stage0(rustc)   rustc-1.23.0-${rust_platform}
-set stage0(cargo)   cargo-0.24.0-${rust_platform}
-
-distfiles-append    ${stage0(ruststd)}${extract.suffix} \
-                    ${stage0(rustc)}${extract.suffix} \
-                    ${stage0(cargo)}${extract.suffix}
+foreach arch ${architectures} {
+    distfiles-append rust-std-${ruststd_version}-${arch}-apple-${os.platform}${extract.suffix} \
+                     rustc-${rustc_version}-${arch}-apple-${os.platform}${extract.suffix} \
+                     cargo-${cargo_version}-${arch}-apple-${os.platform}${extract.suffix}
+}
 
 checksums           ${distname}${extract.suffix} \
-                    rmd160  5ba759d3620e5b37ca4d638b6511c8e4e6c3b009 \
-                    sha256  bb8276f6044e877e447f29f566e4bbf820fa51fea2f912d59b73233ffd95639f
+                    rmd160  5176d728e189332e6dc3da389aa9938a0be911d9 \
+                    sha256  eef63a0aeea5147930a366aee78cbde248bb6e5c6868801bdf34849152965d2d \
+                    size    98639156
 
-if {${build_arch} eq "i386"} {
-    checksums-append \
-                    ${stage0(ruststd)}${extract.suffix} \
-                    rmd160  2873bd63f74c1d225a0a3392bb8cfa5534679dc1 \
-                    sha256  e454d4f5fd1e66f48d6ea8f102a96a15325cf969079f4485aab8e4486b96e2d8 \
-                    ${stage0(rustc)}${extract.suffix} \
-                    rmd160  e4622e6082c4666e06bc173ee669f8198661d04a \
-                    sha256  618b0dea1e1563d22cb58c1d54344c096e7a4e2d138a17413a349a3edc753745 \
-                    ${stage0(cargo)}${extract.suffix} \
-                    rmd160  17458dce93eb7e644385bd82ecb511311765e5e6 \
-                    sha256  6b7a0a97e0d87cca7b7a5e090d168be6cdbb03298381bece33df493447e17e76
-} else {
-    checksums-append \
-                    ${stage0(ruststd)}${extract.suffix} \
-                    rmd160  5b2d5f9e7ed73112fc970d5d74eef392b5c490a8 \
-                    sha256  c2859aeb763edc07ec289a929c66f269373de67908d3a9be069868a8c103c833 \
-                    ${stage0(rustc)}${extract.suffix} \
-                    rmd160  f15d358053c4979a027299c68ba0dd8ca50df444 \
-                    sha256  61d8774c6e348addc1e82fe598b5d007f30d3d8992d95f0530048236dedf4e0d \
-                    ${stage0(cargo)}${extract.suffix} \
-                    rmd160  ac5eff8ae2489845f9761c275b03677a50309c1a \
-                    sha256  b6f7c662ea75a94f5a5e41c2fee95f09a5ba168429ac8cdd41f6ba2c78d1b07f
-}
+checksums-append \
+                    rust-std-${ruststd_version}-i686-apple-${os.platform}${extract.suffix} \
+                    rmd160  7d6d13d80c8ec7764cc1c869b5477d20a0502124 \
+                    sha256  bdce37eefb2183862bed3e3456d35329a6751b3ee660c66c92bb87fbeb296a7e \
+                    size 73787428 \
+                    rustc-${rustc_version}-i686-apple-${os.platform}${extract.suffix} \
+                    rmd160  613ab07442dcd8de96eabf3bd3e0635176784a82 \
+                    sha256  9f00040da32975aa7c6a136a4557e7429c71133b5471ee14c5f7ea448a57da66 \
+                    size 51197331 \
+                    cargo-${cargo_version}-i686-apple-${os.platform}${extract.suffix} \
+                    rmd160  aa221ec6398d3f8a9e84d50753ec90caaff1dac5 \
+                    sha256  9182e535d51e0fd869216f3e6a0a4c5c19bceec6ee816a1fd7abbf16096ee0e2 \
+                    size    3863660
 
-set stage0(dir)     ${worksrcpath}/build/stage0
+checksums-append \
+                    rust-std-${ruststd_version}-x86_64-apple-${os.platform}${extract.suffix} \
+                    rmd160  66ecaff563916f963a95bbba80c8cee394d9714b \
+                    sha256  f51274e3dfb20609dff61433bd723927540fc85681cdf940e27807b535d7d42f \
+                    size 74527364 \
+                    rustc-${rustc_version}-x86_64-apple-${os.platform}${extract.suffix} \
+                    rmd160  cf168ff5d15d348c8ce353b72c6eccf86cbc9d95 \
+                    sha256  29099098de7057c8a68ea9a156580533654d9362105592cddd7e2a2a6b5f39f9 \
+                    size 52091244 \
+                    cargo-${cargo_version}-x86_64-apple-${os.platform}${extract.suffix} \
+                    rmd160  b1cb1d07219b9d7070f252fbddf563c11a156a26 \
+                    sha256  5b441397347318697399c034e3c01fcbe1ba8025d243d6d990574cc33f83f6f8 \
+                    size    4142582
 
 pre-fetch {
     if {${os.platform} eq "darwin" && ${os.major} < 11} {
@@ -87,25 +104,72 @@ pre-fetch {
 }
 
 post-extract {
-    file mkdir ${stage0(dir)}
-    system "cp -r ${workpath}/${stage0(ruststd)}/rust-std-${rust_platform}/* ${stage0(dir)}"
-    system "cp -r ${workpath}/${stage0(rustc)}/rustc/* ${stage0(dir)}"
-    system "cp -r ${workpath}/${stage0(cargo)}/cargo/* ${stage0(dir)}"
+    foreach arch ${architectures} {
+        set rust_root     ${worksrcpath}/build/stage0-${arch}
+        set rust_platform ${arch}-apple-${os.platform}
+        file mkdir ${rust_root}
+        system "cp -r ${workpath}/rust-std-${ruststd_version}-${rust_platform}/rust-std-${rust_platform}/* ${rust_root}"
+        system "cp -r ${workpath}/rustc-${rustc_version}-${rust_platform}/rustc/* ${rust_root}"
+        system "cp -r ${workpath}/cargo-${cargo_version}-${rust_platform}/cargo/* ${rust_root}"
+    }
 }
 
-configure.args      --build=${rust_platform} \
-                    --enable-vendor \
+configure.args      --enable-vendor \
                     --default-linker=${configure.cc} \
                     --disable-codegen-tests \
                     --disable-docs \
-                    --llvm-root=${prefix}/libexec/llvm-5.0 \
-                    --local-rust-root=${stage0(dir)} \
-                    --release-channel=stable \
+                    --llvm-root=${prefix}/libexec/llvm-6.0 \
+                    --release-channel=stable
+
+if {![variant_isset universal]} {
+    if {${build_arch} eq "i386"} {
+        set arch_name i686
+    } else {
+        set arch_name ${build_arch}
+    }
+    set rust_platform ${arch_name}-apple-${os.platform}
+    set rust_root     ${worksrcpath}/build/stage0-${arch_name}
+    configure.args-append \
+                   --build=${rust_platform} \
+                   --local-rust-root=${rust_root}
+} else {
+    foreach arch ${universal_archs} {
+        if {${arch} eq "i386"} {
+            set arch_name i686
+        } else {
+            set arch_name ${build_arch}
+        }
+        set rust_platform ${arch_name}-apple-${os.platform}
+        set rust_root     ${worksrcpath}/build/stage0-${arch_name}
+        lappend merger_configure_args(${arch}) \
+                  --build=${rust_platform} \
+                  --local-rust-root=${rust_root}
+    }
+}
+
+foreach arch ${architectures} {
+    set rust_platform ${arch}-apple-${os.platform}
+    configure.args-append \
                     --set=target.${rust_platform}.cc=${configure.cc} \
                     --set=target.${rust_platform}.cxx=${configure.cxx} \
                     --set=target.${rust_platform}.linker=${configure.cc}
+}
 
 configure.universal_args-delete --disable-dependency-tracking
+
+post-configure {
+    # the bootstrap call to rustc uses cc for the linker
+    # place config file in the HOME directory
+    # see https://trac.macports.org/wiki/UsingTheRightCompiler
+    xinstall -d -m 0755 ${workpath}/.home/.cargo
+    set config [open ${workpath}/.home/.cargo/config w]
+    foreach arch ${architectures} {
+        set rust_platform ${arch}-apple-${os.platform}
+        puts ${config} "\[target.${rust_platform}\]"
+        puts ${config} "linker = \"${configure.cc}\""
+    }
+    close ${config}
+}
 
 build.env           RUSTC_SAVE_ANALYSIS=api
 build.args          VERBOSE=1 BOOTSTRAP_ARGS="-v -j${build.jobs}"
@@ -115,8 +179,15 @@ test.target         check
 test.args           VERBOSE=1
 
 destroot.args       VERBOSE=1
-post-destroot {
-    if {${subport} eq ${name}} {
+if {${subport} eq ${name}} {
+    if {![variant_isset universal]} {
+        post-destroot {
+            if {${build_arch} eq "i386"} {
+                set arch_name i686
+            } else {
+                set arch_name ${build_arch}
+            }
+            set rust_platform ${arch_name}-apple-${os.platform}
         file copy \
             ${worksrcpath}/build/${rust_platform}/stage1-std/${rust_platform}/release/deps/save-analysis \
             ${destroot}${prefix}/lib/rustlib/${rust_platform}/analysis
@@ -124,6 +195,25 @@ post-destroot {
         xinstall -d ${destroot}${prefix}/share/${name}
         xinstall -m 644 ${worksrcpath}/src/etc/ctags.rust \
             ${destroot}${prefix}/share/${name}
+    }
+    } else {
+        merger-post-destroot {
+            foreach arch ${universal_archs} {
+                if {${arch} eq "i386"} {
+                    set arch_name i686
+                } else {
+                    set arch_name ${arch}
+                }
+                set rust_platform ${arch_name}-apple-${os.platform}
+                file copy \
+                    ${worksrcpath}-${arch}/build/${rust_platform}/stage1-std/${rust_platform}/release/deps/save-analysis \
+                    ${destroot}-${arch}${prefix}/lib/rustlib/${rust_platform}/analysis
+
+                xinstall -d ${destroot}-${arch}${prefix}/share/${name}
+                xinstall -m 644 ${worksrcpath}-${arch}/src/etc/ctags.rust \
+                    ${destroot}-${arch}${prefix}/share/${name}
+            }
+        }
     }
 }
 

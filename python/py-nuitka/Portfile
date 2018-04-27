@@ -4,11 +4,11 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-nuitka
-version             0.5.28.1
+version             0.5.29.4
 revision            0
 categories-append   devel
 platforms           darwin
-license             Apache
+license             Apache-2
 
 python.versions     27 34 35 36
 
@@ -22,10 +22,25 @@ master_sites        pypi:N/Nuitka
 
 distname            Nuitka-${version}
 
-checksums           rmd160  530bc8c2c3c53d2c5b31f9c1fd8ffe3e1ca5adf9 \
-                    sha256  4ab589daed358382c8f47edc907cde74ec01485c563850fc44893ecc7de220dd
+checksums           rmd160  b308d6f4dc63e0156379ca3e4a2ac9cabd2c83cc \
+                    sha256  ef06729327ea6fabd597fd889696b77de301fab856b5b3d945d0a0b897c38a37
 
 if {${name} ne ${subport}} {
+
+    depends_build-append \
+                    port:py${python.version}-setuptools
+
+    # Fix permissions
+    post-extract {
+        fs-traverse item ${worksrcpath} {
+            if {[file isdirectory ${item}]} {
+                file attributes ${item} -permissions a+rx
+            } elseif {[file isfile ${item}]} {
+                file attributes ${item} -permissions a+r
+            }
+        }
+    }
+
     livecheck.type      none
 } else {
     livecheck.name      Nuitka

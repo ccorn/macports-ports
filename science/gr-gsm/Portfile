@@ -4,16 +4,16 @@ PortSystem          1.0
 PortGroup           cmake 1.0
 PortGroup           github 1.0
 
-github.setup        ptrkrysik gr-gsm 398fd8b934345b0bf0422a20f02d9e241571a1c9
-version             20180220
-revision            1
-checksums           rmd160 233c7673db55decfa29e202272f9603d2608ff9b \
-                    sha256 221113bc927de623d461ea9f0b016b25a324db8255b6727ee2d40159739a9980
+github.setup        ptrkrysik gr-gsm e24860f9c018b761d3380d9ceaea0dff46ead6f4
+version             20180406
+checksums           rmd160 ea2541592ffc6fb315b842b9e5b565a7102404bd \
+                    sha256 6f3abdce6e85b8330d56a297751216332164d22f447c8143046d19554698e177 \
+                    size   382921
 
-# overload the github livecheck URL with the development branch,
-# when it is more advanced; comment out for master.
+# overload the github livecheck branch.
+# when master is more advanced, comment this out.
 
-livecheck.url   ${github.homepage}/commits/development.atom
+github.livecheck.branch development
 
 # allow gr-gsm to work with both gnuradio and gnuradio-devel ...
 
@@ -38,11 +38,21 @@ platforms           darwin
 
 depends_build-append \
     port:pkgconfig \
+    port:swig-python \
     port:py27-docutils
 
 depends_lib-append \
     port:boost \
+    path:lib/libvolk.dylib:volk \
     port:osmocore
+
+depends_test-append \
+    port:cppunit
+
+# for docs
+
+depends_lib-append \
+    port:doxygen
 
 # fix name of rst2man
 
@@ -52,6 +62,10 @@ patch.pre_args -p1
 # fix allowing for CMAKE_MODULES_DIR
 
 patchfiles-append patch-CMakeLists.txt.diff
+
+# add Boost::thread linkage
+
+patchfiles-append patch-add-boost-thread.diff
 
 # do VPATH (out of source tree) build
 
