@@ -1,6 +1,7 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem      1.0
+PortGroup       active_variants 1.1
 PortGroup       app 1.0
 
 name            claws-mail
@@ -110,7 +111,7 @@ configure.args  --with-sysroot=${prefix} \
                 --disable-vcalendar-plugin
 
 # Available variants
-variant alt_ab description {use another addressbook implementation} {
+variant alternate_addressbook description {use another addressbook implementation} {
     configure.args-delete   --disable-alternate-addressbook
     configure.args-append   --enable-alternate-addressbook
 }
@@ -141,8 +142,8 @@ variant gnutls description {use GNUTLS for transport security} {
     configure.args-delete   --disable-gnutls
     configure.args-append   --enable-gnutls
 }
-variant gtk3 description {enable GTK3 and Webkit support} {
-    depends_lib-append      port:gtk3 port:webkit2-gtk
+variant gtk3 description {enable GTK3 support} {
+    depends_lib-append      port:gtk3
     configure.args-delete   --disable-gtk3
     configure.args-append   --enable-gtk3
 }
@@ -242,8 +243,8 @@ variant clamd description {include ClamAV plugin} {
     configure.args-delete   --disable-clamd-plugin
     configure.args-append   --enable-clamd-plugin
 }
-variant fancy description {include fancy (HTML) plugin} {
-    depends_lib-append      port:webkit-gtk
+variant fancy requires gtk3 description {include fancy (HTML) plugin} {
+    depends_lib-append      port:webkit2-gtk
     configure.args-delete   --disable-fancy-plugin
     configure.args-append   --enable-fancy-plugin
 }
