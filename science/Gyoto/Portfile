@@ -52,7 +52,7 @@ build.args-append   Y_CFLAGS="${configure.cxxflags}" Y_CPPFLAGS="${configure.cpp
 test.target         check check-lorene
 test.run            yes
 
-compilers.setup     -dragonegg
+compilers.setup
 compilers.enforce_c lorene
 
 if {![catch {set result [active_variants boost openmpi {}]}]} {

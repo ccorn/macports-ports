@@ -85,8 +85,7 @@ compiler.blacklist {clang < 421} macports-clang-2.9 macports-clang-3.0 *llvm-gcc
 
 compilers.choose   cc cxx
 mpi.setup          -gcc44 -gcc45 -gcc46 \
-                   -clang33 -clang34 -clang35 \
-                   -llvm -dragonegg33 -dragonegg34
+                   -clang33 -clang34
 # compiler.setup does not set configure.compiler, but we need it
 # for proper archflags and to avoid weird fallbacks when blacklisting.
 if {[info exists cdb([c_variant_name],compiler)]} {

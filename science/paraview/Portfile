@@ -72,8 +72,7 @@ post-extract {
 compilers.choose    cc cxx
 # gcc6 gcc7 (with libgcc as of gcc7) produce strange template errors
 compilers.setup     -gcc44 -gcc45 -gcc46 -gcc6 -gcc7 \
-                    -clang33 -clang34 -clang35 \
-                    -llvm -dragonegg33 -dragonegg34
+                    -clang33 -clang34
 # compiler.setup does not set configure.compiler, but we need it
 # for proper archflags and to avoid weird fallbacks when blacklisting.
 if {[info exists cdb([c_variant_name],compiler)]} {
@@ -81,7 +80,7 @@ if {[info exists cdb([c_variant_name],compiler)]} {
     configure.compiler  $cdb([c_variant_name],compiler)
     compiler.blacklist  gcc-3.3 gcc-4.0 gcc-4.2 llvm-gcc-4.2 clang \
                         apple-gcc-4.0 apple-gcc-4.2 macports-llvm-gcc42 \
-			macports-gcc-6 macports-gcc-7
+                        macports-gcc-6 macports-gcc-7
 }
 
 configure.env-append \

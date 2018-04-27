@@ -224,8 +224,6 @@ compilers.setup     \
     -gcc45          \
     -gcc44          \
     -g95            \
-    -clang36        \
-    -clang35        \
     -clang34        \
     -clang33
 if {[info exists cdb([c_variant_name],compiler)]} {
