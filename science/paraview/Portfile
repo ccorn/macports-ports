@@ -1,147 +1,225 @@
-# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+PortSystem      1.0
+# Our cmake settings differ, no use for the portgroup cmake
+#PortGroup      cmake 1.0
+PortGroup       qt4 1.0
+PortGroup       compilers 1.0
 
-PortSystem          1.0
+categories      science graphics
+name            paraview
+version         4.1.0
+revision        4
 
-PortGroup           cmake 1.0
-PortGroup           qt4 1.0
-PortGroup           mpi 1.0
+description     data analysis and visualization application
+long_description        \
+                ParaView is an open-source, multi-platform data analysis and \
+                visualization application. ParaView users can quickly build \
+                visualizations to analyze their data using qualitative and \
+                quantitative techniques. The data exploration can be done \
+                interactively in 3D or programmatically using ParaView’s \
+                batch processing capabilities.
+homepage        http://paraview.org
+master_sites	http://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v4.1&type=source&os=all&downloadFile=
+maintainers	nomaintainer
+worksrcdir	ParaView-v${version}
+distname	${worksrcdir}-source
+extract.suffix	.tar.gz
+checksums	ParaView-v4.1.0-source.tar.gz \
+    md5 1bcdc7abfccee8f0a59db8ae916bfac2 \
+    sha1 866ec0428c3de4dbb3d3050c56375813fcdc9640 \
+    rmd160 2da9c792008493f05dd344fe48f78e2a0028b32c \
+    sha224 479d9e8cac1b0fb636ae7e5dff0c4dafb98919964cf5903311836297 \
+    sha256 80ef898c158d7fd9ceb0bcd83be1f679eef06ce4f20514a2435330cc97a3fdf3
+# std::min(unsigned,signed) arg type deduction problem fix
+patchfiles      patch_VTK_Rendering_FreeType_vtkFreeTypeTools_cxx.diff \
+                patch-VTK_CMake_gcc_version.diff
 
-name                paraview
-version             5.4.1
-revision            1
+# Removed depends_lib port:jsoncpp
+# because of build/compatibility problems.
+# Using versions shipped with ParaView.
+depends_build   port:cmake
+depends_lib     port:expat \
+                port:freetype \
+		port:hdf5-18 \
+                port:jpeg \
+                port:libxml2 \
+                port:netcdf-cxx \
+                port:libogg port:libtheora \
+                port:libpng \
+                port:qt4-mac \
+		port:qt4-mac-sqlite3-plugin \
+                port:tiff \
+                port:zlib
 
-categories          science graphics
-platforms           darwin
-license             BSD
+# Some packages have problems with +universal, e.g. hdf5, python
+universal_variant       no
+# Taken from cmake portgroup
+configure.ccache        no
+configure.distcc        no
+# Parallel build should speed up things
+use_parallel_build      yes
 
-set branch          [join [lrange [split ${version} .] 0 1] .]
+# Need out-of-source-tree build
+configure.dir   ${workpath}/build
+build.dir       ${workpath}/build
+destroot.dir    ${workpath}/build
 
-maintainers         gmail.com:jjstickel dstrubbe openmaintainer
-
-description         3D data analysis and visualization application
-
-long_description    An open-source, multi-platform data \
-    analysis and visualization application. ParaView users can quickly \
-    build visualizations to analyze their data using qualitative and \
-    quantitative techniques. The data exploration can be done \
-    interactively in 3D or programmatically using ParaView's batch \
-    processing capabilities.
-
-homepage            http://www.paraview.org/
-master_sites        ${homepage}/files/v${branch}/
-
-distname            ParaView-v${version}
-
-checksums           sha256  390d0f5dc66bf432e202a39b1f34193af4bf8aad2355338fa5e2778ea07a80e4 \
-                    rmd160  3c37c50a0af0e49f9ac961d5a64783b8d0a529a1
-
-#:info:build ld: file not found: @rpath/libIceTMPI.dylib for architecture x86_64
-# https://github.com/OpenFOAM/ThirdParty-dev/
-# http://www.paraview.org/Bug/view.php?id=16001
-patchfiles          patch-ThirdParty-IceT-vtkicet-CMakeLists.txt.diff
-
-depends_build-append    port:readline \
-    port:netcdf \
-    port:qt4-mac-sqlite3-plugin port:qt5-qttools
-
-cmake.out_of_source yes
-
-configure.pre_args-delete\
-    -DCMAKE_INSTALL_PREFIX=${prefix}
-
-configure.args-delete \
-    -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
-    -DCMAKE_INSTALL_RPATH=${prefix}/lib \
-    -DCMAKE_INSTALL_NAME_DIR=${prefix}/lib
-
-# ${destroot} needs to be part of MACOSX_APP_INSTALL_PREFIX; see further
-# comments below, JJS 12/21/15
-configure.args-append \
-    -DBUILD_TESTING:BOOL=OFF \
-    -DMACOSX_APP_INSTALL_PREFIX=${destroot}${applications_dir} \
-    -DBUILD_SHARED_LIBS:BOOL=ON
-
-pre-configure {
-    configure.args-append -DCMAKE_CXX_COMPILER=${configure.cxx} \
-        -DCMAKE_C_COMPILER=${configure.cc}
-
-       if {[mpi_variant_isset]} {
-           configure.args-append  \
-               -DPARAVIEW_USE_MPI:BOOL=ON \
-               -DMPI_C_COMPILER=${mpi.cc} \
-               -DMPI_CXX_COMPILER=${mpi.cxx} \
-               -DMPIEXEC=${mpi.exec} \
-               -DMPI_Fortran_COMPILER=${mpi.fc}
-       }
+post-extract {
+    file mkdir ${build.dir}
 }
 
-#    DPARAVIEW_DO_UNIX_STYLE_INSTALLS:BOOL=ON
-#configure.cxxflags-append 	        -DUSE_INTERP_ERRORLINE
-
-# Some cmake tests will fail with "error: unrecognized option '-arch'" from gcc 4.6 and earlier. Same with dragonegg based on it.
-compilers.choose    fc
-mpi.setup           default -dragonegg -gcc44 -gcc45 -gcc46
-
-# no compilers.choose cc cxx because:
-# gcc6,7 C compiler fails with:
-#:info:build In file included from /usr/include/dispatch/dispatch.h:51:0,
-#:info:build                  from /System/Library/Frameworks/CoreFoundation.framework/Headers/CFStream.h:15,
-#:info:build                  from /System/Library/Frameworks/CoreFoundation.framework/Headers/CFPropertyList.h:13,
-#:info:build                  from /System/Library/Frameworks/CoreFoundation.framework/Headers/CoreFoundation.h:55,
-#:info:build                  from /System/Library/Frameworks/CoreServices.framework/Headers/CoreServices.h:19,
-#:info:build                  from /opt/local/var/macports/build/_Users_dstrubbe_Software_MacPorts_macports-trunk_dports_science_paraview/paraview/work/ParaView-v5.0.1-source/VTK/ThirdParty/freetype/vtkfreetype/src/base/ftmac.c:100,
-#:info:build                  from /opt/local/var/macports/build/_Users_dstrubbe_Software_MacPorts_macports-trunk_dports_science_paraview/paraview/work/ParaView-v5.0.1-source/VTK/ThirdParty/freetype/vtkfreetype/src/base/ftbase.c:38:
-#:info:build /usr/include/dispatch/object.h:143:15: error: expected identifier or '(' before '^' token
-#:info:build  typedef void (^dispatch_block_t)(void);
-#:info:build                ^
-#:info:build /usr/include/dispatch/object.h:362:3: error: unknown type name 'dispatch_block_t'
-#:info:build    dispatch_block_t notification_block);
-#:info:build    ^~~~~~~~~~~~~~~~
-
-# I do not understand why, but the default "destroot" makes a mess of things;
-# even setting full path of MACOSX_APP_INSTALL_PREFIX above and an empty
-# DESTDIR does not work; JJS 12/21/15
-destroot {
-    system "cd ${build.dir} && make install"
+# Recent C++ required
+compilers.choose    cc cxx
+# gcc6 gcc7 (with libgcc as of gcc7) produce strange template errors
+compilers.setup     -gcc44 -gcc45 -gcc46 -gcc6 -gcc7 \
+                    -clang33 -clang34 -clang35 \
+                    -llvm -dragonegg33 -dragonegg34
+# compiler.setup does not set configure.compiler, but we need it
+# for proper archflags and to avoid weird fallbacks when blacklisting.
+if {[info exists cdb([c_variant_name],compiler)]} {
+    configure.compiler.add_deps no
+    configure.compiler  $cdb([c_variant_name],compiler)
+    compiler.blacklist  gcc-3.3 gcc-4.0 gcc-4.2 llvm-gcc-4.2 clang \
+                        apple-gcc-4.0 apple-gcc-4.2 macports-llvm-gcc42 \
+			macports-gcc-6 macports-gcc-7
 }
 
-# Error using default destroot is:
-#Warning: Error determining file type of `/opt/local/var/macports/build/_Users_dstrubbe_Software_MacPorts_macports-trunk_dports_science_paraview/paraview/work/destroot/opt/local/var/macports/build/_Users_dstrubbe_Software_MacPorts_macports-trunk_dports_science_paraview/paraview/work/build/CMakeFiles/__macos_install/bin/paraview.app/Contents/www/lib/widgets/vtkweb-widgets.js': lstat(/opt/local/var/macports/build/_Users_dstrubbe_Software_MacPorts_macports-trunk_dports_science_paraview/paraview/work/destroot/opt/local/var/macports/build/_Users_dstrubbe_Software_MacPorts_macports-trunk_dports_science_paraview/paraview/work/build/CMakeFiles/__macos_install/bin/paraview.app/Contents/www/lib/widgets/vtkweb-widgets.js):no such file or directory
-#Warning: A file belonging to the `paraview' port is missing or unreadable. Consider reinstalling it.
+configure.env-append \
+    CMAKE_PREFIX_PATH=${prefix} \
+    CMAKE_FRAMEWORK_PATH=${prefix}/Library/Frameworks \
+    CMAKE_APPBUNDLE_PATH=${applications_dir}
 
+configure.cmd   ${prefix}/bin/cmake
 
-# other pythons?
-variant python27 description {Add Python 2.7 support.} {
-    depends_lib-append  port:py27-matplotlib
-    configure.args-append \
-        -DPARAVIEW_ENABLE_PYTHON:BOOL=ON \
-        -DPYTHON_EXECUTABLE=${prefix}/bin/python2.7 \
-        -DPYTHON_INCLUDE_DIR=${prefix}/Library/Frameworks/Python.framework/Versions/2.7/Headers/ \
-        -DPYTHON_LIBRARY=${prefix}/lib/libpython2.7.dylib
+# Do not change RPATH defaults; some progs may be run during the build.
+configure.pre_args \
+    -DCMAKE_INSTALL_PREFIX=${prefix} \
+    -DMACOSX_APP_INSTALL_PREFIX=${applications_dir} \
+    -DCMAKE_SYSTEM_PREFIX_PATH="${prefix}\;/usr" \
+    -DCMAKE_FIND_FRAMEWORK=LAST \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_COLOR_MAKEFILE=OFF \
+    -DCMAKE_VERBOSE_MAKEFILE=OFF \
+    -Wno-dev
 
-    notes-append\
-        "\n Currently Paraview installs as an app, including the Python modules. To use with MacPorts Python, add ${applications_dir}/paraview.app/Contents/Python/:${applications_dir}/paraview.app/Contents/Libraries/ to PYTHONPATH and ${applications_dir}/paraview.app/Contents/Libraries/ to DYLD_LIBRARY_PATH. Also, simultaneous use of Mayavi may result in segfault."
-}
+# Strange new error: VTK configured for Cocoa, but Qt4 configured for Carbon
+# Tried -DVTK_USE_CARBON=ON -DVTK_USE_COCOA=OFF, but that causes Linker errors
+set hdf5_prefix ${prefix}/lib/hdf5-18
+linsert ${configure.cppflags} 0 -I${hdf5_prefix}/include
+configure.ldflags-append -L${hdf5_prefix}/lib
+configure.args  \
+    -DBUILD_DOCUMENTATION=OFF \
+    -DBUILD_EXAMPLES=OFF \
+    -DBUILD_TESTING=OFF \
+    -DHDF5_C_COMPILER_EXECUTABLE=${hdf5_prefix}/bin/h5cc \
+    -DHDF5_C_LIBRARY_hdf5=${hdf5_prefix}/lib/libhdf5.dylib \
+    -DHDF5_C_LIBRARY_hdf5_hl=${hdf5_prefix}/lib/libhdf5_hl.dylib \
+    -DHDF5_DIFF_EXECUTABLE=${hdf5_prefix}/bin/h5diff \
+    -DPARAVIEW_DO_UNIX_STYLE_INSTALLS=ON \
+    -DPARAVIEW_ENABLE_FFMPEG=OFF \
+    -DPARAVIEW_ENABLE_PYTHON=OFF \
+    -DVTK_USE_SYSTEM_EXPAT=ON \
+    -DVTK_USE_SYSTEM_FREETYPE=ON \
+    -DVTK_USE_SYSTEM_GL2PS=OFF \
+    -DVTK_USE_SYSTEM_HDF5=ON \
+    -DVTK_USE_SYSTEM_JPEG=ON \
+    -DVTK_USE_SYSTEM_JSONCPP=OFF \
+    -DVTK_USE_SYSTEM_LIBXML2=ON \
+    -DVTK_USE_SYSTEM_NETCDF=ON \
+    -DVTK_USE_SYSTEM_OGGTHEORA=ON \
+    -DVTK_USE_SYSTEM_PNG=ON \
+    -DVTK_USE_SYSTEM_PROTOBUF=OFF \
+    -DVTK_USE_SYSTEM_QTTESTING=OFF \
+    -DVTK_USE_SYSTEM_TIFF=ON \
+    -DVTK_USE_SYSTEM_VISITLIB=OFF \
+    -DVTK_USE_SYSTEM_XDMF2=OFF \
+    -DVTK_USE_SYSTEM_ZLIB=ON
 
-variant ffmpeg description {Add support for FFMPEG} {
-   depends_lib-append port:ffmpeg
-   configure.args-append -DPARAVIEW_ENABLE_FFMPEG:BOOL=ON
-}
+# Other interesting options, unused herein:
+#    -DVTK_SMP_IMPLEMENTATION_TYPE=(Sequential|Simple|Kaapi|TBB)
+#    -DCMAKE_THREAD_LIBS=[Linker options]
 
-default_variants-append    +python27 +ffmpeg
+configure.post_args     ${worksrcpath}
 
-livecheck.type      regex
-livecheck.url       ${homepage}
-livecheck.regex     ParaView (\[0-9.\]+)
-
-test.run            yes
-pre-test {
-    if {![variant_isset testing]} {
-        ui_error "You must build with +testing variant to be able to run the tests."
-        return -code error "Build with +testing for test phase."
+platform darwin {
+    if {${os.major} < 10} {
+        # SciberQuestToolKit plugin uses posix_memalign()
+        # which is available only from Mac OS X 10.6 (darwin 10) onwards
+        configure.args-append   -DPARAVIEW_BUILD_PLUGIN_SciberQuestToolKit=OFF
     }
 }
 
-variant testing description {Build executables and download data to be able to run tests.} {
-    configure.args-replace  -DBUILD_TESTING:BOOL=OFF -DBUILD_TESTING:BOOL=ON
+post-destroot {
+    if {[variant_isset app_only]} {
+        # App bundle has been installed in the build tree, copy it over
+        global install_prefix
+        xinstall -d ${destroot}${applications_dir}
+        copy ${install_prefix}${applications_dir}/paraview.app \
+            ${destroot}${applications_dir}/ParaView.app
+    } else {
+        # Somehow those folks produce nested destroots
+        move ${destroot}${destroot}${prefix}/bin/paraview \
+            ${destroot}${prefix}/bin/paraview
+        # The build has produced an app, let's use parts of it
+        copy ${build.dir}/bin/paraview.app \
+            ${destroot}${applications_dir}/ParaView.app
+        # Have to use the relinked executable in ${prefix}/bin
+        # But that has relative link paths, so we cannot use a symbolic link.
+        # Therefore we create a script that calls the right binary.
+        # Overwrite the old executable to preserve permissions.
+        set script [open \
+          ${destroot}${applications_dir}/ParaView.app/Contents/MacOS/paraview w]
+        puts $script "#! /bin/sh"
+        puts $script "${prefix}/bin/paraview \"\$@\""
+        close $script
+    }
 }
+
+variant app_only description {Bundle the entire install in the ParaView app} {
+    configure.args-delete       -DPARAVIEW_DO_UNIX_STYLE_INSTALLS=ON
+    configure.args-append       -DPARAVIEW_DO_UNIX_STYLE_INSTALLS=OFF
+    # In case of an app, a relocatable bundle is built.
+    # It is supposed to be installed in a certain build subdir without DESTDIR.
+    # CMAKE_INSTALL_PREFIX is forced to ${build.dir}/CMakeFiles/__macos_install
+    # except for MACOSX_APP_INSTALL_PREFIX; unify this.
+    global install_prefix
+    set install_prefix  ${build.dir}/CMakeFiles/__macos_install
+    configure.pre_args-delete   -DCMAKE_INSTALL_PREFIX=${prefix}
+    configure.pre_args-append   -DCMAKE_INSTALL_PREFIX=${install_prefix}
+    configure.pre_args-delete   -DMACOSX_APP_INSTALL_PREFIX=${applications_dir}
+    configure.pre_args-append   -DMACOSX_APP_INSTALL_PREFIX=${install_prefix}/${applications_dir}
+    # Since we install into a build subdir, no DESTDIR is necessary
+    destroot.destdir
+}
+
+variant doc description {build documentation (untested)} {
+    configure.args-delete   -DBUILD_DOCUMENTATION=OFF
+    configure.args-append   -DBUILD_DOCUMENTATION=ON
+}
+
+variant examples description {build examples (untested)} {
+    configure.args-delete   -DBUILD_EXAMPLES=OFF
+    configure.args-append   -DBUILD_EXAMPLES=ON
+}
+
+variant ffmpeg description {build FFMPEG encoder plugin} {
+    depends_lib-append      port:ffmpeg
+    configure.args-delete   -DPARAVIEW_ENABLE_FFMPEG=OFF
+    configure.args-append   -DPARAVIEW_ENABLE_FFMPEG=ON
+}
+
+variant python27 description {enable scripting with python2.7} {
+    depends_lib-append      port:python27 port:py27-numpy
+    configure.args-delete   -DPARAVIEW_ENABLE_PYTHON=OFF
+    configure.args-append   -DPARAVIEW_ENABLE_PYTHON=ON \
+                            -DPYTHON_EXECUTABLE=$prefix/bin/python2.7
+    # The following configure args seem to have no effect
+    depends_lib-append      port:py27-twisted port:py27-zopeinterface
+    configure.args-append   -DDVTK_USE_SYSTEM_TWISTED=ON \
+                            -DDVTK_USE_SYSTEM_ZOPE=ON
+    # Other interesting options:
+    # If enabled, Python bindings will back the ClientServer wrapping implementation
+    # -DPARAVIEW_USE_UNIFIED_BINDINGS=OFF
+}
+
+# Python scripting is way more compatible than ParaViews save file formats
+default_variants    +python27
