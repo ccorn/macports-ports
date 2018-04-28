@@ -24,6 +24,7 @@ checksums           rmd160  d401fc327138d5b997c0cd318f808f95cea1f937 \
 
 depends_build       port:pkgconfig \
                     port:python27
+depends_skip_archcheck-append pkgconfig python27
 
 depends_lib         port:zlib
 
