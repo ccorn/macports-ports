@@ -96,12 +96,10 @@ foreach qt_major {4 5} {
     subport py-${name}-qt${qt_major} {
         categories-append python
         use_configure no
-        fetch {}
-        checksum {}
-        extract {}
+        distfiles
+        patchfiles
         supported_archs noarch
         depends_lib port:py27-qscintilla-qt${qt_major}
-        patch {}
         build {}
         destroot {
             xinstall -d -m 755 ${destroot}${prefix}/share/doc/${subport}
@@ -180,12 +178,10 @@ foreach qt_major {4 5} {
 if {${subport} eq ${name}} {
     revision 1
 
+    distfiles
+    patchfiles
     use_configure no
-    fetch {}
-    checksum {}
-    extract {}
     supported_archs noarch
-    patch {}
     build {}
     destroot {
         xinstall -d -m 755 ${destroot}${prefix}/share/doc/${subport}

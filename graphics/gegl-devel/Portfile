@@ -6,12 +6,11 @@ PortGroup           compiler_blacklist_versions 1.0
 PortGroup           gobject_introspection 1.0
 
 name                gegl-devel
-conflicts           gegl gegl-0.3
+conflicts           gegl-0.4
 set git_name        gegl
-set git_commit      9e9095b600d528b9fa4fc538cd189fe54f29b32f
-set git_date        20180418
-version             0.3.35-${git_date}
-revision            1
+set git_commit      2896800b5e7d0c656710c70fdea57098032f3ccc
+set git_date        20180506
+version             0.4.1-${git_date}
 license             {GPL-3+ LGPL-3+}
 categories          graphics
 maintainers         {devans @dbevans}
@@ -29,9 +28,9 @@ master_sites        https://git.gnome.org/browse/${git_name}/snapshot/
 
 distname            ${git_name}-${git_commit}
 
-checksums           rmd160  d8b2c4bc5b5dc1d715b2a54753363e2b465e55b8 \
-                    sha256  755c0d525c22e43bc14bd40fb85654026418a2bf77b8240feef83fad99e004c8 \
-                    size    24860395
+checksums           rmd160  68a1a2a697362e814da8727f2c4bae8634bc5c17 \
+                    sha256  6c32e7e461318212f4bacb2145f1b9ae920490d6b46a8b3b57bfd06418cbcf24 \
+                    size    24913799
 
 depends_build       port:pkgconfig \
                     port:w3m \
@@ -59,11 +58,6 @@ depends_lib         port:babl-devel \
 
 patchfiles          patch-configure.ac.diff
 
-# disable external operation ff-save for now
-# AVFMT_RAWPICTURE removed in ffmpeg-devel
-# https://trac.macports.org/ticket/55389
-patchfiles-append  disable-broken-ffsave.patch
-
 post-patch {
     # http://trac.macports.org/ticket/35148
     if {${os.major} < 10} {
@@ -86,6 +80,16 @@ configure.args      --disable-docs \
                     --disable-silent-rules \
                     --without-sdl \
                     --without-umfpack
+
+# use version specific binary suffix to avoid conflict with gegl, gegl-0.3
+
+post-destroot {
+    set suffix "-0.4"
+    foreach bin [glob -nocomplain -tails -directory "${destroot}${prefix}/bin" *] {
+        move ${destroot}${prefix}/bin/${bin} \
+             ${destroot}${prefix}/bin/${bin}${suffix}
+    }
+}
 
 platform darwin {
     if {[variant_isset universal]} {

@@ -14,7 +14,7 @@ PortGroup                   compiler_blacklist_versions 1.0
 name                        wine-devel
 conflicts                   wine wine-crossover
 set my_name                 wine
-version                     3.6
+version                     3.8
 set branch                  [lindex [split ${version} .] 0].x
 license                     LGPL-2.1+
 categories                  x11
@@ -59,9 +59,9 @@ distfiles                   ${wine_distfile}:winesource \
                             ${wine_mono_distfile}:winemono
 
 checksums                   ${wine_distfile} \
-                            rmd160  5d3ec1a946ee99f4a9b02c4206552fbc5608624e \
-                            sha256  78502dc79a60430d2a2ef66bee146e38eb6dd679fd36b54acfc8f9b2ac07905c \
-                            size    20005240 \
+                            rmd160  4152473ee02bfb6d3b8fb7a90faeaaa7b104fdde \
+                            sha256  02b00c6c948b3bab717e1b1e2075a5406b14d138bd2e01fdb1268a93d1c20d51 \
+                            size    20473392 \
                             ${wine_gecko_distfile} \
                             rmd160  abf7cc78b49dd0623bc8fe87ae0e32bb8694e13d \
                             sha256  3b8a361f5d63952d21caafd74e849a774994822fb96c5922b01d554f1677643a \

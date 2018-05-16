@@ -56,7 +56,7 @@ depends_skip_archcheck  python27 perl${perl5.major} \
                         p${perl5.major}-cgi \
                         rsync
 
-patchfiles          patch-Makefile.diff git-subtree.1.diff
+patchfiles          patch-Makefile.diff git-subtree.1.diff patch-sha1dc-older-apple-gcc-versions.diff
 patch.pre_args      -p1
 
 extract.only        git-${version}${extract.suffix} \

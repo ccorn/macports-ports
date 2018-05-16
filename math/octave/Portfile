@@ -103,8 +103,6 @@ pre-patch {
     set libcxxbug no
     if { ${configure.cc} eq "/usr/bin/clang" && [lindex [split ${xcodeversion} .] 0] eq 6 } {
         set libcxxbug yes
-    } elseif { [variant_exists clang35] && [variant_isset clang35] } {
-        set libcxxbug yes
     }
     if { ${libcxxbug} } {
         patchfiles-append   \
