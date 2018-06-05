@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           xcode 1.0
 
-github.setup        vslavik poedit 2.0.7 v -oss
+github.setup        vslavik poedit 2.0.8 v -oss
 categories          editors
 platforms           darwin
 license             MIT
@@ -16,6 +16,9 @@ homepage            https://poedit.net/
 
 depends_build       port:gsed \
                     port:ninja
+
+depends_build-append \
+                    port:autoconf port:automake port:libtool
 
 fetch.type          git
 

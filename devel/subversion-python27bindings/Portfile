@@ -5,7 +5,7 @@ version			1.10.0
 revision		1
 categories		devel python
 platforms		darwin
-maintainers		{geeklair.net:dluke @danielluke} blair
+maintainers		{geeklair.net:dluke @danielluke} {blair @blair}
 description		Python bindings for the subversion version control system (svn)
 license			Apache-2
 
@@ -96,7 +96,7 @@ post-destroot {
 		set PYTHON_PATH ${frameworks_dir}/Python.framework/Versions/2.7/lib/python2.7
 
 		xinstall -m 755 -d ${destroot}${PYTHON_PATH}/site-packages
-		xinstall -m 755 ${portpath}/${filesdir}/svn-python.pth \
+		xinstall -m 755 ${filespath}/svn-python.pth \
 			${destroot}${PYTHON_PATH}/site-packages
 		reinplace "s|@PREFIX@|${prefix}|g" \
 			${destroot}${PYTHON_PATH}/site-packages/svn-python.pth
