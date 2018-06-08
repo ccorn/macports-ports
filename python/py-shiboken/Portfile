@@ -1,5 +1,6 @@
 PortSystem 1.0
 PortGroup cmake 1.0
+PortGroup cxx11 1.1
 PortGroup qt4 1.0
 PortGroup python 1.0
 PortGroup github 1.0
@@ -35,15 +36,14 @@ if {${name} ne ${subport}} {
                         patch-cmakepkgconfig.diff
 
     depends_lib-append  port:python${python.version} \
-                        port:libxslt \
-                        port:sparsehash
+                        port:libxslt
     use_configure   yes
     configure.args-append -DBUILD_TESTS:BOOL=FALSE \
                     -DPYTHON_EXECUTABLE=${python.bin} \
                     -DPYTHON_LIBRARIES=${python.lib} \
                     -DPYTHON_INCLUDE_DIR=${python.include} \
                     -DPYTHON_SITE_PACKAGES=${python.pkgd} \
-                    -DSPARSEHASH_INCLUDE_PATH=${prefix}/include \
+                    -DSPARSEHASH_INCLUDE_PATH=${worksrcpath}/ext/sparsehash \
                     -DPYTHONBRANCH=${python.branch} \
                     -DPYTHONPREFIX=${python.prefix}
     if {${python.version} >= 30} {
