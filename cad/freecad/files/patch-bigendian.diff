@@ -1,0 +1,12 @@
+--- src/Mod/Mesh/App/WildMagic4/Wm4TRational.inl.orig	2018-06-09 04:52:52.000000000 +0200
++++ src/Mod/Mesh/App/WildMagic4/Wm4TRational.inl	2018-06-09 05:19:46.000000000 +0200
+@@ -706,6 +706,9 @@ void TRational<N>::ConvertTo (double& rd
+     }
+ 
+     unsigned int auiResult[2];
++#ifdef WM4_BIG_ENDIAN
++    unsigned int uiSave;
++#endif
+ 
+     // compute the sign of the number
+     int iS0 = m_kNumer.GetSign(), iS1 = m_kDenom.GetSign();

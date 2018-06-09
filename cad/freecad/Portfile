@@ -50,10 +50,21 @@ depends_lib-append      port:boost \
 
 depends_run             port:qt4-mac-sqlite3-plugin
 
+set incdir ${worksrcpath}/src/Inc
+post-extract {
+    # Need GLKMatrix4.h and its dependencies
+    # Taken from https://github.com/ralcr/hxcocoa/blob/master/ios/glkit
+    file mkdir ${incdir}
+    copy ${filespath}/GLKit ${incdir}
+}
+
 patchfiles              cMake-FindCoin3D.cmake.diff
 
 # disable FreeCAD FEM module, as it requires hdf5 1.8.x
 patchfiles-append       patch-CMakeLists.txt.diff
+
+# Fix bigendian conversion
+patchfiles-append       patch-bigendian.diff
 
 post-patch {
     reinplace "s|QLibraryInfo::location.*|QLatin1String\(\"${applications_dir}/Qt4/\"\);|" \
@@ -63,8 +74,20 @@ post-patch {
         ${worksrcpath}/src/Mod/OpenSCAD/OpenSCADUtils.py
 }
 
-compilers.choose        fc
-compilers.setup         require_fortran -g95
+# Make sure the GLKit includes are found
+configure.cppflags-append -I${incdir}
+
+compilers.choose        cc cxx fc
+compilers.setup         require_fortran -g95 \
+                        -gcc44 -gcc45 -gcc46 -clang33 -clang34
+# compiler.setup does not set configure.compiler, but we need it
+# for proper archflags and to avoid weird fallbacks when blacklisting.
+if {[info exists cdb([c_variant_name],compiler)]} {
+    configure.compiler.add_deps no
+    configure.compiler  $cdb([c_variant_name],compiler)
+    compiler.blacklist  gcc-3.3 gcc-4.0 gcc-4.2 llvm-gcc-4.2 clang \
+                        apple-gcc-4.0 apple-gcc-4.2 macports-llvm-gcc42
+}
 
 cmake.install_prefix    ${prefix}/libexec/${name}
 cmake.install_rpath     ${cmake.install_prefix}/lib
@@ -95,6 +118,17 @@ pre-configure {
         -DShiboken_DIR=${python_prefix}/lib/cmake/Shiboken-1.2.4 \
         -DPySide_DIR=${python_prefix}/lib/cmake/PySide-1.2.4 \
         -DOCE_DIR=${frameworks_dir}/OCE.framework/Versions/0.17/Resources
+}
+
+post-configure {
+    # Prevent undefined symbols when linking
+    fs-traverse f [list ${build.dir}] {
+        if {[string match */link.txt $f]} {
+            reinplace "/-Wl,/s|\$| [concat \
+                -Wl,-framework,ApplicationServices \
+                -Wl,-framework,CoreServices]|" $f
+        }
+    }
 }
 
 post-destroot {
