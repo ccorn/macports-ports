@@ -11,9 +11,9 @@ categories-append   devel
 platforms           darwin
 license             Apache-2
 
-python.versions     27 34 35 36
+python.versions     27 34 35 36 37
 
-maintainers         stromnov openmaintainer
+maintainers         {stromnov @stromnov} openmaintainer
 
 description         Python binding to the Networking and Cryptography (NaCl) library
 long_description    ${description}

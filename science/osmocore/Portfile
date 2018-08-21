@@ -12,11 +12,29 @@ categories          science comms
 license             GPL-3
 platforms           darwin macosx
 
-github.setup        osmocom libosmocore dfd85137cf18243240d5f3c4300ca5b33f26e362
-version             20180524
-checksums           rmd160 81cdbb963a7dbd81c1816d18768c6185497c4f1b \
-                    sha256 ccd8f9b953a20e94289ac2358d1f23f289b0d4beabc251bd2f1d368080d174b7 \
-                    size   1011797
+# bump the epoch to switch the main port from a "devel" type to a release
+epoch               1
+
+subport osmocore-devel {}
+
+if {${subport} eq ${name}} {
+
+    # release
+    github.setup    osmocom libosmocore 0.12.0
+    checksums       rmd160 87fd1649567bd2333ce6941e44eeb6f0c59231eb \
+                    sha256 4439a6d9a3b5a891a4dad220a14d5fe50cc8180126b5f383d36b77e28a63c449 \
+                    size   1050110
+
+} else {
+
+    # devel
+    github.setup    osmocom libosmocore acc0a070c770eb16aba8ef93780eda5365057b6c
+    version         20180807
+    checksums       rmd160 e5a5c45988f1fd9f8a700818d1ede020ddcc5811 \
+                    sha256 72e3dd0189430f454eedf81fd2c7903d94a51b0475f390b82ef26458be2acade \
+                    size   1056972
+
+}
 
 depends_build-append \
     port:automake \

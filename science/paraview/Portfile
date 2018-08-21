@@ -40,14 +40,14 @@ patchfiles      patch_VTK_Rendering_FreeType_vtkFreeTypeTools_cxx.diff \
 depends_build   port:cmake
 depends_lib     port:expat \
                 port:freetype \
-		port:hdf5-18 \
+                port:hdf5-18 \
                 port:jpeg \
                 port:libxml2 \
                 port:netcdf-cxx \
                 port:libogg port:libtheora \
                 port:libpng \
                 port:qt4-mac \
-		port:qt4-mac-sqlite3-plugin \
+                port:qt4-mac-sqlite3-plugin \
                 port:tiff \
                 port:zlib
 

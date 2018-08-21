@@ -3,12 +3,12 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        JetBrains kotlin 1.2.41 v
+github.setup        JetBrains kotlin 1.2.61 v
 github.tarball_from releases
 distname            ${name}-compiler-${version}
 categories          lang java
 platforms           darwin
-maintainers         {@breun breun.nl:nils} openmaintainer
+maintainers         {breun.nl:nils @breun} openmaintainer
 license             Apache-2
 
 description         Statically typed programming language for the JVM, \
@@ -21,8 +21,9 @@ long_description    Kotlin is a pragmatic programming language for JVM \
 
 homepage            https://kotlinlang.org/
 
-checksums           rmd160  4579229c820604e471b7d01c3c0e027496808365 \
-                    sha256  af872772f268da5ca79d263b2943f1d694d475dddb80b6d408e9548805ed265c
+checksums           rmd160  984a30ca7572489667e2f6c9cb4d2b0cb08233a4 \
+                    sha256  be6d45385029ae99dee38fc77f554bddd49761067a532bfbf6bbf1b7348d5bbf \
+                    size    36305401
 
 depends_run         bin:java:kaffe
 

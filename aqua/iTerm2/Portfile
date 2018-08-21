@@ -4,10 +4,10 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           xcodeversion 1.0
 
-github.setup        gnachman iTerm2 3.1.6 v
+github.setup        gnachman iTerm2 3.2.0 v
 categories          aqua shells
 platforms           darwin
-maintainers         {emer.net:emer @markemer}
+maintainers         {emer.net:emer @markemer} openmaintainer
 license             GPL-2+
 supported_archs     x86_64
 
@@ -19,9 +19,11 @@ long_description    \
 
 homepage            http://iterm2.com/
 
-checksums           rmd160  19d24fac6a3bba396498525ccaf6b10d4fe8f8f3 \
-                    sha256  514fa52c13206b4ba540ad895999a5f3da8d02040d58ec3b92a40c5291d431b8 \
-                    size    11477062
+checksums           rmd160  07915ff5db0545c0c059f47e7f71761e023a26e1 \
+                    sha256  017aff348352369abcc994caaca0f6112e1f17c4d65041acdb9f19830b2b96bd \
+                    size    11969144
+
+github.livecheck.regex {(\d+(?:\.\d+)*)}
 
 patchfiles          patch-Makefile.diff
 

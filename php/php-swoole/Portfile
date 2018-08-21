@@ -14,11 +14,18 @@ php.branches            5.3 5.4 5.5 5.6 7.0 7.1 7.2
 php.pecl                yes
 
 if {[vercmp ${php.branch} 7] >= 0} {
-    version             2.2.0
+    version             4.0.4
     revision            0
-    checksums           rmd160  964b4fa107c8946996c0d9eccbfc783441c004e4 \
-                        sha256  04d519569e94a642ee80dd30eaa4a85b4ed54a526d488c63e384633186f29bc4 \
-                        size    853688
+    checksums           rmd160  0df0a9e4e07c9365bf71fb897634c255ae99a180 \
+                        sha256  244f509e38c210944d4245561c89a49ab32a07c05ccceeada14376b2609e5945 \
+                        size    907216
+} elseif {[vercmp ${php.branch} 5.5] >= 0} {
+    # https://github.com/swoole/swoole-src/issues/1783
+    version             2.0.11
+    revision            0
+    checksums           rmd160  7238015b141faf59d9662d4ab21c73bb66b58e35 \
+                        sha256  07df75ede4bf0833d2c2443b666a5c3054bc498a78f5251babc1b0e7cc8cd573 \
+                        size    769029
 } else {
     version             1.10.5
     revision            0

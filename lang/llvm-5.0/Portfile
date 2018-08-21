@@ -20,7 +20,7 @@ dist_subdir             llvm
 categories              lang
 platforms               darwin
 license                 NCSA
-maintainers             {jeremyhu @jeremyhu} larryv
+maintainers             {jeremyhu @jeremyhu} {larryv @larryv}
 
 if {${subport} eq "llvm-${llvm_version}"} {
     homepage            http://llvm.org/
@@ -164,6 +164,8 @@ if {${subport} eq "clang-${llvm_version}"} {
         1006-Fixup-libstdc-header-search-paths-for-older-versions.patch \
         1007-Fix-build-issues-pre-Lion-due-to-missing-a-strnlen-d.patch \
         1008-Fix-float.h-to-work-on-Snow-Leopard-and-earlier.patch \
+        2001-tsan-Annotate-function-parameters-with-attribute-noe.patch \
+        2002-Ignore-the-DISPATCH_NOESCAPE-if-not-defined.patch \
         3001-Fix-local-and-iterator-when-building-with-Lion-and-n.patch \
         3002-Fix-missing-long-long-math-prototypes-when-using-the.patch \
         3003-implement-atomic-using-mutex-lock_guard-for-64b-ops-.patch \
@@ -309,7 +311,7 @@ if {${subport} eq "lldb-${llvm_version}"} {
 
 # blacklist current and future versions if they're not available in order to
 # help break potential dependency cycles.
-foreach ver {5.0 devel} {
+foreach ver {5.0 6.0 devel} {
     if {![file exists ${prefix}/bin/clang-mp-${ver}]} {
         compiler.blacklist-append macports-clang-${ver}
     }

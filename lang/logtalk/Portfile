@@ -1,10 +1,10 @@
 PortSystem          1.0
 
 name                logtalk
-version             3.17.0
+version             3.19.0
 
 categories          lang
-maintainers         logtalk.org:pmoura
+maintainers         {logtalk.org:pmoura @pmoura}
 license             Apache-2
 platforms           darwin freebsd linux
 supported_archs     noarch
@@ -28,9 +28,9 @@ long_description    Logtalk is an object-oriented logic programming language tha
 homepage            http://logtalk.org/
 master_sites        ${homepage}files/
 
-checksums           rmd160  a3572cb0e54a64807584592dad0f57a4dafadfc0 \
-                    sha256  c175d0b70fcee71bc5228f39a936203ef8231fce272e9a7d189e2f1e58393425 \
-                    size    3266162
+checksums           rmd160  6982cdb89fa300afb603a68ecfaead2b92f144b1 \
+                    sha256  956df988ca648fa8c3cbfdbe63f3b621d49360f93975d4a0fb8cdd767ae9ffc6 \
+                    size    3357655
 
 use_bzip2           yes
 

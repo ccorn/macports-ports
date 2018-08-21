@@ -60,4 +60,6 @@ if {${name} ne ${subport}} {
     }
 
     livecheck.type          none
+} else {
+    github.livecheck.regex  {([0-9.]+)}
 }

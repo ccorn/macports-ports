@@ -53,7 +53,8 @@ PortGroup active_variants 1.1
 
 options compilers.variants compilers.gcc_variants compilers.clear_archflags
 default compilers.variants {}
-default compilers.fortran_variants {}
+default compilers.my_fortran_variants {}
+default compilers.all_fortran_variants {}
 default compilers.gcc_variants {}
 default compilers.clang_variants {}
 default compilers.require_fortran 0
@@ -77,7 +78,7 @@ if {${build_arch} eq "ppc" || ${build_arch} eq "ppc64"} {
 set compilers.list {cc cxx cpp objc fc f77 f90}
 
 # build database of gcc compiler attributes
-set gcc_versions {44 45 46 47 48 49 5 6 7}
+set gcc_versions {44 45 46 47 48 49 5 6 7 8}
 foreach v ${gcc_versions} {
     # if the string is more than one character insert a '.' into it: e.g 49 -> 4.9
     set version $v
@@ -90,9 +91,11 @@ foreach v ${gcc_versions} {
     set cdb(gcc$v,descrip)  "MacPorts gcc $version"
     set cdb(gcc$v,depends)  port:gcc$v
     if {[vercmp ${version} 4.6] < 0} {
-        set cdb(gcc$v,dependsl) "path:lib/libgcc/libgcc_s.1.dylib:libgcc port:libgcc6 port:libgcc45"
+        set cdb(gcc$v,dependsl) "path:lib/libgcc/libgcc_s.1.dylib:libgcc port:libgcc7 port:libgcc6 port:libgcc45"
     } elseif {[vercmp ${version} 7] < 0} {
-        set cdb(gcc$v,dependsl) "path:lib/libgcc/libgcc_s.1.dylib:libgcc port:libgcc6"
+        set cdb(gcc$v,dependsl) "path:lib/libgcc/libgcc_s.1.dylib:libgcc port:libgcc7 port:libgcc6"
+    } elseif {[vercmp ${version} 8] < 0} {
+        set cdb(gcc$v,dependsl) "path:lib/libgcc/libgcc_s.1.dylib:libgcc port:libgcc7"
     } else {
         set cdb(gcc$v,dependsl) "path:lib/libgcc/libgcc_s.1.dylib:libgcc"
     }
@@ -178,7 +181,8 @@ foreach cname [array names cdb *,variant] {
 
 foreach variant ${compilers.variants} {
     if {$cdb($variant,f77) ne ""} {
-        lappend compilers.fortran_variants $variant
+        lappend compilers.all_fortran_variants $variant
+        lappend compilers.my_fortran_variants $variant
     }
 }
 
@@ -190,13 +194,14 @@ proc compilers.set_variants_conflict {args} {
 
 proc compilers.setup_variants {variants} {
     global cdb compilers.variants compilers.clang_variants compilers.gcc_variants
-    global compilers.fortran_variants compilers.list
+    global compilers.my_fortran_variants compilers.list
     global compilers.variants_conflict
     global compilers.clear_archflags
 
+    set compilers.my_fortran_variants {}
     foreach variant $variants {
         if {$cdb($variant,f77) ne ""} {
-            lappend compilers.fortran_variants $variant
+            lappend compilers.my_fortran_variants $variant
         }
 
         if {[variant_exists $variant]} {
@@ -271,7 +276,7 @@ foreach variant ${compilers.gcc_variants} {
 }
 
 proc c_active_variant_name {depspec} {
-    global compilers.variants compilers.fortran_variants
+    global compilers.variants
     set c_list [remove_from_list ${compilers.variants} {gfortran g95}]
 
     foreach c $c_list {
@@ -288,7 +293,7 @@ proc c_active_variant_name {depspec} {
 }
 
 proc c_variant_name {} {
-    global compilers.variants compilers.fortran_variants
+    global compilers.variants
     set c_list [remove_from_list ${compilers.variants} {gfortran g95}]
 
     foreach cc $c_list {
@@ -305,9 +310,11 @@ proc c_variant_isset {} {
 }
 
 proc fortran_active_variant_name {depspec} {
-    global compilers.fortran_variants
+#note: this list of variants is NOT reduced by an characteristics of the current port
+#(unlike compilers.my_fortran_variants), since it needs to apply to another port.
+    global compilers.all_fortran_variants
 
-    foreach fc ${compilers.fortran_variants} {
+    foreach fc ${compilers.all_fortran_variants} {
         if {![catch {set result [active_variants $depspec $fc ""]}]} {
             if {$result} {
                 return $fc
@@ -331,9 +338,9 @@ proc fortran_compiler_name {variant} {
 }
 
 proc fortran_variant_name {} {
-    global compilers.fortran_variants variations
+    global compilers.my_fortran_variants variations
 
-    foreach fc ${compilers.fortran_variants} {
+    foreach fc ${compilers.my_fortran_variants} {
         # we need to check the default_variants so we can't use variant_isset
         if {[info exists variations($fc)] && $variations($fc) eq "+"} {
             return $fc
@@ -523,11 +530,9 @@ proc compilers.action_enforce_some_f {ports} {
 }
 
 proc compilers.setup {args} {
-    global cdb compilers.variants compilers.clang_variants compilers.gcc_variants
-    global compilers.fortran_variants
-    global compilers.require_fortran compilers.default_fortran compilers.setup_done compilers.list
-    global compilers.gcc_default
-    global compiler.blacklist
+    global cdb compilers.variants compilers.clang_variants compilers.gcc_variants \
+        compilers.my_fortran_variants compilers.require_fortran compilers.default_fortran \
+        compilers.setup_done compilers.list compilers.gcc_default compiler.blacklist
 
     if {!${compilers.setup_done}} {
         set add_list {}
@@ -538,7 +543,7 @@ proc compilers.setup {args} {
         # we remove +clangXY
         if {[compilers.is_fortran_only]} {
             # remove gfortran since that only exists to "complete" clang/llvm
-            set remove_list [remove_from_list ${compilers.fortran_variants} gfortran]
+            set remove_list [remove_from_list ${compilers.my_fortran_variants} gfortran]
         } elseif {[compilers.is_c_only]} {
             # remove gfortran and g95 since those are purely for fortran
             set remove_list [remove_from_list ${compilers.variants} {gfortran g95}]
@@ -644,11 +649,22 @@ proc compilers.setup {args} {
     }
 }
 
-# this might also need to be in pre-archivefetch
 pre-fetch {
     if {${compilers.require_fortran} && [fortran_variant_name] eq ""} {
-        return -code error "must set at least one Fortran variant (e.g. +gfortran, +gccX, +g95)"
+        return -code error "must set at least one Fortran variant (${compilers.my_fortran_variants})"
     }
+}
+
+pre-archivefetch {
+    # this can only be flagged if the archive on the server is actually wrong
+    if {${compilers.require_fortran} && [fortran_variant_name] eq ""} {
+        return -code error "must set at least one Fortran variant (${compilers.my_fortran_variants})"
+    }
+}
+
+# at this point, dependencies are guaranteed to be present. otherwise, an error may occur.
+# enforcing these in archivefetch doesn't seem necessary, as they would matter only at compile time.
+pre-configure {
     compilers.action_enforce_c ${compilers.required_c}
     compilers.action_enforce_f ${compilers.required_f}
     compilers.action_enforce_some_f ${compilers.required_some_f}

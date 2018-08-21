@@ -4,7 +4,7 @@ PortSystem              1.0
 PortGroup               compiler_blacklist_versions 1.0
 
 name                    nodejs10
-version                 10.3.0
+version                 10.8.0
 
 categories              devel net
 platforms               darwin
@@ -24,8 +24,9 @@ homepage                http://nodejs.org/
 master_sites            ${homepage}dist/v${version}
 use_xz                  yes
 
-checksums               rmd160  6d193924289326c1a5e68d9ac2a4282327c12e3f \
-                        sha256  cb90e9bde8e655eeb152ebdbe1b72e7d2443e3ae2d5f9ac4acd69e7c22671f31 \
+checksums               rmd160  b2ff9a19fdd6428aa8cd5236a2c4eae8d14cc6f3 \
+                        sha256  97bb21718228fd801c8355c842e764eefda888d3a87de8eb04315c74f546b9bc \
+                        size    19910236
 
 distname                node-v${version}
 
@@ -161,10 +162,6 @@ destroot {
         deps/v8/include/v8-util.h \
         deps/v8/include/v8config.h \
         deps/uv/include/uv.h \
-        deps/uv/include/uv-unix.h \
-        deps/uv/include/uv-darwin.h \
-        deps/uv/include/tree.h \
-        deps/uv/include/uv-threadpool.h \
         deps/cares/include/ares.h \
         deps/cares/include/ares_version.h \
         deps/cares/include/nameser.h \

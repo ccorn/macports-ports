@@ -38,5 +38,3 @@ post-patch {
 }
 
 configure.args      --disable-sdltest
-
-livecheck.url       https://ftp.gnu.org/gnu/freedink/

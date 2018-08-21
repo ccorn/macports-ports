@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.26
-perl5.setup         Twitter-API 1.0001
+perl5.setup         Twitter-API 1.0003
 license             {Artistic-1 GPL}
 maintainers         nomaintainer
 description         Twitter::API - A Twitter REST API library for Perl, \
@@ -13,9 +13,9 @@ long_description    ${description}
 
 platforms           darwin
 
-checksums           rmd160  9c3f0b10f29cabfb242b33fc9c44a506d34c5db6 \
-                    sha256  9014b41e2d7cd60d3adc438d954611dd1b358a32be135204df4ca53741c848e3 \
-                    size    52596
+checksums           rmd160  af81288fc4d6aba247be771bc1efa0da8889e822 \
+                    sha256  ccdb59823d3b8150e9d6e996af6bc2288356e5dd7d20f90000795a8665d6a4ae \
+                    size    53506
 
 if {${perl5.major} != ""} {
     depends_build-append \

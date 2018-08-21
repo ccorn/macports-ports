@@ -8,7 +8,7 @@ categories          devel sysutils net
 platforms           darwin
 license             LGPL-3+
 
-maintainers         inconsistent.nl:merijn stromnov {michaelld @michaelld} openmaintainer
+maintainers         inconsistent.nl:merijn {stromnov @stromnov} {michaelld @michaelld} openmaintainer
 
 description         0MQ (ZeroMQ) lightweight messaging kernel
 
@@ -55,11 +55,11 @@ subport zmq22 {
 }
 
 subport zmq-devel {
-    github.setup        zeromq libzmq 50374bf6f534f181302c5fa1152c189ec5a0784c
-    version             20180524
-    checksums           rmd160 b6c67a320dabf45243ac9a88d4c33c98d12b3cfc \
-                        sha256 04028e4a7ddb30d652d3570b2dbb8b4f8adce6dd12f9c01c01318b93f2f86a4f \
-                        size   755986
+    github.setup        zeromq libzmq dbe289509e2554fd56383067fff9e02d9b379d0b
+    version             20180813
+    checksums           rmd160 16edea8a15d8079b7f921794f7c3fa53aaa8f4e0 \
+                        sha256 df903b43fb9664c8042286f0b319b9b2df4ebad3e5eeb712085d18c9572bb37d \
+                        size   766031
 
     conflicts           zmq zmq22 zmq3
     configure.args-append --disable-libunwind --disable-cxx11

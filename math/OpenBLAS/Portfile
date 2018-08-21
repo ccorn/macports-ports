@@ -19,11 +19,11 @@ archive_sites
 subport OpenBLAS-devel {}
 if {[string first "-devel" $subport] > 0} {
 
-    github.setup    xianyi OpenBLAS 43e592ceb38a56716279a6514ceca1ec9bdb0865
-    version         20180524
-    checksums       rmd160 2b186446fa766dd5f2bb37a1d3e3eee1b6de5fff \
-                    sha256 e3dd7f9c725b34cef37018af152f0e6e8ef075c24bbd006127ecaaee87a95779 \
-                    size   11791596
+    github.setup    xianyi OpenBLAS d4d3113adc780e012eeb4439179b270595391158
+    version         20180812
+    checksums       rmd160 8269bef2adfc24337c4a0954a92e45802f0283eb\
+                    sha256 410363f5d3e4a49de0c418307adaf8d53efd56e3b11f37fc2efa11a89d598df2\
+                    size   11823732
 
     name            ${github.project}-devel
     conflicts       OpenBLAS
@@ -35,10 +35,10 @@ if {[string first "-devel" $subport] > 0} {
 
 } else {
 
-    github.setup    xianyi OpenBLAS 0.2.20 v
-    revision        1
-checksums           rmd160  259835e7fe94fa1d7cb861cbb579955ded7bb69b \
-                    sha256  2a9848fcfebdd8594a5252ea119e06cb8c1508528b87c781a20b44db0b1ba0ad
+    github.setup    xianyi OpenBLAS 0.3.2 v
+    checksums       rmd160 710b33345a795d95b9f3ca6fa9d5cd848dc66afe \
+                    sha256 58a27233e6c1ae5731cc28d731cca2b1ce6ab7c070d34c7dc4a69e2d459d402c \
+                    size   11816662
 
     conflicts       OpenBLAS-devel
 
@@ -220,6 +220,11 @@ destroot.args       "PREFIX=${prefix}"
 if {[variant_isset universal]} {
     merger-post-destroot {
         foreach arch ${universal_archs_to_use} {
+            if {${arch} ne ${build_arch}} {
+                # openblas.pc records the processor name, which is different for 32-bit and 64-bit architectures
+                # see https://github.com/xianyi/OpenBLAS/commit/eb9b021d3890429a41823dc3d90eb0d11c0a6d6d
+                delete ${destroot}-${arch}${prefix}/lib/pkgconfig/openblas.pc
+            }
             move ${destroot}-${arch}${prefix}/include/cblas.h \
                 ${destroot}-${arch}${prefix}/include/cblas_openblas.h
             #Correct library name

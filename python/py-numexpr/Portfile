@@ -4,15 +4,15 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-numexpr
-version             2.6.5
+version             2.6.8
 revision            0
 categories-append   math
 platforms           darwin
 license             MIT
 
-python.versions     26 27 33 34 35 36
+python.versions     27 34 35 36 37
 
-maintainers         stromnov openmaintainer
+maintainers         {stromnov @stromnov} openmaintainer
 
 description         Multiple-operator array expression evaluator
 long_description    The numexpr package evaluates multiple-operator array \
@@ -28,9 +28,9 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  7bd00f8d586a490e5fa9c44c8eba658d942cd566 \
-                    sha256  f8ad8014085628eab91bc82fb9d10cf9ab8e04ede4884e4a1061445d395b36bb \
-                    size    93301
+checksums           rmd160  5ee464bfee6a6332fd1198feedcb8594ba98decc \
+                    sha256  ee8bc7201aa2f1962c67d27c326a11eef9df887d7b87b1278a1d4e722bf44375 \
+                    size    94517
 
 if {${name} ne ${subport}} {
     depends_build-append \

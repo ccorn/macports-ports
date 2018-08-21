@@ -11,9 +11,9 @@ platforms           darwin
 license             BSD
 supported_archs     noarch
 
-python.versions     26 27
+python.versions     27
 
-maintainers         stromnov openmaintainer
+maintainers         {stromnov @stromnov} openmaintainer
 
 description         A Pure Python module containing a framework to manipulate \
                     and analyze python ast's and bytecode.

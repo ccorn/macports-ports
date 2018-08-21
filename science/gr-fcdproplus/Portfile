@@ -4,11 +4,11 @@ PortSystem          1.0
 PortGroup           cmake 1.0
 PortGroup           github 1.0
 
-github.setup        dl1ksv gr-fcdproplus c802d76cfddb05cc203df1e38630317836eae9bd
-version             20180123
-revision            2
-checksums           rmd160 08abea9469cef52213cba18d3bac6bfaec8d6761 \
-                    sha256 da93be4c9528116e58de965f9e600b2e40ccded982ff0e0ad339de2e5f63ad67
+github.setup        dl1ksv gr-fcdproplus 6bf5bbb98c9a104fc9e636b2f18772f857864c1c
+version             20180727
+checksums           rmd160 98f4061b79fc1bfcb8c446cf5980f602c1678c84 \
+                    sha256 df94f5aa55f3d29161890420ccc80bda3ee634b4d1c7e1f8a9e2d445153721f5 \
+                    size   132037
 
 categories          science comms
 maintainers         {michaelld @michaelld} openmaintainer

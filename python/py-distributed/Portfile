@@ -4,16 +4,16 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-distributed
-version             1.21.8
+version             1.22.1
 revision            0
 categories-append   devel
 platforms           darwin
 license             BSD
 supported_archs     noarch
 
-python.versions     27 34 35 36
+python.versions     27 34 35 36 37
 
-maintainers         stromnov openmaintainer
+maintainers         {stromnov @stromnov} openmaintainer
 
 description         Distributed computing.
 long_description    Dask.distributed is a lightweight library for distributed \
@@ -25,9 +25,9 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  f492899f27c327718700ed2a283d3169d458417e \
-                    sha256  d80c82fc402406703ad7756fc7ce630311c57d883c23ac0021fdfeb674995362 \
-                    size    476060
+checksums           rmd160  902cab15d4b11c539d0d7f0cdec88b7f876327f0 \
+                    sha256  eefdd511912a001077bf1e00e2c3989dcfa853d68d14a8cd5b688c6175389e3a \
+                    size    495436
 
 if {${name} ne ${subport}} {
     depends_lib-append  port:py${python.version}-setuptools \
@@ -41,6 +41,7 @@ if {${name} ne ${subport}} {
                         port:py${python.version}-dask \
                         port:py${python.version}-cloudpickle \
                         port:py${python.version}-click \
+                        port:py${python.version}-yaml \
                         port:py${python.version}-sortedcontainers
 
     if {${python.version} == 27} {

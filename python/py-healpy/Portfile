@@ -6,6 +6,7 @@ PortGroup               active_variants 1.1
 
 name                    py-healpy
 version                 1.11.0
+revision                1
 categories-append       science
 license                 GPL-2
 platforms               darwin
@@ -23,7 +24,7 @@ checksums               md5     c30daf225b3173224d6ea0cb10714b87 \
                         rmd160  36486c107e06d1c7efad78d52a1fa1dd87099d90 \
                         sha256  8c3c7982ae188549315a11f4d1aa6528cd1ccf078017ca20120ff2cf1b47babe
 
-python.versions         27 34 35 36
+python.versions         27 34 35 36 37
 
 if {${name} ne ${subport}} {
 
@@ -52,6 +53,13 @@ if {${name} ne ${subport}} {
                         port:py${python.version}-matplotlib \
                         port:py${python.version}-six \
                         port:healpix-cxx
+
+    post-extract {
+        # Regenerate Cython files
+        file delete     ${worksrcpath}/healpy/src/_pixelfunc.cpp \
+                        ${worksrcpath}/healpy/src/_query_disc.cpp \
+                        ${worksrcpath}/healpy/src/_sphtools.cpp
+    }
 
     livecheck.type      none
 

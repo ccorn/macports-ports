@@ -3,7 +3,7 @@
 PortSystem                      1.0
 
 name                            curl
-version                         7.60.0
+version                         7.61.0
 categories                      net www
 platforms                       darwin freebsd
 maintainers                     {ryandesign @ryandesign}
@@ -26,9 +26,9 @@ set curl_distfile               ${distfiles}
 distfiles                       ${curl_distfile}:curl
 
 checksums                       ${curl_distfile} \
-                                rmd160  b37324b16040cff058af87727662ad246e7d4b2b \
-                                sha256  8736ff8ded89ddf7e926eec7b16f82597d029fc1469f3a551f1fafaac164e6a0 \
-                                size    2338104
+                                rmd160  eb76610e2b375210d34a7418de44555b9e852de8 \
+                                sha256  ef6e55192d04713673b4409ccbcb4cb6cd723137d6e10ca45b0c593a454e1720 \
+                                size    2348892
 
 if {${name} eq ${subport}} {
     PortGroup                   muniversal 1.0
@@ -208,7 +208,7 @@ if {${name} eq ${subport}} {
 }
 
 subport curl-ca-bundle {
-    revision                    0
+    revision                    1
     categories                  net
     license                     {MPL-2 LGPL-2.1+}
     supported_archs             noarch
@@ -228,8 +228,8 @@ subport curl-ca-bundle {
     set certdata_file           certdata.txt
     # The output of the Tcl command "clock seconds" (you can run it in tclsh) when
     # the certdata.txt file in the port was last updated.
-    set certdata_updated        1525833000
-    set certdata_version        0037f2516d10
+    set certdata_updated        1533609814
+    set certdata_version        2785491cf84e
     set certdata_extract_cmd    bzip2
     set certdata_extract_suffix .tar.bz2
     set certdata_distfile       certdata-${certdata_version}${certdata_extract_suffix}
@@ -245,9 +245,9 @@ subport curl-ca-bundle {
     distfiles-append            ${certdata_distfile}:certdata
 
     checksums-append            ${certdata_distfile} \
-                                rmd160  c3ae5e3cdb2fc2145ef0bb2879c848a5e10c80c4 \
-                                sha256  770ef57d954f41d38a2c76f381d105649945a53f11ef163593e9c9bc53e52b70 \
-                                size    190241
+                                rmd160  f004bbd064eb4f285299b97fc12163e220275721 \
+                                sha256  0a21e2a687b1266b39fd8d243081bc21f8c429c80e5eecc58c68296c814d08ec \
+                                size    190452
 
     extract.only                ${curl_distfile}
     set curl_mk_ca_bundle_files "${worksrcdir}/Makefile ${worksrcdir}/lib/mk-ca-bundle.pl"

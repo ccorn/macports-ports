@@ -17,26 +17,39 @@ long_description    \
 
 if {${name} eq ${subport}} {
 
-    github.setup        direnv direnv 2.16.0 v
-    checksums           rmd160 c7268234ae6e2d2ac38309b6b9aef245a282ac67 \
-                        sha256 453ad76348aedd88d1677652daa1afcec38309e757704c580756be67b53e4e31 \
-                        size   92445
+    github.setup        direnv direnv 2.17.0 v
+    checksums           rmd160 58a963b1af1de56536708d354abc78824e54e811 \
+                        sha256 74632f5c46faf1f57239c755b3783a7ce8b75d6808f1c348482ab5995083aee2 \
+                        size   92933
 
     conflicts           direnv-devel
+
+    # fix PREFIX and DESTDIR variables to match what 'port' needs
+
+    patchfiles-append       patch-Makefile.diff
 
 }
 
 subport direnv-devel {
 
-    github.setup        direnv direnv 415d068939ae357379f0e6ab52a4367d34288e91
-    version             20180509
-    checksums           rmd160 c7268234ae6e2d2ac38309b6b9aef245a282ac67 \
-                        sha256 453ad76348aedd88d1677652daa1afcec38309e757704c580756be67b53e4e31 \
-                        size    92445
+    github.setup        direnv direnv 51b0874b09f8a04f504ef834ee955498fe4e951e
+    version             20180731
+    checksums           rmd160 0f8ea8bcf0e249b62c35f3b23fc67db1bcbe3b71 \
+                        sha256 c816ede8ebf115883e04a8f3b409da5d3f0f48e3d5ef6fd9877ba203c0fb5270 \
+                        size   94274
 
     conflicts           direnv
     long_description ${long_description}: \
         This port follows the GIT master version of ${name}, which is typically updated every few days to weeks.
+
+    # devel dependency
+    # add to both at next release
+
+    depends_build-append port:shfmt
+
+    # fix PREFIX and DESTDIR variables to match what 'port' needs
+
+    patchfiles-append       patch-GNUmakefile.diff
 
 }
 
@@ -47,10 +60,6 @@ homepage                http://direnv.net/
 # builds with 'go' internally
 
 depends_lib-append      port:go
-
-# fix PREFIX and DESTDIR variables to match what 'port' needs
-
-patchfiles-append       patch-Makefile.diff
 
 # fix importing of locally-provided external projects
 

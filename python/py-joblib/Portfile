@@ -4,16 +4,16 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-joblib
-version             0.11
+version             0.12.2
 revision            0
 categories-append   devel
 platforms           darwin
 license             BSD
 supported_archs     noarch
 
-python.versions     27 34 35 36
+python.versions     27 34 35 36 37
 
-maintainers         stromnov openmaintainer
+maintainers         {stromnov @stromnov} openmaintainer
 
 description         Lightweight pipelining: using Python functions as pipeline jobs.
 
@@ -28,8 +28,9 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  602ba265352deb3e2cca2fdd5380ba541caf9976 \
-                    sha256  7b8fd56df36d9731a83729395ccb85a3b401f62a96255deb1a77220c00ed4085
+checksums           rmd160  609a47ce9d00d4dd274140a2833f0bda096b36c7 \
+                    sha256  e9f04885cf11704669f3a731ea6ac00bbc7dea16137aa4394ef7c272cdb9d008 \
+                    size    289249
 
 if {${name} ne ${subport}} {
     depends_build-append \

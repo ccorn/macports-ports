@@ -6,11 +6,10 @@ PortGroup           compiler_blacklist_versions 1.0
 PortGroup           cxx11 1.1
 
 name                FileZilla
-version             3.33.0
-revision            1
+version             3.35.2
 categories          www aqua
 platforms           darwin
-maintainers         {@yan12125 gmail.com:yan12125} openmaintainer
+maintainers         {yan12125 @yan12125} openmaintainer
 license             GPL-2+
 
 description         Open-source FTP, FTPS, and SFTP client
@@ -22,9 +21,9 @@ long_description    FileZilla Client is a fast and reliable cross-platform \
 homepage            https://filezilla-project.org/
 master_sites        https://dl3.cdn.filezilla-project.org/client
 
-checksums           rmd160  b394e724a25a3f0dfbc1f8af22511d39b5b5c4ff \
-                    sha256  f4ab6d4368c0b0c89dd938f823a20164e1ed738fd7389775a899939232570ec1 \
-                    size    4862360
+checksums           rmd160  51c0e5da8e7253560348ee7ef63c6425611d09c1 \
+                    sha256  c4d82544894c1aa3ef32ca05fe31af7d34ed0933cd864bf44857aa32157ce6ac \
+                    size    4968449
 
 # wxWidgets-3.0 with support for C++11 on < 10.9
 wxWidgets.use       wxWidgets-3.0-cxx11
@@ -45,7 +44,8 @@ distname            ${name}_${version}_src
 use_bzip2           yes
 worksrcdir          filezilla-${version}
 
-patchfiles          patch-src-interface-buildinfo.cpp.diff
+patchfiles          patch-src-interface-buildinfo.cpp.diff \
+                    patch-skip-dylibcopy.diff
 
 # http://trac.filezilla-project.org/ticket/5473
 # http://sourceforge.net/p/tinyxml/patches/51/

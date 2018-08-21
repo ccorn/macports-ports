@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           xcode 1.0
 
-github.setup        vslavik poedit 2.0.8 v -oss
+github.setup        vslavik poedit 2.1.1 v -oss
 categories          editors
 platforms           darwin
 license             MIT
@@ -16,9 +16,6 @@ homepage            https://poedit.net/
 
 depends_build       port:gsed \
                     port:ninja
-
-depends_build-append \
-                    port:autoconf port:automake port:libtool
 
 fetch.type          git
 
@@ -49,8 +46,10 @@ xcode.configuration     "Release"
 xcode.scheme            "Poedit"
 xcode.build.settings    OBJROOT=${worksrcpath}/build/ \
                         SYMROOT=${worksrcpath}/build/
-xcode.destroot.settings ${xcode.build.settings}
 
 build.pre_args          -workspace Poedit2.xcworkspace \
                         -derivedDataPath ./DerivedData
-destroot.pre_args       ${build.pre_args}
+
+destroot {
+    copy ${worksrcpath}/build/Release/Poedit.app ${destroot}${applications_dir}
+}

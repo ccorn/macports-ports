@@ -6,6 +6,7 @@ PortGroup           compiler_blacklist_versions 1.0
 name                inkscape
 conflicts           inkscape-devel
 version             0.92.3
+revision            3
 license             GPL-2 LGPL-2.1
 maintainers         {devans @dbevans}
 categories          graphics gnome
@@ -61,6 +62,11 @@ patchfiles          patch-use-configured-perl.diff \
                     patch-use-cxxutil-h.diff \
                     patch-src-2geom-svg-path-writer-cpp.diff \
                     libavoid-abs-ambiguous.diff
+
+# backport fixes from upstream for poppler 0.65 compatibility
+# (patches can presumably be removed on next update)
+patchfiles-append    10e8ae0ff522d3a9caeed9a7f137cdfd795ba0a3.diff \
+                     f0697de012598ea84edafea9a326e5e101eccd2a.diff
 
 post-patch {
     copy ${filespath}/cxxutil.h ${worksrcpath}/src/cxxutil.h

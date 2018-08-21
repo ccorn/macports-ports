@@ -3,7 +3,11 @@
 PortSystem              1.0
 PortGroup               github 1.0
 
-github.setup            Winetricks winetricks 20180513
+github.setup            Winetricks winetricks 20180815
+checksums               rmd160  461c74b42ccebdc026f21a4b450c27c1e51d0114 \
+                        sha256  c37a3b0a3117ff83d4474e922c734cf27554aa435992ac29ad1c40b66e74119e \
+                        size    665676
+
 categories              x11
 maintainers             {ryandesign @ryandesign} openmaintainer
 license                 LGPL-2.1+
@@ -20,13 +24,8 @@ long_description        ${name} can help you prepare your system for Windows \
                         systems have all the needed redistributable runtime \
                         libraries or fonts.
 
-checksums               rmd160  5dcade55a004d5aa808178417d769c30e8b6f9d4 \
-                        sha256  ba65e04b02a934f74130dd9c39f6be5d1ab749b43c6b080b81020c8afcf6f600 \
-                        size    652275
-
-depends_run             path:bin/zenity:zenity \
-                        path:bin/wine:wine \
-                        path:bin/cabextract:cabextract \
+depends_run             port:zenity \
+                        port:cabextract \
                         path:bin/openssl:openssl \
                         bin:curl:curl \
                         bin:unzip:unzip

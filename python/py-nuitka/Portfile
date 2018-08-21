@@ -4,15 +4,15 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-nuitka
-version             0.5.30
+version             0.5.32.5
 revision            0
 categories-append   devel
 platforms           darwin
 license             Apache-2
 
-python.versions     27 34 35 36
+python.versions     27 34 35 36 37
 
-maintainers         stromnov openmaintainer
+maintainers         {stromnov @stromnov} openmaintainer
 
 description         Python compiler with full language support and CPython compatibility.
 long_description    ${description}
@@ -22,9 +22,9 @@ master_sites        pypi:N/Nuitka
 
 distname            Nuitka-${version}
 
-checksums           rmd160  3f934e63604c3963e5c4f986b52059faa1946a60 \
-                    sha256  fe5251fa8adbd4114e98c07854c2a9915405fccb6e9c78a51b7d47b700d2ef48 \
-                    size    2083222
+checksums           rmd160  ef028a353bd35616fa29ba8e5743fff70ea6ca8e \
+                    sha256  64925374b5f6298ee854e23ea8d61f0227edebea5ab47257a05b7113eb031501 \
+                    size    2005718
 
 if {${name} ne ${subport}} {
 

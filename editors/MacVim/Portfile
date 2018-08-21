@@ -2,8 +2,8 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           compiler_blacklist_versions 1.0
 
-set vim_version     8.0
-set snapshot        146
+set vim_version     8.1
+set snapshot        151
 github.setup        macvim-dev macvim ${snapshot} snapshot-
 name                MacVim
 version             ${vim_version}.snapshot${snapshot}
@@ -11,18 +11,18 @@ categories          editors
 platforms           darwin
 license             Vim GPL-2+
 maintainers         {raimue @raimue}
-description         MacVim is a GUI version of vim for Mac OS X
+
+description         MacVim is a GUI version of vim for macOS
 long_description \
-    MacVim is a port of the text editor Vim to Mac OS X that is meant to look \
-    better and integrate more seamlessly with the Mac than vim-app.
+    MacVim is a port of the text editor Vim to macOS that is meant to \
+    integrate seamlessly with the native user interface.
 
 homepage            https://macvim-dev.github.io/macvim/
  
-checksums           rmd160  5de1b95ec8b0cc02eb4e75b02d9e0d8700e9e6ce \
-                    sha256  5771dd1e65ea1c322c3383d03fa30661478f712d4dcdaa8a68e1fe3bab3ed2e7 \
-                    size    19874204
+checksums           rmd160  0298a22f02d406d35deb73964ac8d5e8a0914cc7 \
+                    sha256  58cc94b31d4a4c6a5e925f55def146d553547c03589148e6a041309209104bde \
+                    size    20133403
 
-depends_build       bin:grep:grep
 depends_lib         port:ncurses \
                     port:gettext \
                     port:libiconv
@@ -58,7 +58,10 @@ post-patch {
     }
 }
 
-autoconf.dir        ${worksrcpath}/src
+autoconf.cmd make autoconf
+autoconf.pre_args
+autoconf.args
+autoconf.dir ${worksrcpath}/src
 
 configure.args      --enable-gui=macvim \
                     --without-x \
@@ -109,51 +112,28 @@ variant perl description {Enable Perl scripting} {
     depends_lib-append      path:bin/perl:perl5
 }
 
-variant python26 conflicts python27 description {Enable Python scripting} {
-    configure.args-append   --enable-pythoninterp --with-python=${prefix}/bin/python2.6
-    patchfiles-append       patch-python.diff
-    depends_lib-append      port:python26
-
-    use_autoconf yes
-}
-variant python27 conflicts python26 description {Enable Python scripting} {
-    configure.args-append   --enable-pythoninterp --with-python=${prefix}/bin/python2.7
+variant python27 description {Enable Python scripting} {
+    configure.args-append   --enable-pythoninterp --with-python-command=${prefix}/bin/python2.7
     patchfiles-append       patch-python.diff
     depends_lib-append      port:python27
 
     use_autoconf yes
-}
-variant python33 conflicts python34 python35 python36 description {Enable Python scripting} {
-    configure.args-append   --enable-python3interp --with-python3=${prefix}/bin/python3.3
-    patchfiles-append       patch-python3.diff
-    depends_lib-append      port:python33
-
-    use_autoconf yes
     # Overwriting autoconf.cmd above removes dependency, add it again
     depends_build-append port:autoconf
 }
-variant python34 conflicts python33 python35 python36 description {Enable Python scripting} {
-    configure.args-append   --enable-python3interp --with-python3=${prefix}/bin/python3.4
-    patchfiles-append       patch-python3.diff
-    depends_lib-append      port:python34
-
-    use_autoconf yes
-    # Overwriting autoconf.cmd above removes dependency, add it again
-    depends_build-append port:autoconf
-}
-variant python35 conflicts python33 python34 python36 description {Enable Python scripting} {
-    configure.args-append   --enable-python3interp --with-python3=${prefix}/bin/python3.5
-    patchfiles-append       patch-python3.diff
-    depends_lib-append      port:python35
-
-    use_autoconf yes
-    # Overwriting autoconf.cmd above removes dependency, add it again
-    depends_build-append port:autoconf
-}
-variant python36 conflicts python33 python34 python35 description {Enable Python scripting} {
-    configure.args-append   --enable-python3interp --with-python3=${prefix}/bin/python3.6
+variant python36 conflicts python37 description {Enable Python scripting} {
+    configure.args-append   --enable-python3interp --with-python3-command=${prefix}/bin/python3.6
     patchfiles-append       patch-python3.diff
     depends_lib-append      port:python36
+
+    use_autoconf yes
+    # Overwriting autoconf.cmd above removes dependency, add it again
+    depends_build-append port:autoconf
+}
+variant python37 conflicts python36 description {Enable Python scripting} {
+    configure.args-append   --enable-python3interp --with-python3-command=${prefix}/bin/python3.7
+    patchfiles-append       patch-python3.diff
+    depends_lib-append      port:python37
 
     use_autoconf yes
     # Overwriting autoconf.cmd above removes dependency, add it again
@@ -204,6 +184,8 @@ variant tcl description {Enable Tcl scripting} {
     depends_lib-append      port:tcl
 
     use_autoconf yes
+    # Overwriting autoconf.cmd above removes dependency, add it again
+    depends_build-append port:autoconf
 }
 
 variant lua description {Enable Lua scripting} {

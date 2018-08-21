@@ -14,7 +14,7 @@ PortGroup                   compiler_blacklist_versions 1.0
 name                        wine-devel
 conflicts                   wine wine-crossover
 set my_name                 wine
-version                     3.9
+version                     3.14
 set branch                  [lindex [split ${version} .] 0].x
 license                     LGPL-2.1+
 categories                  x11
@@ -28,7 +28,7 @@ set wine_distfile           ${distname}${extract.suffix}
 set wine_gecko_version      2.47
 set wine_gecko_distfile     wine_gecko-${wine_gecko_version}-x86.msi
 set wine_gecko64_distfile   wine_gecko-${wine_gecko_version}-x86_64.msi
-set wine_mono_version       4.7.1
+set wine_mono_version       4.7.3
 set wine_mono_distfile      wine-mono-${wine_mono_version}.msi
 use_parallel_build          yes
 
@@ -59,9 +59,9 @@ distfiles                   ${wine_distfile}:winesource \
                             ${wine_mono_distfile}:winemono
 
 checksums                   ${wine_distfile} \
-                            rmd160  08259b7e72b30e2cf97bcc3c1b3417b7f6d48131 \
-                            sha256  ccadc281966d5a94f1161dec22d29bf7bd6506b371b26f18f652d374e986b735 \
-                            size    20508952 \
+                            rmd160  00bc0fa75ef6be64621dde79c90cbd06544aa120 \
+                            sha256  47896634c255c202d04b85f884b4f1bceb02e1d7bb2ff257b6bc8d69d4b0b005 \
+                            size    20583696 \
                             ${wine_gecko_distfile} \
                             rmd160  abf7cc78b49dd0623bc8fe87ae0e32bb8694e13d \
                             sha256  3b8a361f5d63952d21caafd74e849a774994822fb96c5922b01d554f1677643a \
@@ -71,8 +71,8 @@ checksums                   ${wine_distfile} \
                             sha256  c565ea25e50ea953937d4ab01299e4306da4a556946327d253ea9b28357e4a7d \
                             size    50806272 \
                             ${wine_mono_distfile} \
-                            rmd160  3e2932960dabff8283f02b32dc573b0dda6adfac \
-                            sha256  2c8d5db7f833c3413b2519991f5af1f433d59a927564ec6f38a3f1f8b2c629aa \
+                            rmd160  1c4aca42bfff33ca7fc485442820c84665a3e581 \
+                            sha256  d24a8017371c7e8224a1778bb43a113ed7ed9720efd9d0cda175d42db6106d3a \
                             size    56470528
 
 # Note: Most of the X11 libs are dlopen()'d

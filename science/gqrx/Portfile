@@ -23,6 +23,7 @@ dist_subdir         gqrx
 if {${subport} eq ${name}} {
 
     github.setup    csete gqrx 2.11.5 v
+    revision        1
     checksums       \
         rmd160 b22320ee122d428ff7accc3053796d8ff303ae63 \
         sha256 e3e98ac8d0cccdb26122a0b8030e40bae99fe76ab188918bbcc9e2cc5639ea37 \
@@ -41,11 +42,11 @@ provides the release version, which is typically updated every month or so.
 
 subport gqrx-devel {
 
-    github.setup        csete gqrx 1e9193f143f65cb6639f1478f09f84c165189ae9
-    version             20180517
-    checksums           rmd160 b89e9c002213cd3a8fc4adbf8dec8d6277a0debe \
-                        sha256 3da4f166dee19bc2a7e5a0d50d4fa2c4566674bdbdd5cedadebf2a5e004eebd0 \
-                        size   1329094
+    github.setup        csete gqrx a8e98683aa05c5e554eb689994f87879a7abcfe3
+    version             20180605
+    checksums           rmd160 c9b7289435de3f8195043c7ec0261400d86642d2 \
+                        sha256 6f6cbe6ab75ed3da3ac6f1a7e70b44a06d40a06d2ce4696ada345b6984442967 \
+                        size   1329080
 
     patchfiles-append   patch-gqrx.pro.devel.diff
 

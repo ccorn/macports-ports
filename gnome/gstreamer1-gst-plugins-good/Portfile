@@ -10,7 +10,7 @@ PortGroup           compiler_blacklist_versions 1.0
 name                gstreamer1-gst-plugins-good
 set my_name         gst-plugins-good
 # please only commit stable updates (even numbered releases)
-version             1.14.1
+version             1.14.2
 description         A set of good-quality plug-ins for GStreamer under GStreamer's preferred \
                     license, LGPL.
 long_description    GStreamer Good Plug-ins is a set of plug-ins that GStreamer's developers \
@@ -26,9 +26,9 @@ master_sites        https://gstreamer.freedesktop.org/src/${my_name}/
 use_xz              yes
 distname            ${my_name}-${version}
 
-checksums           rmd160  c48451bcb816113945dcd0ab0f0b022017a91275 \
-                    sha256  34ec062ddb766a32377532e039781f4a16fbc3e8b449e642605bacab26a99172 \
-                    size    3776168
+checksums           rmd160  fd1ecfb7241cadd737b240acd2554a30b951dac7 \
+                    sha256  c0575e2811860bfff59b865b8d125153859a01f0615fa41e279b64d88d25caad \
+                    size    3779912
 
 depends_build       port:pkgconfig
 
@@ -94,7 +94,8 @@ platform darwin {
 
 variant gtk3 requires x11 description {Enable GTK3 X11/GL windowing elements} {
     depends_lib-append      port:gtk3
-    configure.args-delete   --disable-gtk3
+    configure.args-replace  --disable-gtk3 \
+                            --enable-gtk3
 }
 
 # gtk3 elements require gtk3 +x11
@@ -105,12 +106,14 @@ if {[variant_isset gtk3]} {
 
 variant jack description {Enable Jack plugin} {
     depends_lib-append      port:jack
-    configure.args-delete   --disable-jack
+    configure.args-replace  --disable-jack \
+                            --enable-jack
 }
 
 variant pulseaudio description {Enable PulseAudio plugin} {
     depends_lib-append      port:pulseaudio
-    configure.args-delete   --disable-pulse
+    configure.args-replace  --disable-pulse \
+                            --enable-pulse
 }
 
 variant x11 {
@@ -119,7 +122,8 @@ variant x11 {
                             port:xorg-libXdamage \
                             port:xorg-libXext
     configure.args-append   --with-default-videosink=ximagesink
-    configure.args-delete   --disable-x
+    configure.args-replace  --disable-x \
+                            --enable-x
 }
 
 default_variants    +pulseaudio +x11
@@ -131,7 +135,8 @@ variant qt description {Enable QT5 MAC windowing elements } {
     qt5.depends_component   qtdeclarative \
                             qtmacextras
 
-    configure.args-delete   --disable-qt
+    configure.args-replace  --disable-qt \
+                            --enable-qt
 
     # avoid:
     #    ${prefix}/libexec/qt5/include/QtCore/qcompilerdetection.h:562:6: error: Qt requires a C++11 compiler and yours does not seem to be that.

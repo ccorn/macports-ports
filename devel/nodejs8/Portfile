@@ -4,7 +4,7 @@ PortSystem              1.0
 PortGroup               compiler_blacklist_versions 1.0
 
 name                    nodejs8
-version                 8.11.2
+version                 8.11.4
 
 categories              devel net
 platforms               darwin
@@ -20,12 +20,13 @@ long_description        Node's goal is to provide an easy way to build scalable 
 
 conflicts               nodejs4 nodejs5 nodejs6 nodejs7 nodejs9 nodejs10
 
-homepage                http://nodejs.org/
+homepage                https://nodejs.org/
 master_sites            ${homepage}dist/v${version}
 use_xz                  yes
 
-checksums               rmd160  9d8707aa1a6c61f2f732f76e86a67c1d1d1dd301 \
-                        sha256  539946c0381809576bed07424a35fc1740d52f4bd56305d6278d9e76c88f4979
+checksums               rmd160  b5269d76c244dc28ab97eeda16540d43c5a0d76f \
+                        sha256  fbce7de6d96b0bcb0db0bf77f0e6ea999b6755e6930568aedaab06847552a609 \
+                        size    18323120
 
 distname                node-v${version}
 

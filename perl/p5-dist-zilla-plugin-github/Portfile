@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.26
-perl5.setup         Dist-Zilla-Plugin-GitHub 0.44
+perl5.setup         Dist-Zilla-Plugin-GitHub 0.46
 license             {Artistic-1 GPL}
 maintainers         {devans @dbevans} openmaintainer
 description         Dist::Zilla::PluginBundle::GitHub - GitHub plugins all-in-one
@@ -12,9 +12,9 @@ long_description    ${description}
 
 platforms           darwin
 
-checksums           rmd160  a11bc1e47d6195fe476c69aa9010d13b0b2186fe \
-                    sha256  f91840f8d61f7b7c50cc20055aaf2c87fc26d64ef13807ab6deab2f0235e3e82 \
-                    size    37726
+checksums           rmd160  021e44d8e184dec1c4ce422d82b83d2a424aef5b \
+                    sha256  f20970c25ca9c53bebdadb2699192abd098828883ec06efb7b455878af854439 \
+                    size    41650
 
 if {${perl5.major} != ""} {
     depends_build-append \

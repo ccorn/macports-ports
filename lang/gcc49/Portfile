@@ -17,7 +17,7 @@ description         The GNU compiler collection
 long_description    The GNU compiler collection, including front ends for \
                     C, C++, Objective-C, Objective-C++, Fortran and Java.
 
-homepage            http://gcc.gnu.org/
+homepage            https://gcc.gnu.org/
 master_sites        ftp://ftp.funet.fi/pub/mirrors/sources.redhat.com/pub/gcc/releases/gcc-${version}/ \
                     ftp://ftp.gwdg.de/pub/linux/gcc/releases/gcc-${version}/ \
                     ftp://gcc.ftp.nluug.nl/mirror/languages/gcc/releases/gcc-${version}/ \
@@ -28,7 +28,8 @@ distname            gcc-${version}
 use_bzip2           yes
 
 checksums           rmd160  180d4aaa9d2c34084f3f01261f8cb00ddb921529 \
-                    sha256  6c11d292cd01b294f9f84c9a59c230d80e9e4a47e5c6355f046bb36d4f358092
+                    sha256  6c11d292cd01b294f9f84c9a59c230d80e9e4a47e5c6355f046bb36d4f358092 \
+                    size    90097606
 
 depends_lib         port:cctools \
                     path:lib/pkgconfig/cloog-isl.pc:cloog \
@@ -249,5 +250,5 @@ configure.universal_ldflags
 configure.universal_args
 
 livecheck.type      regex
-livecheck.url       http://ftp.gnu.org/gnu/gcc/
+livecheck.url       https://ftp.gnu.org/gnu/gcc/
 livecheck.regex     gcc-(${major}\\.\[0-9.\]+)/
