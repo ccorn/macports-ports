@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           muniversal 1.0
 
 name                pari
-version             2.9.5
+version             2.11.0
 categories          math
 platforms           darwin
 license             GPL-2+
@@ -19,9 +19,12 @@ long_description    PARI/GP is a widely used computer algebra system designed \
 homepage            http://pari.math.u-bordeaux.fr/
 master_sites        ${homepage}pub/pari/unix/
 
-checksums           rmd160  3b058058a57ce63184d64ed09d4b675a2f947b10 \
-                    sha256  6b451825b41d2f8b29592c08d671999527bf936789c599d77b8dfdc663f1e617 \
-                    size    3854627
+checksums           pari-2.11.0.tar.gz \
+                    md5     349be9187ca42ef8d70099a417bdec81 \
+                    rmd160  52f78622efe6079254a9b8a916239f41bf478fad \
+                    sha256  3835caccaa3e0c64764521032d89efeb[\
+                            ]8773cce841f6655fec6d58e790f4c9a1 \
+                    size    4419112
 
 depends_lib         port:gmp \
                     port:ncurses \
@@ -94,8 +97,6 @@ post-patch {
     # Do not build tex/dvi doc by default
     reinplace {s/\(doc all:\).*/\1/} \
         ${worksrcpath}/config/DOC_Make.SH
-    reinplace {s/^\(install-doc: .*\) install-docdvi/\1/} \
-        ${worksrcpath}/config/Makefile.SH
 }
 
 post-configure {
@@ -173,7 +174,8 @@ variant elldata description {include precomputed elliptic curve (Q) data} {
                         sha1    85f51ef85390f0f737fba10567d7d47f99249780 \
                         rmd160  e1a90bfaab3ec1db6698a9bb4c8700ec1a413497 \
                         sha256  6c909f09bb19c8a8125145b1aac37589[\
-                                ]15daa7fd03530bc909dcb460d4eecb38
+                                ]15daa7fd03530bc909dcb460d4eecb38 \
+                        size    46350931
 }
 
 # Plotting works with fltk @1.1.10_3, but the GUI part freezes
@@ -192,25 +194,27 @@ variant galdata description {include precomputed polynomial->Galois data} {
         sha1    0fe78ed49e197066708a3fc3753b2651107a1264 \
         rmd160  488afbddf7026dd6d0c9ebbed72cb14c8c37173e \
         sha256  b7c1650099b24a20bdade47a85a92835[\
-                ]1c586287f0d4c73933313873e63290dd
+                ]1c586287f0d4c73933313873e63290dd \
+        size    53229
 }
 
 variant galpol description {include precomputed Galois->polynomial data} {
     master_sites-append ${homepage}pub/pari/packages:galpol
     distfiles-append    galpol.tgz:galpol
     checksums-append    galpol.tgz \
-        md5     c241b3b40267f640df4d45ed2d604442 \
-        sha1    5d21bba704a906b3149d1a7375f609e67445fc11 \
-        rmd160  6015681df3415568392a68bfc05e1134411f2ca5 \
-        sha256  484fba6e7bcef8e5c1cea0e1a75d74a3[\
-                ]1122b3148a1301667d265427fb8db44d
+        md5     6ebd6057f1b252f7f9b77525c27f447d \
+        sha1    b072d752207bf598c86c896dc2ce35314fd9aff4 \
+        rmd160  c311d0e5f4f81c020f1b7d3693c553871f6f832f \
+        sha256  562af28316ee335ee38c1172c2d5ecccb[\
+                ]79f55c368fb9f2c6f40fc0f416bb01b \
+        size    10049371
 }
 
 variant mt description {Build multithreaded} {
     configure.args-append --mt=pthread
 }
 
-variant seadata description {include precomputed elliptic curve GF(q) data} {
+variant seadata description {include precomputed elliptic curve GF(q) data up to 750 bits} {
     master_sites-append ${homepage}pub/pari/packages:seadata
     distfiles-append    seadata.tgz:seadata
     checksums-append    seadata.tgz \
@@ -218,7 +222,25 @@ variant seadata description {include precomputed elliptic curve GF(q) data} {
         sha1    fa3deb36df0ce71a466eb0ff0d4a18d48d44e8b9 \
         rmd160  e88637426f74c5223068fc2d916741c10d8279e4 \
         sha256  c9282a525ea3f92c1f9c6c69e37ac5a8[\
-                ]7b48fb9ccd943cfd7c881a3851195833
+                ]7b48fb9ccd943cfd7c881a3851195833 \
+        size    19214199
+}
+
+variant seabig requires seadata description {include precomputed elliptic curve GF(q) data up to 1100 bits} {
+    master_sites-append ${homepage}pub/pari/packages:seabig
+    distfiles-append    seadata-big.tar:seabig
+    checksums-append    seadata-big.tar \
+        md5     c0da412320804de3e31c90179afee9be \
+        sha1    f8449e228792200abd2784454afd6c08ed1e99f6 \
+        rmd160  7c4623ecfe0c23c608af510f832de35b401e361b \
+        sha256  7c4db2624808a5bbd2ba00f8b644a439[\
+                ]f0508532efd680a247610fdd5822a5f2 \
+        size    103526400
+    extract.cmd {sh -c 'case $1 in
+  *.tar) cat "$1" ;;
+  *) gzip -dc "$1" ;;
+esac' extract}
+    extract.pre_args
 }
 
 variant tune description {tune speed parameters on the build machine} {
