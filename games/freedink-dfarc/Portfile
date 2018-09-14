@@ -4,7 +4,7 @@ PortSystem      1.0
 PortGroup       wxWidgets 1.0
 
 name            freedink-dfarc
-version         3.12
+version         3.14
 categories      games
 description     Dmod frontend for the FreeDink engine
 long_description \
@@ -13,15 +13,18 @@ long_description \
 license         gpl-3
 homepage        https://savannah.gnu.org/projects/freedink
 platforms       darwin freebsd
-maintainers     1tein.de:pkg (Christian Cornelssen)
+maintainers     1tein.de:pkg
 master_sites    http://ftp.gnu.org/pub/gnu/freedink/
 distname        dfarc-${version}
-checksums       md5 1c24ba41cf1ef532415f13a04f279099 \
-                sha1 d597f6203dec3db4e3f4199c64ec2113d20018bb \
-                rmd160 a1020579450459c65fbe47023acb4914e894bb0d \
-                sha256 222a84cc91967abce4d86fb4ed8ba43455b818aecdb8487b0fe52d76ade29a83
+checksums       md5    3ffe4d047eadeb1b335cbd2ec9e824f9 \
+                sha1   eded8e7b23c0f1803ef83b364befe738aa11f292 \
+                rmd160 489fbd0a2b522e6c4d447831120744999e55f363 \
+                sha256 a51124ecd11eeca0f1d16732ef58ee69[\
+                       ]0e2fa2db06cc0ec2a5b61b41f8b0e8fa
 
 wxWidgets.use   wxWidgets-3.0
+depends_build   port:intltool
+depends_skip_archcheck-append   intltool
 depends_run     port:xdg-utils
 depends_lib     port:bzip2
 
