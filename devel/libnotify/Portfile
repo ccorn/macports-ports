@@ -25,6 +25,7 @@ checksums           rmd160  5d2e10b8e25c7ba383ce884ba8faeb3635a80893 \
                     sha256  9cb4ce315b2655860c524d46b56010874214ec27e854086c1a1d0260137efc04
 
 depends_build       port:pkgconfig
+depends_skip_archcheck-append   pkgconfig
 
 depends_lib         path:lib/pkgconfig/glib-2.0.pc:glib2 \
                     port:gdk-pixbuf2 \
