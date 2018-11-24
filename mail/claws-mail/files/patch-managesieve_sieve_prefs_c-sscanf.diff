@@ -1,23 +1,23 @@
---- src/plugins/managesieve/sieve_prefs.c.orig	2017-12-17 12:48:40.000000000 +0100
-+++ src/plugins/managesieve/sieve_prefs.c	2018-03-29 02:57:22.000000000 +0200
-@@ -480,7 +480,7 @@ struct SieveAccountConfig *sieve_prefs_a
- 	gchar enable, use_host, use_port;
+--- src/plugins/managesieve/sieve_prefs.c.orig	2018-08-26 13:25:23.000000000 +0200
++++ src/plugins/managesieve/sieve_prefs.c	2018-11-24 14:33:48.000000000 +0100
+@@ -477,7 +477,7 @@ struct SieveAccountConfig *sieve_prefs_a
  	guchar tls_type, auth, auth_type;
  	gsize len;
+ 	gint num;
 -#if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
 +#if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__APPLE__)
- 	/* Windows sscanf() does not understand the %ms format yet, so we
+ 	/* Non-GNU sscanf() does not understand the %ms format, so we
  	 * have to do the allocation of target buffer ourselves before
  	 * calling sscanf(), and copy the host string to config->host.
-@@ -506,13 +506,13 @@ struct SieveAccountConfig *sieve_prefs_a
+@@ -503,13 +503,13 @@ struct SieveAccountConfig *sieve_prefs_a
  
  	enc_userid[0] = '\0';
  	enc_passwd[0] = '\0';
 -#if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
 +#if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__) || defined(__APPLE__)
- 	sscanf(confstr, "%c%c %255s %c%hu %hhu %hhu %hhu %255s %255s",
+ 	if ((num = sscanf(confstr, "%c%c %255s %c%hu %hhu %hhu %hhu %255s %255s",
  #else
- 	sscanf(confstr, "%c%c %ms %c%hu %hhu %hhu %hhu %255s %255s",
+ 	if ((num = sscanf(confstr, "%c%c %ms %c%hu %hhu %hhu %hhu %255s %255s",
  #endif
  			&enable, &use_host,
 -#if defined(G_OS_WIN32) || defined(__OpenBSD__) || defined(__FreeBSD__)
@@ -25,7 +25,7 @@
  			tmphost,
  #else
  			&config->host,
-@@ -529,7 +529,7 @@ struct SieveAccountConfig *sieve_prefs_a
+@@ -538,7 +538,7 @@ struct SieveAccountConfig *sieve_prefs_a
  	config->auth = auth;
  	config->auth_type = auth_type;
  

@@ -5,7 +5,7 @@ PortGroup       active_variants 1.1
 PortGroup       app 1.0
 
 name            claws-mail
-version         3.17.0
+version         3.17.1
 categories      mail news
 platforms       darwin
 license         GPL-3+
@@ -24,9 +24,9 @@ long_description Currently, many features are supported in Claws Mail \
 homepage        http://www.claws-mail.org/
 master_sites    ${homepage}releases/
 
-checksums       rmd160  f024f5130e2d2ff0d34a4b65969559d483601249 \
-                sha256  1543e9b160e603922059b5514fb19c4914954268f8cd457117957f7413363e85 \
-                size    4752924
+checksums       size    4746940 \
+                sha256  757b5f4163fb44f772b1453d1cc0b833[\
+                        ]87bb6b67ad55cc0694bdd4eff9ea76f2
 
 use_xz          yes
 
@@ -89,6 +89,7 @@ configure.args  --with-sysroot=${prefix} \
                 --disable-bogofilter-plugin \
                 --disable-bsfilter-plugin \
                 --disable-clamd-plugin \
+                --disable-dillo-plugin \
                 --disable-fancy-plugin \
                 --disable-fetchinfo-plugin \
                 --disable-gdata-plugin \
@@ -179,8 +180,8 @@ variant nls description {include national language support} {
     configure.args-append   --enable-nls
 }
 variant manual description {install manual} {
-    depends_build-append    port:docbook-utils
-    depends_skip_archcheck-append docbook-utils
+    depends_build-append    port:docbook-utils port:texlive-formats-extra
+    depends_skip_archcheck-append docbook-utils texlive-bin
     configure.args-delete   --disable-manual
     configure.args-append   --enable-manual
 }
@@ -242,6 +243,10 @@ variant bsfilter description {include bsfilter anti-spam plugin} {
 variant clamd description {include ClamAV plugin} {
     configure.args-delete   --disable-clamd-plugin
     configure.args-append   --enable-clamd-plugin
+}
+variant dillo description {include dillo (HTML) plugin (needs GTK-X11)} {
+    configure.args-delete   --disable-dillo-plugin
+    configure.args-append   --enable-dillo-plugin
 }
 variant fancy requires gtk3 description {include fancy (HTML) plugin} {
     depends_lib-append      port:webkit2-gtk
