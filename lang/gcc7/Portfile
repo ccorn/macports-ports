@@ -66,8 +66,6 @@ platform darwin powerpc {
     # https://trac.macports.org/ticket/54215
     # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=80865
     # https://gcc.gnu.org/ml/gcc-testresults/2017-01/msg02971.html
-    # Patch 1 fails tests, patch 2 makes the build succeed.
-    patchfiles-append         patch-darwin-ppc-remove-lr-use.diff
     # Patch 3 seems reasonable, patch 4 is for Ada only.
     patchfiles-append         patch-darwin-ppc-longjmp-noreturn.diff
 }
@@ -75,10 +73,7 @@ platform darwin powerpc {
 platform darwin {
     configure.pre_args-append --build=${build_arch}-apple-darwin${os.major}
 
-    # see https://gcc.gnu.org/ml/gcc-patches/2012-05/msg00672.html
-    patchfiles-append         patch-float128.diff
     # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81033
-    patchfiles-append         patch-249926conservative-darwin.c.diff 
     patchfiles-append         patch-81033-8-darwin.c.diff
 }
 

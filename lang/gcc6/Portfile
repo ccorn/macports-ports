@@ -49,6 +49,8 @@ license_noconflict  gmp mpfr ppl libmpc
 # Work around parallel building issue on APFS
 # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=81797
 patchfiles-append   notparallel-install-headers.patch
+# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=87822
+patchfiles-append   gcc-6-std-pair-layout-bug-87822.patch
 
 set major           [lindex [split ${version} .-] 0]
 
