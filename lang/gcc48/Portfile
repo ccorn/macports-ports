@@ -8,7 +8,7 @@ name                gcc48
 # Whenever this port is bumped for version/revision, please revbump dragonegg-3.4-gcc-4.8
 epoch               2
 version             4.8.5
-revision            3
+revision            5
 platforms           darwin
 categories          lang
 maintainers         nomaintainer
@@ -37,7 +37,7 @@ depends_lib         port:cctools \
                     port:gmp \
                     port:isl14 \
                     port:ld64 \
-                    path:lib/libgcc/libgcc_s.1.dylib:libgcc \
+                    port:zlib \
                     port:libiconv \
                     port:libmpc \
                     port:mpfr
@@ -116,12 +116,12 @@ configure.env-append \
                     OTOOL=${prefix}/bin/otool \
                     OTOOL64=${prefix}/bin/otool
 
-if {${os.platform} eq "darwin" && ${os.major} > 16} {
+if {${os.platform} eq "darwin" && ([vercmp $xcodeversion 9.0] > 0)} {
     depends_lib
     depends_run
     archive_sites
     pre-fetch {
-        ui_error "${name} is not supported on macOS High Sierra and newer"
+        ui_error "building ${name} is not supported with Xcode 9 or greater"
         return -code error {unsupported platform}
     }
 }

@@ -4,12 +4,12 @@ PortSystem              1.0
 PortGroup               compiler_blacklist_versions 1.0
 
 name                    nodejs8
-version                 8.11.4
+version                 8.14.0
 
 categories              devel net
 platforms               darwin
 license                 {MIT BSD}
-maintainers             {ciserlohn @ci42}
+maintainers             {ciserlohn @ci42} openmaintainer
 
 description             Evented I/O for V8 JavaScript
 
@@ -18,15 +18,15 @@ long_description        Node's goal is to provide an easy way to build scalable 
                         Machine or Python's Twisted. Node takes the event model a bit further-it \
                         presents the event loop as a language construct instead of as a library.
 
-conflicts               nodejs4 nodejs5 nodejs6 nodejs7 nodejs9 nodejs10
+conflicts               nodejs4 nodejs5 nodejs6 nodejs7 nodejs9 nodejs10 nodejs11
 
 homepage                https://nodejs.org/
 master_sites            ${homepage}dist/v${version}
 use_xz                  yes
 
-checksums               rmd160  b5269d76c244dc28ab97eeda16540d43c5a0d76f \
-                        sha256  fbce7de6d96b0bcb0db0bf77f0e6ea999b6755e6930568aedaab06847552a609 \
-                        size    18323120
+checksums               rmd160  4f0a317ab860d18737194c632ab5c4c727e59e92 \
+                        sha256  8ce252913c9f6aaa9871f2d9661b6e54858dae2f0064bd3c624676edb09083c4 \
+                        size    18485252
 
 distname                node-v${version}
 
@@ -38,7 +38,7 @@ depends_lib             port:python27 \
 proc rec_glob {basedir pattern} {
     set files [glob -directory $basedir -nocomplain -type f $pattern]
     foreach dir [glob -directory $basedir -nocomplain -type d *] {
-        eval lappend files [rec_glob $dir $pattern]
+        lappend files {*}[rec_glob $dir $pattern]
     }
     return $files
 }
@@ -92,6 +92,8 @@ switch $build_arch {
     }
 }
 
+compiler.blacklist *gcc* {clang < 500}
+
 build.args-append   CC=${configure.cc} \
                     CXX=${configure.cxx} \
                     CXX.host=${configure.cxx} \
@@ -124,8 +126,6 @@ destroot {
 
 # install headers
     xinstall -m 644 -W ${worksrcpath} \
-        src/base-object-inl.h \
-        src/base-object.h \
         src/env-inl.h \
         src/env.h \
         src/handle_wrap.h \
@@ -167,10 +167,13 @@ destroot {
         deps/v8/include/v8-util.h \
         deps/v8/include/v8config.h \
         deps/uv/include/uv.h \
-        deps/uv/include/uv-unix.h \
-        deps/uv/include/uv-darwin.h \
-        deps/uv/include/tree.h \
-        deps/uv/include/uv-threadpool.h \
+        deps/uv/include/uv/darwin.h \
+        deps/uv/include/uv/errno.h \
+        deps/uv/include/uv/posix.h \
+        deps/uv/include/uv/threadpool.h \
+        deps/uv/include/uv/tree.h \
+        deps/uv/include/uv/unix.h \
+        deps/uv/include/uv/version.h \
         deps/cares/include/ares.h \
         deps/cares/include/ares_version.h \
         deps/cares/include/nameser.h \
@@ -197,8 +200,6 @@ destroot {
         README.md \
         ${docdir}
 }
-
-compiler.blacklist *gcc* {clang < 500}
 
 if {${os.major} < 11} {
     pre-fetch {

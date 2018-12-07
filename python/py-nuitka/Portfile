@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-nuitka
-version             0.5.32.5
+version             0.6.0.6
 revision            0
 categories-append   devel
 platforms           darwin
@@ -22,9 +22,9 @@ master_sites        pypi:N/Nuitka
 
 distname            Nuitka-${version}
 
-checksums           rmd160  ef028a353bd35616fa29ba8e5743fff70ea6ca8e \
-                    sha256  64925374b5f6298ee854e23ea8d61f0227edebea5ab47257a05b7113eb031501 \
-                    size    2005718
+checksums           rmd160  04a0b6dbab0e4b5727c574079b93b757f6a0beaa \
+                    sha256  6548bee59ac5740e43cfc0148e08fc361e050e73babed55703c025610be6d654 \
+                    size    2011065
 
 if {${name} ne ${subport}} {
 

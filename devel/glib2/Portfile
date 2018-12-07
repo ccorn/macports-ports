@@ -9,7 +9,11 @@ PortGroup                   compiler_blacklist_versions 1.0
 name                        glib2
 conflicts                   glib2-devel
 set my_name                 glib
-version                     2.56.1
+version                     2.58.1
+checksums                   rmd160  7951a41129225b9d38d7df72069f73560a9e86a0 \
+                            sha256  97d6a9d926b6aa3dfaadad3077cfb43eec74432ab455dff14250c769d526d7d6 \
+                            size    4906444
+
 set branch                  [join [lrange [split ${version} .] 0 1] .]
 categories                  devel
 maintainers                 {ryandesign @ryandesign} openmaintainer
@@ -29,12 +33,7 @@ long_description            Glib is a library which includes support routines \
 
 master_sites                gnome:sources/${my_name}/${branch}/
 
-checksums                   rmd160  da4e45bf52d28b610a71bed8b4331bfb0b5c8d56 \
-                            sha256  40ef3f44f2c651c7a31aedee44259809b6f03d3d20be44545cd7d177221c0b8d \
-                            size    8028716
-
-patchfiles                  gcocoanotificationbackend.patch \
-                            libintl.patch \
+patchfiles                  libintl.patch \
                             patch-glib-gmain.c.diff \
                             patch-glib-gmessages_h.diff \
                             patch-glib_gunicollate.c.diff \
@@ -43,6 +42,7 @@ patchfiles                  gcocoanotificationbackend.patch \
                             patch-get-launchd-dbus-session-address.diff \
                             patch-gmodule-gmodule-dl.c.diff \
                             patch-configure-switch-for-gappinfo-impl.diff \
+                            POSIX-spawn.patch \
                             universal.patch
 
 depends_build               port:autoconf \
@@ -132,8 +132,8 @@ post-destroot {
 
     set docdir ${prefix}/share/doc/${my_name}
     xinstall -d ${destroot}${docdir}
-    xinstall -m 644 -W ${worksrcpath} AUTHORS COPYING ChangeLog HACKING NEWS \
-        README ${destroot}${docdir}
+    xinstall -m 0644 -W ${worksrcpath} AUTHORS COPYING HACKING NEWS README.md \
+        ${destroot}${docdir}
 }
 
 platform darwin {

@@ -6,6 +6,7 @@ PortGroup       app 1.0
 
 name            claws-mail
 version         3.17.1
+revision        3
 categories      mail news
 platforms       darwin
 license         GPL-3+
@@ -24,9 +25,9 @@ long_description Currently, many features are supported in Claws Mail \
 homepage        http://www.claws-mail.org/
 master_sites    ${homepage}releases/
 
-checksums       size    4746940 \
-                sha256  757b5f4163fb44f772b1453d1cc0b833[\
-                        ]87bb6b67ad55cc0694bdd4eff9ea76f2
+checksums       rmd160  f6b9e526ba9ed67768db6f422690a9e496b15854 \
+                sha256  757b5f4163fb44f772b1453d1cc0b83387bb6b67ad55cc0694bdd4eff9ea76f2 \
+                size    4746940
 
 use_xz          yes
 

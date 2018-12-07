@@ -4,7 +4,7 @@ PortSystem              1.0
 
 name                    unrar
 set my_name             ${name}src
-version                 5.6.5
+version                 5.6.8
 categories              archivers
 platforms               darwin freebsd
 maintainers             nomaintainer
@@ -20,9 +20,9 @@ homepage                https://www.rarlab.com/
 master_sites            ${homepage}rar/
 distname                ${my_name}-${version}
 
-checksums               rmd160  2ee07da6ddbb96847a008b5eeca75b63ff09de77 \
-                        sha256  eba36a421bf41491818dee9507d934064622bc0bd9db6bbb8422a4706f200898 \
-                        size    226296
+checksums               rmd160  ec32bef68bc86ecf884eea75432c49c51197fa86 \
+                        sha256  a4cc0ac14a354827751912d2af4a0a09e2c2129df5766576fa7e151791dd3dff \
+                        size    226647
 
 patchfiles              patch-makefile.unix.diff
 

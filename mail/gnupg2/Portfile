@@ -4,7 +4,7 @@ PortSystem          1.0
 
 set my_name         gnupg
 name                ${my_name}2
-version             2.2.9
+version             2.2.11
 categories          mail security
 maintainers         {jann @roederja} {ionic @Ionic} openmaintainer
 license             GPL-3+
@@ -23,9 +23,9 @@ master_sites        ${my_name}:${my_name}
 
 use_bzip2           yes
 
-checksums           rmd160  0290ec21d5b05ccaa615dad2dee4f6a02df62970 \
-                    sha256  6278eaabffa1ebc9fa2ceb3dc53eea9a1505ab02a668a86dd6fec06951af2164 \
-                    size    6659547
+checksums           rmd160  4c5312475f573bbc28888fa34c693c5be1742b70 \
+                    sha256  496c3e123ef53f35436ddccca58e82acaa901ca4e21174e77386c0cea0c49cd9 \
+                    size    6652480
 
 platform darwin {
     if {![variant_isset pinentry] && ![variant_isset pinentry_mac]} {
@@ -55,7 +55,6 @@ depends_lib         port:libiconv           \
                     port:gettext            \
                     port:zlib               \
                     port:bzip2              \
-                    port:bison              \
                     port:libassuan          \
                     port:libksba            \
                     port:libgcrypt          \

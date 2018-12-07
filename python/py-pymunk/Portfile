@@ -4,47 +4,35 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-pymunk
-version             4.0.0
+version             5.4.0
 revision            0
 categories-append   devel
 platforms           darwin
 license             MIT
 supported_archs     i386 x86_64
 
-python.versions     27 34 35 36
+python.versions     27 34 35 36 37
 
 maintainers         {stromnov @stromnov} openmaintainer
 
 description         Python wrapper around the 2d physics library Chipmunk
-
 long_description    ${description}
 
 homepage            http://www.pymunk.org/
-master_sites        googlecode:pymunk
+master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            pymunk-${version}
+
 use_zip             yes
 
-checksums           rmd160  2c96284897bdc0f9ca58f4484732fb4a8924888c \
-                    sha256  7102b1a63d4eeb9eb459d4733663bc0af4ea59f664e3fac2228c704ec6768937
-
-patchfiles          patch-setup.py.diff \
-                    patch-pymunkoptions-__init__.py.diff
-
-variant debug description {Build with debug messages} {
-    patchfiles-delete   patch-pymunkoptions-__init__.py.diff
-}
+checksums           rmd160  b6bbae5e998637b104ea6d20f2912f6ec65eb3f9 \
+                    sha256  dcd92862927c57873a3d138a41330ecf0a553609b4c60887221c872a9fdf1054 \
+                    size    9497259
 
 if {${name} ne ${subport}} {
-    depends_build-append    port:py${python.version}-setuptools
-
-    post-build {
-        if {![variant_isset debug]} {
-            system -W ${worksrcpath} "${python.bin} setup.py build_chipmunk --release"
-        } else {
-            system -W ${worksrcpath} "${python.bin} setup.py build_chipmunk"
-        }
-    }
+    depends_build-append \
+                        port:py${python.version}-setuptools \
+                        port:py${python.version}-cffi
 
     livecheck.type      none
 }

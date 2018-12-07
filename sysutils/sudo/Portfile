@@ -4,7 +4,7 @@ PortSystem          1.0
 
 name                sudo
 epoch               1
-version             1.8.24
+version             1.8.26
 categories          sysutils security
 license             ISC
 maintainers         {mps @Schamschula}
@@ -22,9 +22,9 @@ homepage            http://www.sudo.ws/sudo/
 master_sites        ${homepage}dist/ \
                     ${homepage}dist/OLD/
 
-checksums           rmd160  88c6ec16690077a22db2b6b4c2fcc34e1cf2dcfe \
-                    sha256  b488557a198ecef30b7ad4011b59a66232dec2364ad956e11d8e17906c225be8 \
-                    size    3175719
+checksums           rmd160  9557e9e662a7d2b0b2d5d2d209a3922c2353092c \
+                    sha256  40da219a6f0341ccb22d04a98988e27f09b831d2561b14c6154067a49ef3fee2 \
+                    size    3286368
 
 patchfiles          patch-sudoers.in.diff
 

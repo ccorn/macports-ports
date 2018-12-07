@@ -1,0 +1,44 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem          1.0
+PortGroup           github 1.0
+
+name                legacy-support
+categories          devel
+platforms           darwin
+
+maintainers         {jonesc @cjones051073} {kencu @kencu} openmaintainer
+license             MIT
+
+description         Installs wrapper headers to add missing functionality to legacy OSX versions.
+long_description    ${description}
+
+subport ${name} {
+    conflicts           ${name}-devel
+    github.setup        macports macports-legacy-support 0.6.1 v
+    checksums           rmd160  e586dff724b1db36a4fa7a49c8f3c7cfbe742a8e \
+                        sha256  a43051241fbe52c31a8ecdd88f550cdabf854482a7060d422ccb063c6cd2c543 \
+                        size    11782
+}
+
+subport ${name}-devel {
+    conflicts           ${name}
+    github.setup        macports macports-legacy-support 270e8dfee0e670803ad623da44aee679805dd300
+    version             20181204
+    checksums           rmd160  aecc52e56b4cffde66c2355f38f4b3d6d9ad30fd \
+                        sha256  39e136a6d6b84e3b6861fe1a4edc15bb1a6425b0fcb2a140b67a0a87663bd136 \
+                        size    12764
+}
+
+use_configure       no
+
+variant universal {}
+
+build.env           CXX="${configure.cxx}" \
+                    CXXFLAGS="${configure.cxxflags} [get_canonical_archflags cxx]" \
+                    CC="${configure.cc}" \
+                    CFLAGS="${configure.cflags} [get_canonical_archflags cc]" \
+                    LDFLAGS="${configure.ldflags}  [get_canonical_archflags ld]" \
+                    PREFIX=${prefix}
+
+destroot.env        PREFIX=${prefix}

@@ -7,8 +7,8 @@ PortGroup           cxx11 1.1
 name                gimp2
 conflicts           gimp2-devel gimp3-devel
 # please remember to update the gimp metapackage to match
-version             2.10.4
-revision            2
+version             2.10.8
+revision            1
 license             GPL-3+
 categories          graphics
 maintainers         {devans @dbevans}
@@ -28,9 +28,9 @@ distname            gimp-${version}
 
 use_bzip2           yes
 
-checksums           rmd160  40120b1488579dc1fc54402ac4947c9ec2ace70b \
-                    sha256  ffb0768de14a2631b3d7ed71f283731441a1b48461766c23f0574dce0706f192 \
-                    size    31064613
+checksums           rmd160  6ba70462096cc79c80c4e5bcb8abfe3c339542d6 \
+                    sha256  d849c1cf35244938ae82e521b92b720ab48b8e9ed092d5de92c2464ef5244b9b \
+                    size    31954568
 
 set perl_version    5.26
 
@@ -92,6 +92,14 @@ patchfiles          patch-configure.ac.diff \
                     patch-etc-gimprc.in.diff \
                     patch-quartz-32bit.diff
 
+if {${os.platform} eq "darwin" && ${os.major} < 11} {
+    # avoid Cursor type conflict between X11 and Quickdraw
+    # error: typedef redefinition with different types ('struct Cursor' vs 'XID' (aka 'unsigned long'))
+    # not an issue on 10.7 and later
+    patchfiles-append \
+                    patch-x11-widgets-fix.diff
+}
+
 use_autoreconf      yes
 autoreconf.args     -fvi
 
@@ -110,6 +118,18 @@ pre-configure {
 }
 
 configure.perl      ${prefix}/bin/perl${perl_version}
+
+configure.env       CC_FOR_BUILD=${configure.cc}
+
+if {[vercmp $xcodeversion 4.3] < 0 && [string match "*macports*" ${configure.compiler}]} {
+    # Xcode 4.2 fails with load commands in the newer toolchain
+    depends_build-append port:cctools
+
+    configure.env-append \
+        AR=${prefix}/bin/ar \
+        RANLIB=${prefix}/bin/ranlib
+}
+
 configure.args      --build=${configure.build_arch}-apple-${os.platform}${os.version} \
                     --enable-mp \
                     --enable-binreloc-threads \
@@ -124,7 +144,6 @@ configure.args      --build=${configure.build_arch}-apple-${os.platform}${os.ver
                     --without-gudev \
                     --without-webkit \
                     ac_cv_path_INTLTOOL_PERL=${configure.perl}
-configure.env       CC_FOR_BUILD=${configure.cc}
 
 # keep empty GIMP font directory
 # silences warning message on startup:

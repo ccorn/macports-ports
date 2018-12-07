@@ -8,7 +8,11 @@ PortGroup                   compiler_blacklist_versions 1.0
 name                        glib2-devel
 conflicts                   glib2
 set my_name                 glib
-version                     2.57.2
+version                     2.58.1
+checksums                   rmd160  7951a41129225b9d38d7df72069f73560a9e86a0 \
+                            sha256  97d6a9d926b6aa3dfaadad3077cfb43eec74432ab455dff14250c769d526d7d6 \
+                            size    4906444
+
 set branch                  [join [lrange [split ${version} .] 0 1] .]
 categories                  devel
 maintainers                 {ryandesign @ryandesign} openmaintainer
@@ -28,10 +32,6 @@ long_description            Glib is a library which includes support routines \
 
 master_sites                gnome:sources/${my_name}/${branch}/
 
-checksums                   rmd160  e7c136fb75a7e71a785bb62a8a5799fc2fafa257 \
-                            sha256  e19f795baabb52651ddea90bb5dc8f696939e15290c3cb7cfa684d4e1628c1a8 \
-                            size    4883340
-
 patchfiles                  libintl.patch \
                             patch-glib-gmain.c.diff \
                             patch-glib_gunicollate.c.diff \
@@ -40,6 +40,7 @@ patchfiles                  libintl.patch \
                             patch-get-launchd-dbus-session-address.diff \
                             patch-gmodule-gmodule-dl.c.diff \
                             patch-configure-switch-for-gappinfo-impl.diff \
+                            POSIX-spawn.patch \
                             universal.patch
 
 depends_build               port:autoconf \

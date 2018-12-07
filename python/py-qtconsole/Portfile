@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-qtconsole
-version             4.4.0
+version             4.4.3
 revision            0
 categories-append   devel
 platforms           darwin
@@ -23,9 +23,9 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  db4f3aaff758feac8846b8972909483eaf43abf0 \
-                    sha256  ce568a8867c47d947fbf1f5b68872554aa52338fabddd083a3bc203b3609e530 \
-                    size    419487
+checksums           rmd160  be0712b3c59ffce37c19cda1ddaf00e00757da2f \
+                    sha256  bc1ba15f50c29ed50f1268ad823bb6543be263c18dd093b80495e9df63b003ac \
+                    size    419927
 
 if {${name} ne ${subport}} {
     depends_lib-append  port:py${python.version}-traitlets \

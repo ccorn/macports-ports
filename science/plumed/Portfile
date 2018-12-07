@@ -9,7 +9,7 @@ PortGroup           mpi 1.0
 PortGroup           linear_algebra 1.0
 PortGroup           debug 1.0
 
-github.setup        plumed plumed2 2.4.2 v
+github.setup        plumed plumed2 2.4.3 v
 name                plumed
 
 categories          science
@@ -28,9 +28,9 @@ platforms           darwin
 
 homepage            http://www.plumed.org/
 
-checksums           rmd160  f225ddd0ef3429684246df5d4db1717d44162dd4 \
-                    sha256  90f7cad08ca5f8591db251233a7f559197d186a1b4df7efdb6d263c43a39489d \
-                    size    62368247
+checksums           rmd160  75a56b958c3d1d64cd73011baa9ca9e5566ecada \
+                    sha256  2bcedb4576da0b24d513d2c9125abeeaff134a6e4935a8dae3af633b2940666a \
+                    size    62368138
 
 # Disable additional features.
 # --disable-doc:          Do not create documentation, and avoid searching for Doxygen.
@@ -107,14 +107,14 @@ pre-configure {
 # plumed-devel subport
 # This subport installs the developer version
 subport plumed-devel {
-    github.setup        plumed plumed2 2c38c46c08b8485113de5b07d98799fc9e3bd223
-    version             2.5-20180702
+    github.setup        plumed plumed2 60c3d2b6b9f4c4ba5af4131f3c7e2644b40de1db
+    version             2.5-20181008
     description         ${description} (development version)
     long_description    ${long_description} (development version)
     conflicts plumed
-    checksums           rmd160  df647cdc23c98778570aad4468f8b9e4fd0eed37 \
-                        sha256  1b96b5b413e440684520a0acb6a2dc1300fd06d020d09b7a07090bc5dfb82d63 \
-                        size    64982448
+    checksums           rmd160  254b79514cc93cb50530704cf635b84032a06877 \
+                        sha256  8a60e9816171286db23c0f658ece889d8438ece7877be18ba8d8aca6aac32757 \
+                        size    66988569
     configure.ldflags-delete -lmatheval
     depends_lib-delete       port:libmatheval
 # plumed 2.5 supports python. However, I disable it here since it is

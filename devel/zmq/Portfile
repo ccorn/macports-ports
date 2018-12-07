@@ -21,11 +21,10 @@ long_description    \
     protocols and more.
 
 if {${name} eq ${subport}} {
-    github.setup        zeromq libzmq 4.2.5 v
-
-    checksums           rmd160 de7e0d1e380991b55031a22c7b2fa482d650a0b4 \
-                        sha256 3a051a265e8b6a676e13e85179af96702c706491de248bc955f4384519faa2aa \
-                        size   714534
+    github.setup        zeromq libzmq 4.3.0 v
+    checksums           rmd160 5a360042648ef80f1e43ad9e1f8ca4a65b27c206 \
+                        sha256 92292bb09b77be6259b60636495292e5ee57055b86afde40e3de42db093285cc \
+                        size   784820
 
     patchfiles          patch-src-clock_cpp.diff
     conflicts           zmq-devel zmq22 zmq3
@@ -55,11 +54,11 @@ subport zmq22 {
 }
 
 subport zmq-devel {
-    github.setup        zeromq libzmq dbe289509e2554fd56383067fff9e02d9b379d0b
-    version             20180813
-    checksums           rmd160 16edea8a15d8079b7f921794f7c3fa53aaa8f4e0 \
-                        sha256 df903b43fb9664c8042286f0b319b9b2df4ebad3e5eeb712085d18c9572bb37d \
-                        size   766031
+    github.setup        zeromq libzmq cad2423d82a152ca17a821d58f1230d86ec8802f
+    version             20181127
+    checksums           rmd160 ce2932e02a82d59fca3de2c48e14ef6f54d16c86 \
+                        sha256 0650439280b5c27d791001b02137ce5787894705268cdd580cdb7fd4e71ea37f \
+                        size   784713
 
     conflicts           zmq zmq22 zmq3
     configure.args-append --disable-libunwind --disable-cxx11

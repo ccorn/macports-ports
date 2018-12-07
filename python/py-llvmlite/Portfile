@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-llvmlite
-version             0.24.0
+version             0.26.0
 revision            0
 categories-append   devel science
 platforms           darwin
@@ -22,13 +22,12 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  d28d99da1e8b3a1f26dc7fd872568b88350e90ed \
-                    sha256  320de4c4a1c105b91629305be069d217f3a9d7fbe32cb22bcfb016361895fc07 \
-                    size    100833
+checksums           rmd160  eb0ccec7d6956ec097fa663a0082ea7a5d269312 \
+                    sha256  13e84fe6ebb0667233074b429fd44955f309dead3161ec89d9169145dbad2ebf \
+                    size    103402
 
 if {${name} ne ${subport}} {
-    patchfiles-append   patch-ffi_Makefile.osx.diff \
-                        patch-llvmlite_binding_targets.py.diff
+    patchfiles-append   patch-ffi_Makefile.osx.diff
 
     post-patch {
         reinplace "s|%%CXX%%|clang++-mp-6.0|" ${worksrcpath}/ffi/Makefile.osx

@@ -3,7 +3,7 @@
 PortSystem 1.0
 PortGroup           github 1.0
 
-github.setup        aws amazon-ecs-cli 1.6.0 v
+github.setup        aws amazon-ecs-cli 1.12.0 v
 name                ecs-cli
 
 categories          devel
@@ -34,9 +34,9 @@ distname            ${name}-darwin-amd64-v${version}
 extract.suffix
 extract.only
 
-checksums           rmd160 068a7d9ee13fea220035c2cd4ead22fdd4334d35 \
-                    sha256 744aceca311c62ebb832ca3d99dfb2d7e1a2def50af5da1a56df7fdcbea09091 \
-                    size   34611936
+checksums           rmd160 4de6533352d85cf1dceea54b1f71d5f91d296ccb \
+                    sha256 719b9fa1b835bd2045600963533b06617760850de2f313c3aa9b2d6f772aeeec \
+                    size   37639192
 
 use_configure       no
 

@@ -109,48 +109,48 @@ switch ${subport_branch} {
     }
     5.6 {
         epoch           2
-        version         5.6.37
+        version         5.6.39
         use_xz          yes
-        checksums       rmd160  88841eaf9001ad61678b74386d1bfad9f0608409 \
-                        sha256  5000d82610f9134aaedef28854ec3591f68dedf26a17b8935727dac2843bd256 \
-                        size    12467912
+        checksums       rmd160  3985a1d959dadb88f65bd146c10fa5a6c9cb682b \
+                        sha256  8147576001a832ff3d03cb2980caa2d6b584a10624f87ac459fcd3948c6e4a10 \
+                        size    12467096
     }
     7.0 {
         epoch           2
-        version         7.0.31
+        version         7.0.32
         use_xz          yes
-        checksums       rmd160  d09a9aec4ac4c828a25ac6bd37b99a3847e40442 \
-                        sha256  68f57b3f4587071fb54a620cb83a1cfb3f0bd4ee071e0ce3bf7046a5f2d2f3cf \
-                        size    12029516
+        checksums       rmd160  4852fe0fda5988ce042bc767f4bb494f2cff603a \
+                        sha256  ff6f62afeb32c71b3b89ecbd42950ef6c5e0c329cc6e1c58ffac47e6f1f883c4 \
+                        size    12030780
     }
     7.1 {
         epoch           2
-        version         7.1.20
+        version         7.1.24
         use_xz          yes
-        checksums       rmd160  a458b0ab5d8943e144629a1be7992af5015a7ab2 \
-                        sha256  cd7d1006201459d43fae0790cce4eb3451add5c87f4cadb13b228d4c179b850c \
-                        size    12227052
+        checksums       rmd160  74cb92296372bcf9d12188440bdb3dd5214837ea \
+                        sha256  e70dcec0ae28b6bc308b78972ec15aa850808819cc765f505aa51e5a7e2fa5d7 \
+                        size    12205112
     }
     7.2 {
         epoch           2
-        version         7.2.8
+        version         7.2.12
         use_xz          yes
-        checksums       rmd160  8503a9cd6b73ff17a2ceb2c5ac7bf51efaabbc3f \
-                        sha256  53ba0708be8a7db44256e3ae9fcecc91b811e5b5119e6080c951ffe7910ffb0f \
-                        size    12153548
+        checksums       rmd160  966a63e879f5c6edac361f3b4d8a18ad9a5e3d0e \
+                        sha256  989c04cc879ee71a5e1131db867f3c5102f1f7565f805e2bb8bde33f93147fe1 \
+                        size    12141472
     }
     7.3 {
         # When this becomes a stable version, remove the overrides for homepage,
         # master_sites and livecheck, and update php.latest_stable_branch in the
         # php-1.1 portgroup.
-        epoch           0
-        version         7.3.0beta1
+        epoch           1
+        version         7.3.0RC6
         homepage        https://qa.php.net/
         master_sites    https://downloads.php.net/~cmb/
         use_xz          yes
-        checksums       rmd160  6923b61a5040a473a444331cda21c61ded57448a \
-                        sha256  6fc2bc65179f8228bfeab27ab01e558cfd5a1049c904243016c92414e254afcf \
-                        size    11900672
+        checksums       rmd160  25af0c0dcf5eb7897f64b4c1fa9acf410ae0933d \
+                        sha256  8120b5830e24d5fabc96da693ab924852e6c2a95829ad994d6a5107c69787848 \
+                        size    11918172
         livecheck.url   ${homepage}
         livecheck.regex php-([strsed ${subport_branch} {g/\\./\\./}](?:\\.\[0-9.\]+)*(?:(?:alpha|beta|RC)\\d+|-latest))\\.tar
     }
@@ -195,11 +195,12 @@ if {[is_sapi_subport]} {
         depends_lib-append  port:pcre
     } else {
         depends_lib-append  port:pcre2
+        patchfiles-append   patch-${php}-Zend-zend_cpuinfo.c.diff
     }
     
     # Use -p1 to accommodate the Suhosin patch
     patch.pre_args      -p1
-    patchfiles          patch-${php}-scripts-php-config.in.diff
+    patchfiles-append   patch-${php}-scripts-php-config.in.diff
 
     if {[vercmp ${branch} 5.3] <= 0} {
         patchfiles-append \
@@ -215,7 +216,7 @@ if {[is_sapi_subport]} {
     # Tested all subports (except oracle) and they built with clang-425.  The reported failure was with Xcode 4.2.
     # Xcode 4.3 may work, but leaving it blacklisted due to lack of testing
     compiler.blacklist  {clang < 400}
-    
+
     set phpinidir       ${prefix}/etc/${php}
     set extraphpinidir  ${prefix}/var/db/${php}
     
@@ -1237,6 +1238,14 @@ subport ${php}-pspell {
 }
 
 subport ${php}-snmp {
+    switch -- ${version} {
+        5.2.17              {revision 1}
+        5.3.29              {revision 1}
+        5.4.45              {revision 1}
+        5.5.38              {revision 1}
+        7.0.32              {revision 1}
+    }
+
     categories-append       sysutils
     
     description             a PHP interface to the Simple Network Management \

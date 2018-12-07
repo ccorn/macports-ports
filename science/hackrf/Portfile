@@ -30,11 +30,11 @@ if {${subport} eq ${name}} {
 } else {
 
     # devel
-    github.setup        mossmann hackrf 5e9cad66363467fae93aec29679c041c03905047
-    version             20180430
-    checksums           rmd160 0682bc9e178cc6b1da737e92814fc3c52bdf92bd \
-                        sha256 53884ae655a42e03e4f10bb16be78527dacf14343d5eefbad17f0959efa7d311 \
-                        size   17055250
+    github.setup        mossmann hackrf 2493ca1e21c2c952354753ea4d3c168ca512ba30
+    version             20181125
+    checksums           rmd160 0bd63222bc19b1e48c58841968ff99a500836452 \
+                        sha256 94542cad5cf7a80cbc50d8d340a0e0d6d483da0a6a510ae122191c0cbe7ac4f7 \
+                        size   17055664
 
 }
 

@@ -13,10 +13,10 @@ maintainers             {michaelld @michaelld} openmaintainer
 description             The core utilities for the scientific library scipy for Python
 long_description        ${description}
 
-github.setup            numpy numpy 1.15.0 v
-checksums               rmd160 875837153d449f0ee000736de98ca3eb9d5efdec \
-                        sha256 ffc0615a49705007a0e1713e7fc897276db37a22ba156497e9bb7a45f487f834 \
-                        size   4407722
+github.setup            numpy numpy 1.15.4 v
+checksums               rmd160 98553651755714052a834f4d5fb70ff365dd6693 \
+                        sha256 16618e1ce2147a99f1a381e111bf821f45b0aa645814f963d11fba5acec4cb9e \
+                        size   4418653
 
 if {${name} ne ${subport}} {
     # the python PortGroup puts compiler names in build.env and destroot.env
@@ -26,9 +26,6 @@ if {${name} ne ${subport}} {
 }
 
 python.versions         26 27 33 34 35 36 37
-
-# respect ${build_arch} value
-compilers.clear_archflags  no
 
 # http://trac.macports.org/ticket/34562
 python.consistent_destroot yes

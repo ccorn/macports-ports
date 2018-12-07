@@ -4,7 +4,11 @@ PortSystem          1.0
 
 name                freetds
 epoch               1
-version             1.00.94
+version             1.00.109
+checksums           rmd160  9d0a3a8b963fb9d461f40993a449a36761e5ad26 \
+                    sha256  3e93b2bcdddc7246147398b9bc3b989c6e7ffed54acbce18f4f34b745c8f0034 \
+                    size    2159013
+
 categories          databases
 platforms           darwin
 maintainers         {ryandesign @ryandesign} openmaintainer
@@ -26,10 +30,6 @@ long_description    FreeTDS is an open source implementation of the TDS (Tabular
 homepage            http://www.freetds.org/
 master_sites        ftp://ftp.freetds.org/pub/${name}/stable/
 use_bzip2           yes
-
-checksums           rmd160  81912f07f661aaa570b681d861e2ed4ac67a4dd9 \
-                    sha256  5fcf59a554eb3e72a09cc49c8dba5db8ad6dced07315ed775c4b8b2b81b603e4 \
-                    size    2152992
 
 depends_lib         port:libiconv \
                     port:ncurses \

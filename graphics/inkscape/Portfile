@@ -2,11 +2,12 @@
 
 PortSystem          1.0
 PortGroup           compiler_blacklist_versions 1.0
+PortGroup           cxx11 1.1
 
 name                inkscape
 conflicts           inkscape-devel
 version             0.92.3
-revision            3
+revision            6
 license             GPL-2 LGPL-2.1
 maintainers         {devans @dbevans}
 categories          graphics gnome
@@ -65,8 +66,14 @@ patchfiles          patch-use-configured-perl.diff \
 
 # backport fixes from upstream for poppler 0.65 compatibility
 # (patches can presumably be removed on next update)
-patchfiles-append    10e8ae0ff522d3a9caeed9a7f137cdfd795ba0a3.diff \
-                     f0697de012598ea84edafea9a326e5e101eccd2a.diff
+patchfiles-append   10e8ae0ff522d3a9caeed9a7f137cdfd795ba0a3.diff \
+                    f0697de012598ea84edafea9a326e5e101eccd2a.diff
+
+# fix for poppler 0.69
+patchfiles-append   patch-poppler-0.69.diff
+
+# additional fix for poppler 0.71
+patchfiles-append   patch-poppler-0.71.diff
 
 post-patch {
     copy ${filespath}/cxxutil.h ${worksrcpath}/src/cxxutil.h
@@ -87,6 +94,9 @@ platform darwin {
         configure.optflags  -O0
     }
 }
+
+# clang-425.0.28 cannot handle glibmm's headers
+compiler.blacklist-append {clang < 500} gcc-4.0 *gcc-4.2
 
 configure.cmd       ./autogen.sh && ./configure
 

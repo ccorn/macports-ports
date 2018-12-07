@@ -3,8 +3,7 @@
 PortSystem          1.0
 
 name                qore
-version             0.8.13.6
-revision            1
+version             0.8.13.8
 categories          lang
 license             {LGPL-2.1 MIT}
 maintainers         {davidnichols @davidnich}
@@ -16,9 +15,9 @@ platforms           darwin
 master_sites        https://github.com/qorelanguage/qore/releases/download/release-${version}
 conflicts           qore-devel
 
-checksums           md5 6c70b41ea6a041b3a959b63cdebca43a \
-                    sha1 9d2e728064443b5705835af1f2e0bfcc5b91f8da \
-                    rmd160 1f701c9aab96585e2bfaa70f452b82490c339851
+checksums           rmd160 d117e540e29aeb2eb8ad41e5f2c8306d567387ec \
+                    sha256 caaac6b4960e39d0811915c64abf0a69d69a8507e767635fc016aebe62c99f45 \
+                    size 31883042
 
 depends_build       port:flex \
                     port:bison

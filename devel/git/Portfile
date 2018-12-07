@@ -4,7 +4,8 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 name                git
-version             2.18.0
+version             2.19.2
+revision            1
 
 description         A fast version control system
 long_description    Git is a fast, scalable, distributed open source version \
@@ -21,14 +22,14 @@ use_xz              yes
 distfiles           git-${version}${extract.suffix} \
                     git-manpages-${version}${extract.suffix}
 
-checksums           git-${version}${extract.suffix} \
-                    rmd160  2fc27cb7eaf9d74d0d305ef97fc1c6f7ea14a75f \
-                    sha256  8b40be383a603147ae29337136c00d1c634bdfdc169a30924a024596a7e30e92 \
-                    size    5102264 \
-                    git-manpages-${version}${extract.suffix} \
-                    rmd160  ee6d2f843517c9c3f5c90b57e801fa94e827dbd4 \
-                    sha256  9ae3be95e63379597164c79c9018e84b7ef6964da923e5689dbc307693266096 \
-                    size    425516
+checksums           git-2.19.2.tar.xz \
+                    rmd160  335c4e58651bb95d8867837307893da8461c36ce \
+                    sha256  fce9a3a3297db5f3756c4553a2fc1fec209ee08178f8491e76ff4ff8fe7b8be9 \
+                    size    5235608 \
+                    git-manpages-2.19.2.tar.xz \
+                    rmd160  4bf365b91faafabeeaa4fc5e9b207a07e8969349 \
+                    sha256  25fd8ba1914f5859b59f72d6c6aa2324abe84891e071adae2195faa526a510eb \
+                    size    432200
 
 perl5.require_variant   yes
 perl5.conflict_variants no
@@ -152,10 +153,10 @@ variant pcre {
 
 variant doc description {Install HTML and plaintext documentation} {
     distfiles-append        git-htmldocs-${version}${extract.suffix}
-    checksums-append        git-htmldocs-${version}${extract.suffix} \
-                            rmd160  7d43f7246034b88b95d6c4b8e6e15df30f2c56c7 \
-                            sha256  5b70d9b1f86aad464ae172040eb87da83058c00581388af6f60b050214912efc \
-                            size    1201076
+    checksums-append        git-htmldocs-2.19.2.tar.xz \
+                            rmd160  dd06c98a5db65e434e2a49fda67d78f8f86f0c41 \
+                            sha256  e982186ee09a3cb36d89aa974ca4dc5d4420f6be53c9ee0419a466db02bacbc0 \
+                            size    1223848
 
     patchfiles-append       git-subtree.html.diff
 
@@ -231,11 +232,30 @@ variant credential_osxkeychain description {Install git credential-osxkeychain u
     }
 }
 
+variant diff_highlight description {Install git diff-highlight utility from contrib} {
+
+    patchfiles-append   patch-contrib-diff-highlight-Makefile.diff
+
+    post-patch {
+        reinplace "s|%PREFIX%|${prefix}|" \
+        ${worksrcpath}/contrib/diff-highlight/Makefile
+    }
+
+    post-build {
+        system -W "${worksrcpath}/contrib/diff-highlight" "make [join ${build.args}]"
+    }
+
+    post-destroot {
+        xinstall -m 755 "${worksrcpath}/contrib/diff-highlight/diff-highlight" \
+            "${destroot}${prefix}/bin/"
+    }
+}
+
 platform darwin 8 {
     build.args-append   NO_APPLE_COMMON_CRYPTO=1
 }
 
-default_variants    +doc +pcre +credential_osxkeychain
+default_variants    +doc +pcre +credential_osxkeychain +diff_highlight
 
 livecheck.type          regexm
 livecheck.regex         {<span class="version">.*?(\d+\.\d+\.\d+).*?</span>}

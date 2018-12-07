@@ -62,7 +62,7 @@ post-destroot {
 
 platform darwin {
     post-patch {
-        # Leopard's XCode 3.1.x ld(1) man page claims -no_pie is supported, but it's not
+        # Leopard's Xcode 3.1.x ld(1) man page claims -no_pie is supported, but it's not
         if {${os.major} < 9} {
             reinplace "s:-fno-pie::" ${worksrcpath}/configure
         } elseif {${os.major} > 10} {
@@ -88,11 +88,11 @@ if {$subport eq $name || $subport eq "emacs-app"} {
 
 if {$subport eq "emacs-devel" || $subport eq "emacs-app-devel"} {
     epoch           1
-    version         20180621
+    version         20181206
 
     fetch.type      git
     git.url         http://git.savannah.gnu.org/r/emacs.git
-    git.branch      5583e6460c38c5d613e732934b066421349a5259
+    git.branch      b1d7f19ae785ce7fa609bc57432d01cc23a3d49a
 
     pre-configure {
         system -W ${worksrcpath} "sh ./autogen.sh"

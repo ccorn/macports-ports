@@ -5,7 +5,7 @@ PortGroup           active_variants 1.1
 PortGroup           python 1.0
 
 name                certbot-nginx
-version             0.26.1
+version             0.29.1
 categories          security
 license             Apache-2
 maintainers         {mps @Schamschula} openmaintainer
@@ -17,9 +17,9 @@ master_sites        pypi:c/certbot-nginx
 
 python.versions     27 36 37
 
-checksums           rmd160  cebcc9317ce586874e157ab07268ebef7e5cc9c6 \
-                    sha256  d0c95a32625e0f1612d7fcf9021e6e050ba3d879823489d1edd2478a78ae6624 \
-                    size    72311
+checksums           rmd160  e285968e4f904b9580510ec44f15511a8b410c11 \
+                    sha256  0c1205ebb91eef4b7d15293c6778ffc962d09563b315120b2d226348d751e38d \
+                    size    78626
 
 depends_lib-append  port:certbot \
                     port:py${python.version}-acme \
@@ -28,6 +28,10 @@ depends_lib-append  port:certbot \
                     port:py${python.version}-setuptools \
                     port:py${python.version}-zopeinterface \
                     port:py${python.version}-mock
+
+post-patch {
+    reinplace "s|/usr/local/etc/nginx|${prefix}/etc/nginx|" ${worksrcpath}/certbot_nginx/constants.py
+}
 
 variant python27 conflicts python36 python37 description {Use Python 2.7} {
     python.default_version     27

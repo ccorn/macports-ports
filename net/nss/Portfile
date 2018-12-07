@@ -5,7 +5,7 @@ PortGroup           compiler_blacklist_versions 1.0
 PortGroup           muniversal 1.0
 
 name                nss
-version             3.38
+version             3.40.1
 set NSS_VMAJOR      [lindex [split ${version} .] 0]
 set NSS_VMINOR      [lindex [split ${version} .] 1]
 set NSS_VPATCH      [lindex [split ${version} .] 2]
@@ -29,9 +29,9 @@ use_bzip2           no
 master_sites        https://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/${my_release}/src/ \
                     ftp://ftp.mozilla.org/pub/mozilla.org/security/nss/releases/${my_release}/src/
 
-checksums           rmd160  f502093fbb0088504d43ffb778986ac0a0ae1b78 \
-                    sha256  2c643d3c08d6935f4d325f40743719b6990aa25a79ec2f8f712c99d086672f62 \
-                    size    23023474
+checksums           rmd160  b23ada003a605824f0a9a7fdcffaeace3939eb75 \
+                    sha256  5e0e6bae2a79c86e506684955d736bfe875ec5a8e95ed3e4ba0852d1aec2c8f1 \
+                    size    23311074
 
 depends_lib     port:nspr \
                 port:zlib \

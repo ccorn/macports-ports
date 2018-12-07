@@ -31,16 +31,16 @@ dist_subdir         cmake
 
 subport cmake-devel {}
 
-set branch          3.12
+set branch          3.13
 
 if {${subport} eq ${name}} {
 
     # release
 
     version         ${branch}.1
-    checksums       rmd160 f413aa86873dc420884a251d40d63aca488e2b8a \
-                    sha256 c53d5c2ce81d7a957ee83e3e635c8cda5dfe20c9d501a4828ee28e1615e57ab2 \
-                    size   8090272
+    checksums       rmd160 17b512802c0ba4b8648044d68a23782075881bf2 \
+                    sha256 befe1ce6d672f2881350e94d4e3cc809697dd2c09e5b708b76c1dae74e1b2210 \
+                    size   8614663
 
     master_sites    ${homepage}/files/v${branch}/
     conflicts       cmake-devel
@@ -64,19 +64,16 @@ if {${subport} eq ${name}} {
 
     # devel
 
-    version         20180813
-    set commit      505a713a04b3fc927692d61a1b8e3ea563dc56df
-    checksums       rmd160 9ecbdbe29e6b5d2fa3caa71e65f2e57b50f4c2ff \
-                    sha256 91e513b184b74cbb574231c4037b6641f63070811bb85f913c87226f2a2da950 \
-                    size   6370355
+    version         20181128
+    set commit      772edffbf0c08fc0a6fcf74fb98545b7afcfee13
+    checksums       rmd160 c704c91148b44a5092b9ea19b71107265f8d7ccf \
+                    sha256 0d26b360414f477ed50a5305b61634cc86f09e9e6ffdea19ce17d8cf5d9189fb \
+                    size   6506100
 
     use_bzip2       yes
     master_sites    https://gitlab.kitware.com/cmake/cmake/repository/archive${extract.suffix}?ref=${commit}&
     distname        ${name}-${commit}
-
-    post-extract {
-        move ${workpath}/${name}-${commit}-${commit} ${workpath}/${name}-${commit}
-    }
+    worksrcdir      ${name}-${commit}-${commit}
 
     conflicts       cmake
     long_description ${base_long_description} \
@@ -91,7 +88,7 @@ if {${subport} eq ${name}} {
         patch-Source_Modules_FindLibUV.cmake.devel.diff
 
     livecheck.type  regex
-    livecheck.regex /cmake/cmake/commit/(\[0-9a-g\]+)
+    livecheck.regex data-clipboard-text=\"(\[0-9a-g\]+)\"
     livecheck.version ${commit}
     livecheck.url   https://gitlab.kitware.com/cmake/cmake/tree/master
 
@@ -119,8 +116,8 @@ configure.env-append \
 if {${os.platform} eq "darwin" && ${os.major} == 11 && ${configure.cxx_stdlib} eq "libc++"} {
     compiler.whitelist macports-clang-3.4
 }
-# Clang 3.8 and later require cmake; avoid circular dependency.
-compiler.blacklist-append macports-clang-3.8 macports-clang-3.9 macports-clang-4.0 macports-clang-5.0
+# Clang 3.9 and later require cmake; avoid circular dependency.
+compiler.blacklist-append macports-clang-3.9 macports-clang-4.0 macports-clang-5.0 macports-clang-6.0
 
 platform darwin {
     configure.env-append \
@@ -161,19 +158,9 @@ configure.post_args
 # CMake's configure script doesn't recognize `--host`.
 array set merger_host {i386 {} x86_64 {} ppc {} ppc64 {}}
 
-# Tiger has issues with system libraries;
-# just use the ones internal to cmake instead.
 platform darwin 8 {
-    configure.args-delete --system-libs
-    configure.args-append --no-system-libs
-    depends_lib-delete \
-        path:lib/pkgconfig/libuv.pc:libuv \
-        port:curl \
-        port:expat \
-        port:zlib \
-        port:bzip2 \
-        port:libarchive \
-        port:ncurses
+    patchfiles-append patch-cmake-3-12-libuv-tiger.diff
+    configure.ldflags-append -Wl,-framework -Wl,ApplicationServices
 }
 
 # Leopard's Rosetta has some difficulties configuring the ppc slice
@@ -207,8 +194,10 @@ post-patch {
         set PYTHON_VERSION_WITH_DOT "3.4"
     } elseif {[variant_isset python35]} {
         set PYTHON_VERSION_WITH_DOT "3.5"
-    } else {
+    } elseif {[variant_isset python36]} {
         set PYTHON_VERSION_WITH_DOT "3.6"
+    } else {
+        set PYTHON_VERSION_WITH_DOT "3.7"
     }
     reinplace "s|__PYTHON_VERSION_WITH_DOT__|${PYTHON_VERSION_WITH_DOT}|g" ${worksrcpath}/macports.cmake
 }
@@ -285,40 +274,49 @@ variant python27 conflicts python34 python35 python36 requires docs \
         --sphinx-build=${prefix}/bin/sphinx-build-2.7
 }
 
-variant python34 conflicts python27 python35 python36 requires docs \
+variant python34 conflicts python27 python35 python36 python37 requires docs \
     description {Build documentation using Sphinx from Python 3.4} {
     depends_build-append port:py34-sphinx
     configure.args-append \
         --sphinx-build=${prefix}/bin/sphinx-build-3.4
 }
 
-variant python35 conflicts python27 python34 python36 requires docs \
+variant python35 conflicts python27 python34 python36 python37 requires docs \
     description {Build documentation using Sphinx from Python 3.5} {
     depends_build-append port:py35-sphinx
     configure.args-append \
         --sphinx-build=${prefix}/bin/sphinx-build-3.5
 }
 
-variant python36 conflicts python27 python34 python35 requires docs \
+variant python36 conflicts python27 python34 python35 python37 requires docs \
     description {Build documentation using Sphinx from Python 3.6} {
     depends_build-append port:py36-sphinx
     configure.args-append \
         --sphinx-build=${prefix}/bin/sphinx-build-3.6
 }
 
+variant python37 conflicts python27 python34 python35 python36 requires docs \
+    description {Build documentation using Sphinx from Python 3.7} {
+    depends_build-append port:py37-sphinx
+    configure.args-append \
+        --sphinx-build=${prefix}/bin/sphinx-build-3.7
+}
+
 if {[variant_isset docs]} {
     if {![variant_isset python27] &&
         ![variant_isset python34] &&
         ![variant_isset python35] &&
-        ![variant_isset python36]} {
+        ![variant_isset python36] &&
+        ![variant_isset python37]} {
         default_variants +python27
     }
 
     if {![variant_isset python27] &&
         ![variant_isset python34] &&
         ![variant_isset python35] &&
-        ![variant_isset python36]} {
-        ui_error "\n\nYou must select either the +python27, +python34, +python35, or +python36 variant when using variant +docs.\n"
+        ![variant_isset python36] &&
+        ![variant_isset python37]} {
+        ui_error "\n\nYou must select either the +python27, +python34, +python35, +python36, or +python37 variant when using variant +docs.\n"
         return -code error "Invalid variant selection"
     }
 }

@@ -7,7 +7,7 @@ PortGroup muniversal 1.0
 
 #remember to update the -doc and -server as well
 name                postgresql11
-version             11beta2
+version             11.1
 
 categories          databases
 platforms           darwin
@@ -25,9 +25,9 @@ master_sites        http://ftp3.de.postgresql.org/pub/Mirrors/ftp.postgresql.org
             postgresql:source/v${version}/
 distname            postgresql-${version}
 
-checksums           rmd160  0f3bfa92c6409ac170ba9afb9759b7330ed3d20e \
-                    sha256  31e28f46b0529e5be937423bc040eff2787bc399ba0ebd725510aea30274b463 \
-                    size    21086270
+checksums           rmd160  76ad4f0e433e42ea824809878423871e9b4fa4e0 \
+                    sha256  90815e812874831e9a4bf6e1136bf73bc2c5a0464ef142e2dfea40cda206db08 \
+                    size    21263173
 
 use_bzip2           yes
 
@@ -35,7 +35,7 @@ use_bzip2           yes
 patchfiles-append   patch-no_doc.diff
 
 depends_lib         port:readline path:lib/libssl.dylib:openssl port:zlib port:libxml2 port:libxslt port:icu
-depends_build       port:bison
+depends_build       port:bison port:pkgconfig
 depends_run         port:postgresql_select
 
 worksrcdir          postgresql-${version}
@@ -64,7 +64,7 @@ configure.args      --sysconfdir=${prefix}/etc/${name} \
 configure.ldflags-append    -headerpad_max_install_names
 configure.universal_args-delete --disable-dependency-tracking
 
-# building psql with clang from XCode prior to 4.4 causes segfault on query; see #31717
+# building psql with clang from Xcode prior to 4.4 causes segfault on query; see #31717
 compiler.blacklist-append   {clang < 421}
 notes "To use the postgresql server, install the ${name}-server port"
 
@@ -83,12 +83,12 @@ test.target         check
 # remember to change livecheck with first proper release
 livecheck.type      regex
 #livecheck.regex    (11\\.\[.0-9\]*\[a-z\]+\[0-9\])
-livecheck.regex    (11\[a-z\]+\[0-9\])
-#livecheck.regex    (11\\.\[.0-9\]+)
+#livecheck.regex    (11\[a-z\]+\[0-9\])
+livecheck.regex    (11\\.\[.0-9\]+)
 livecheck.url       ${homepage}/ftp/source/
 
 post-destroot {
-    system "cd ${destroot}${prefix}/bin && ln -sf ${libdir}/bin/psql psql10"
+    system "cd ${destroot}${prefix}/bin && ln -sf ${libdir}/bin/psql psql11"
 
     reinplace -E "s#^CFLAGS =#CFLAGS +=#g" \
         ${destroot}${prefix}/lib/${name}/pgxs/src/Makefile.global
@@ -127,9 +127,9 @@ variant python27 conflicts python3 description {add support for python 2.7} {
 }
 
 variant python3 conflicts python27 description {add support for python 3.x} {
-    depends_lib-append      port:python36
+    depends_lib-append      port:python37
     configure.args-append   --with-python
-    configure.python        ${prefix}/bin/python3.6
+    configure.python        ${prefix}/bin/python3.7
 }
 
 variant perl description {add Perl support} {
@@ -146,4 +146,5 @@ variant tcl description {add Tcl support} {
 variant llvm description {add support for JIT compilation} {
     depends_lib-append      port:llvm-6.0
     configure.args-append   --with-llvm
+    configure.env-append    LLVM_CONFIG=${prefix}/libexec/llvm-6.0/bin/llvm-config
 }

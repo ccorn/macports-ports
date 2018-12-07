@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        rbenv ruby-build 20180618 v
+github.setup        rbenv ruby-build 20181019 v
 categories          ruby
 license             MIT
 platforms           darwin
@@ -14,9 +14,9 @@ maintainers         {mojca @mojca} openmaintainer
 description         Compile and install Ruby
 long_description    ${description}
 
-checksums           rmd160  2ee25e6a3282facb397892a67a950aec10f5f4a7 \
-                    sha256  cde173611aac70b7cb28b8e2998a8c753f9f4833601fb7dd6def1c7f694fd768 \
-                    size    58263
+checksums           rmd160  e3e3199b3dc97c64ad07353a9cdda09411a82f4e \
+                    sha256  0568fac15594b1303521f99b4a8adbab8a68292110fcd682eccf9235c5283206 \
+                    size    59437
 
 use_configure       no
 build {}

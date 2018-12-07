@@ -2,7 +2,7 @@
 
 PortSystem          1.0
 PortGroup           github 1.0
-PortGroup           snowleopard_fixes 1.0
+PortGroup           legacysupport 1.0
 
 name                libuv
 categories          devel
@@ -18,10 +18,10 @@ long_description \
 
 if {${subport} eq ${name}} {
 
-    github.setup    libuv libuv 1.23.0 v
-    checksums       rmd160 aad72b12741f8057fde9ea7e6080bda6d4cf3c98 \
-                    sha256 23d130d6ad69c746860d3977ae204921d93ff5d5e0261c134b65634e0d1dffd5 \
-                    size   1189146
+    github.setup    libuv libuv 1.24.0 v
+    checksums       rmd160 4dae1e3af9188c0bb49380f304a75db7bf360f08 \
+                    sha256 b3a627b5a4f98edcac8e11adc92f5d21a04a82b363e625f3a7675615d57a34a7 \
+                    size   1201804
 
     conflicts       libuv-devel
 
@@ -29,11 +29,11 @@ if {${subport} eq ${name}} {
 
 subport libuv-devel {
 
-    github.setup    libuv libuv 69c43d987b6acab9a90fe10ccce208f2ee38e7f6
-    version         20180816
-    checksums       rmd160 5a2934d0c9cd1d851cf269ebf79cdde67aa500c4 \
-                    sha256 91bd724a689655e1eaee1a6f369d1446353a73280a9d5f4b07b199fcbfd2f86a \
-                    size   1189214
+    github.setup    libuv libuv f1981d74ba880f010bfde6c98647bbb426a6d126
+    version         20181126
+    checksums       rmd160 5fdfb28be24f0157e47080872c0dff53e8dbed22 \
+                    sha256 dde3c3f7ed0a0a4a816e05cfe0fdaa5489448ca43aa5e3db6518f577c6c86cc2 \
+                    size   1202119
 
     long_description    ${long_description} \
         This port is kept up with the libuv GIT 'master' branch, is typically updated weekly to monthly.
@@ -43,12 +43,41 @@ subport libuv-devel {
 
 }
 
+test.run            yes
+test.target         check
+
 homepage            http://libuv.org/
 
 use_autoconf        yes
 autoconf.cmd        ./autogen.sh
 
+configure.args      --disable-silent-rules
+
 depends_build       port:automake \
                     port:autoconf \
                     port:libtool \
                     port:pkgconfig
+
+platform darwin 8 {
+
+    # pegged version with patches for Tiger, updated occasionally
+
+    github.setup    libuv libuv 1.24.0 v
+    checksums       rmd160 4dae1e3af9188c0bb49380f304a75db7bf360f08 \
+                    sha256 b3a627b5a4f98edcac8e11adc92f5d21a04a82b363e625f3a7675615d57a34a7 \
+                    size   1201804
+
+    maintainers-prepend {kencu @kencu}
+    long_description  ${long_description} This version is pegged for Tiger and is updated occasionally. \
+                      Improvements are welcome if you can improve the test suite success (a few tests fail).
+    configure.cppflags-append -D__DARWIN_UNIX03
+    # prevent conflicting opentransport header from being pulled in
+    configure.cppflags-append -D__OPENTRANSPORTPROVIDERS__
+
+    # delete any patchfiles that may be added above later
+    # Tiger unified patch
+    patchfiles          patch-libuv-1-23-2-tiger.diff
+    # Tiger has no libutil
+    patchfiles-append   patch-makefile-am-no-libutil-on-Tiger.diff
+
+}

@@ -49,7 +49,7 @@ variant nofortran       description {Forgo use of fortran compiler} {
 
 configure.ccache        no
 
-compilers.setup         -gcc44 default_fortran
+compilers.setup         -gcc44
 # compiler.setup does not set configure.compiler, but we need it
 # for proper archflags and to avoid weird fallbacks when blacklisting.
 if {[info exists cdb([c_variant_name],compiler)]} {
@@ -80,17 +80,39 @@ if {[variant_isset gcc45]} {
 } elseif {[variant_isset gcc7]} {
     set gccversion  7
 }
-if {[vercmp $xcodeversion 4.3] < 0} {
+#if {[vercmp $xcodeversion 4.3] < 0} {
 
-    if {[variant_isset clang] || [variant_isset dragonegg]} {
-        pre-fetch {
-            return -code error "XCode is too old to use clang."
-        }
-    }
+if {(${os.major} > 10 && \
+        (![catch {sysctl hw.optional.avx1_0} result1] && $result1 == 1)) ||
+        (![catch {sysctl hw.cpufamily} result2] && $result2 == 1418770316)} {
 
-    if {![info exists gccversion]} {
-        pre-fetch {
-            return -code error "Need to select a GCC variant"
+    set has_avx "yes"
+} else {
+
+    set has_avx "no"
+}
+
+# If none of the above variants is chosen, make gcc5 the default for
+# up to SSE4.2 (Core i1) capable processors, and Xcode-clang for newer
+
+if {![variant_isset gcc49] && ![variant_isset gcc5] && ![variant_isset mpclang37]} {
+
+    if {${has_avx} == "no"} {
+        # Defaults to gcc5
+        default_variants    +gcc5
+        set gcc_version     5
+        set use_clang       ""
+    } else {
+
+        # Use an appropriate version of Clang
+        set gcc_version     0    
+        if {[vercmp ${xcodeversion} 6.0] >= 0} {
+        # With Xcode 5.0+, defaults to Xcode-clang
+            set use_clang       "Xcode"
+        } else {
+            # Otherwise use Macports clang 3.7
+            default_variants    +mpclang37
+            set use_clang       "37"
         }
     }
 }

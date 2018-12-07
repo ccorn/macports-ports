@@ -5,7 +5,7 @@ PortGroup           cxx11 1.1
 PortGroup           qt5 1.0
 
 name                gmic
-version             2.3.4
+version             2.4.2
 license             CeCILL
 categories          science
 platforms           darwin
@@ -30,12 +30,9 @@ use_parallel_build  no
 
 distfiles           ${name}_${version}${extract.suffix}
 
-checksums           rmd160  3d6c62b891ff1b05f4340f2ad64317a0594067ca \
-                    sha256  fdcb16ec21673e241de18fb9caece437e51fa1fee34c8613d195ba66d23b51f9 \
-                    size    3709284
-
-depends_build-append \
-                    port:pkgconfig
+checksums           rmd160  ea31b6e17e44ff158580e2125f67862c7154a5f1 \
+                    sha256  0fae452232501ed7e50bbe2eaa96900a5b6daa7fb1d4366d207311bdc27d0762 \
+                    size    3813264
 
 depends_lib         port:curl \
                     path:lib/libavcodec.dylib:ffmpeg \

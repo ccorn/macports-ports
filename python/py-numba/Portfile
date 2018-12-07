@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-numba
-version             0.39.0
+version             0.41.0
 revision            0
 categories-append   devel
 platforms           darwin
@@ -25,9 +25,9 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  ca9d02348334c8ec0d6a48bdb4455d33babedbb1 \
-                    sha256  07749d1ddac8c4c0ce8b22bf3dec52ef2fd4922174c71447126807f5f8dc2bae \
-                    size    1408098
+checksums           rmd160  96cceef83a00128aff88caef7ec5e3b1a223e691 \
+                    sha256  2334d46f23de4603bcd64e7d9c5a16ea5ff69ee755bf9731a438de1084913ea6 \
+                    size    1538159
 
 variant tbb description "Add support for TBB" {
     depends_lib-append  port:tbb

@@ -19,11 +19,11 @@ archive_sites
 subport OpenBLAS-devel {}
 if {[string first "-devel" $subport] > 0} {
 
-    github.setup    xianyi OpenBLAS d4d3113adc780e012eeb4439179b270595391158
-    version         20180812
-    checksums       rmd160 8269bef2adfc24337c4a0954a92e45802f0283eb\
-                    sha256 410363f5d3e4a49de0c418307adaf8d53efd56e3b11f37fc2efa11a89d598df2\
-                    size   11823732
+    github.setup    xianyi OpenBLAS b6363f45398812b3d725b54174efab793915df4c
+    version         20181125
+    checksums       rmd160 dfd38438cedfd93791e6e72746769a84bc21dd2c\
+                    sha256 cfc0e939c7d94c33282ae88f5bbfba987209d481611211c3a147bb16cdd98e6e\
+                    size   11846759
 
     name            ${github.project}-devel
     conflicts       OpenBLAS
@@ -35,10 +35,10 @@ if {[string first "-devel" $subport] > 0} {
 
 } else {
 
-    github.setup    xianyi OpenBLAS 0.3.2 v
-    checksums       rmd160 710b33345a795d95b9f3ca6fa9d5cd848dc66afe \
-                    sha256 58a27233e6c1ae5731cc28d731cca2b1ce6ab7c070d34c7dc4a69e2d459d402c \
-                    size   11816662
+    github.setup    xianyi OpenBLAS 0.3.3 v
+    checksums       rmd160 d8dad5c03057bd26874e78b3f216fe45e53995ca \
+                    sha256 4f1ac0376cfdc89cf415c772d3239614dba7b783170c37ecde8d0d766d8f7433 \
+                    size   11826312
 
     conflicts       OpenBLAS-devel
 
@@ -76,7 +76,7 @@ foreach this_gcc_version_no_dot ${GCC_VERSIONS_NO_DOT} {
         description ${this_description} {}
 }
 
-# set default +gcc* variant: default to +gcc6 if not other +gcc*
+# set default +gcc* variant: default to +gcc8 if not other +gcc*
 # variant is selected. this variant is used for Fortran, no matter
 # whether +clang is selected or not. if +clang is not selected or
 # -clang is selected, then use the selected +gcc* variant for the
@@ -91,10 +91,10 @@ foreach this_gcc_version_no_dot ${GCC_VERSIONS_NO_DOT} {
 }
 
 if {${GCC_VER_NO_DOT} == 0} {
-    default_variants +gcc6
+    default_variants +gcc8
 }
 
-# make sure -gcc6 was not selected alone
+# make sure -gcc8 was not selected alone
 
 set GCC_VER_NO_DOT 0
 foreach this_gcc_version_no_dot ${GCC_VERSIONS_NO_DOT} {
@@ -105,7 +105,7 @@ foreach this_gcc_version_no_dot ${GCC_VERSIONS_NO_DOT} {
 }
 
 if {${GCC_VER_NO_DOT} == 0} {
-    ui_error "\n\nYou must select a Fortran compiler variant; you cannot select -gcc6 alone.\n"
+    ui_error "\n\nYou must select a Fortran compiler variant; you cannot select -gcc8 alone.\n"
     return -code error "Invalid variant selection."
 }
 
@@ -117,9 +117,11 @@ if {[variant_isset clang]} {
 
     # use selected +gcc* for Fortran only
     depends_build-append    port:gcc${GCC_VER_NO_DOT}
-    # add libgcc as a runtime dependency
-    depends_lib-append      port:libgcc
-
+    # add correct libgcc as a runtime dependency
+    depends_lib-append      path:lib/libgcc/libgcc_s.1.dylib:libgcc
+    if { ${GCC_VER_NO_DOT} <= 7 } { depends_lib-append port:libgcc7 }
+    if { ${GCC_VER_NO_DOT} <= 6 } { depends_lib-append port:libgcc6 }
+    
     configure.fc            ${prefix}/bin/gfortran-mp-${GCC_VER_DOT}
 
     if {[vercmp $xcodeversion 5.0] >= 0} {

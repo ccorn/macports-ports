@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           python 1.0
 
-github.setup        certbot certbot 0.26.1 v
+github.setup        certbot certbot 0.29.1 v
 categories          security
 license             Apache-2
 maintainers         {mps @Schamschula} openmaintainer
@@ -14,9 +14,9 @@ long_description    ${description}
 platforms           darwin
 homepage            https://certbot.eff.org/
 
-checksums           rmd160  b37056f39c5c7f79134bdcecee4298d4a07fe23e \
-                    sha256  3f0cf21aece6be4fa5d5d1bfbef0f32f4d031baca4971317f05856248a7919e4 \
-                    size    1236754
+checksums           rmd160  ad727a707db80ab58f2f27a35504cb773bd59257 \
+                    sha256  4ad0f5b9d7533131a68e74200511927432424546c7cb49bc147a878dc392b409 \
+                    size    1265644
 
 python.versions     27 36 37
 
@@ -32,11 +32,15 @@ depends_lib         port:py${python.version}-acme \
                     port:py${python.version}-pyrfc3339 \
                     port:py${python.version}-six \
                     port:py${python.version}-tz \
-                    port:py${python.version}-zopecomponent
+                    port:py${python.version}-zopecomponent \
+                    port:py${python.version}-zopedeferredimport \
+                    port:py${python.version}-zope-deprecation \
+                    port:py${python.version}-zopehookable
 
 post-patch {
     reinplace "s|/etc/|${prefix}/etc/|" ${worksrcpath}/certbot/constants.py
     reinplace "s|/var/lib/|${prefix}/var/db/|" ${worksrcpath}/certbot/constants.py
+    reinplace "s|/var/log/|${prefix}/var/log/|" ${worksrcpath}/certbot/constants.py
 }
 
 variant python27 conflicts python36 python37 description {Use Python 2.7} {

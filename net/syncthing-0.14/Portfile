@@ -1,9 +1,9 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
 PortSystem          1.0
-PortGroup           github 1.0
+PortGroup           golang 1.0
 
-github.setup        syncthing syncthing 0.14.49 v
+go.setup            github.com/syncthing/syncthing 0.14.52 v
 name                syncthing-0.14
 categories          net
 platforms           darwin
@@ -18,27 +18,18 @@ long_description    Syncthing replaces proprietary sync and cloud services \
                     and how it's transmitted over the Internet.
 homepage            https://syncthing.net
 
-github.tarball_from releases
-distname            syncthing-source-v${version}
+checksums           rmd160  34d90c58ed17a26dde0a898f16f23578816a03cc \
+                    sha256  2f7bb0c4289eca10295d4beec9a4f63c963c304f25b79b9f74160c703ec3ba1a \
+                    size    10582454
 
-checksums           rmd160  184f3da41cd062cdafab31a6b7e17d1408d918cd \
-                    sha256  520ff7d23e37bf01ea23ea57b5b22688de9f34d6f9aba3b61f1c3f1e8bfcbf1a \
-                    size    10953619
-
-worksrcdir          src/github.com/syncthing/syncthing
-extract.mkdir       yes
-extract.post_args-append --strip-components=1
-
-depends_build       port:go
-use_configure       no
-use_parallel_build  no
-build.cmd           ${prefix}/bin/go run build.go
+build.cmd           ${go.bin} run build.go
 build.target        install syncthing
 build.pre_args      -version v${version} -no-upgrade
 build.post_args     ${build.target}
-build.env           GOPATH=${workpath}
 
 test.run            yes
+test.cmd            ${build.cmd}
+test.target         test
 
 destroot {
     xinstall -W ${worksrcpath}/bin syncthing ${destroot}${prefix}/bin
@@ -57,4 +48,4 @@ notes-append        \
     "2. Edit syncthing.plist by replacing USERNAME with your actual username" \
     "3. Log out and in again, or run: launchctl load ~/Library/LaunchAgents/syncthing.plist"
 
-livecheck.url       ${github.homepage}/releases/latest
+github.livecheck.regex  {([0-9.-]+)}

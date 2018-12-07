@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-py
-version             1.5.4
+version             1.7.0
 revision            0
 categories-append   devel
 platforms           darwin
@@ -26,9 +26,9 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  ab83fe532160766d4deb8df7f527d3e2114cd414 \
-                    sha256  3fd59af7435864e1a243790d322d763925431213b6b8529c6ca71081ace3bbf7 \
-                    size    201448
+checksums           rmd160  c3a695cdbc9ac2d7cd3369e988f09923b7f06011 \
+                    sha256  bf92637198836372b520efcba9e020c330123be8ce527e535d185ed4b6f45694 \
+                    size    202733
 
 if {${name} ne ${subport}} {
     depends_build-append \

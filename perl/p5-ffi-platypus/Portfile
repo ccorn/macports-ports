@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.26
-perl5.setup         FFI-Platypus 0.53
+perl5.setup         FFI-Platypus 0.58
 license             {Artistic-1 GPL}
 maintainers         {devans @dbevans} openmaintainer
 description         FFI::Platypus - Write Perl bindings to non-Perl libraries with FFI. No XS required.
@@ -12,12 +12,13 @@ long_description    ${description}
 
 platforms           darwin
 
-checksums           rmd160  4dccf870362b7b887535a05c8c5e9c9e19063125 \
-                    sha256  fb8a71a9a73ee19107b7d3392e1a826ff386d114bfc7f1bc59f928625a2b60aa \
-                    size    204246
+checksums           rmd160  c25bcfadd3ad23508db9614b11d038de5f53af84 \
+                    sha256  42c9d5eb503d4ae853dab68e2e6c37816803d75944f2ce2b0b7fd9a38a49b2b3 \
+                    size    210515
 
 if {${perl5.major} != ""} {
     depends_build-append \
+                    port:p${perl5.major}-capture-tiny \
                     port:p${perl5.major}-config-autoconf
 
     depends_lib-append \

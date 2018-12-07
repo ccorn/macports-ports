@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-requests
-version             2.19.1
+version             2.20.1
 revision            0
 categories-append   devel
 platforms           darwin
@@ -30,9 +30,9 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  c61074e9faf32196083c6124c5db5235e7fe6b91 \
-                    sha256  ec22d826a36ed72a7358ff3fe56cbd4ba69dd7a6718ffd450ff0e9df7a47ce6a \
-                    size    131068
+checksums           rmd160  b94b73807f28c23754ca8ee1ec7b18f42fbdbfea \
+                    sha256  ea881206e59f41dbd0bd445437d792e43906703fff75ca8ff43ccdb11f33f263 \
+                    size    111475
 
 if {${name} ne ${subport}} {
     depends_build-append \

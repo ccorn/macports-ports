@@ -8,7 +8,7 @@ name                gcc47
 # Whenever this port is bumped for version/revision, please revbump dragonegg-3.4-gcc-4.7
 epoch               1
 version             4.7.4
-revision            9
+revision            11
 platforms           darwin
 categories          lang
 maintainers         nomaintainer
@@ -52,7 +52,7 @@ depends_lib         port:cctools \
                     path:lib/pkgconfig/cloog-isl.pc:cloog \
                     port:gmp \
                     port:ld64 \
-                    path:lib/libgcc/libgcc_s.1.dylib:libgcc \
+                    port:zlib \
                     port:libiconv \
                     port:libmpc \
                     port:mpfr \
@@ -137,12 +137,12 @@ configure.env-append \
                     OTOOL=${prefix}/bin/otool \
                     OTOOL64=${prefix}/bin/otool
 
-if {${os.platform} eq "darwin" && ${os.major} > 16} {
+if {${os.platform} eq "darwin" && ([vercmp $xcodeversion 9.0] > 0)} {
     depends_lib
     depends_run
     archive_sites
     pre-fetch {
-        ui_error "${name} is not supported on macOS High Sierra and newer"
+        ui_error "building ${name} is not supported with Xcode 9 or greater"
         return -code error {unsupported platform}
     }
 }
@@ -197,7 +197,7 @@ post-destroot {
     foreach file [glob ${destroot}${prefix}/share/{info,man/man7}/*] {
         set extension [file extension ${file}]
         set newfile [regsub "${extension}$" ${file} "-mp-${major}${extension}"]
-        
+
         file rename ${file} ${newfile}
     }
 
