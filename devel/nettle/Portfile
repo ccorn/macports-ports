@@ -40,6 +40,7 @@ patchfiles          no-fink.patch \
 use_autoreconf      yes
 autoreconf.args     -fvi
 
+configure.cflags-append -std=gnu99
 configure.args      --disable-openssl \
                     --enable-fat \
                     --enable-shared
