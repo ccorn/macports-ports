@@ -1,0 +1,12 @@
+--- src/low-level/feed/newsfeed.c.orig	2018-09-12 13:54:16.000000000 +0200
++++ src/low-level/feed/newsfeed.c	2018-12-09 19:01:59.000000000 +0100
+@@ -535,7 +535,9 @@ static int curl_error_convert(int curl_r
+   case CURLE_SSL_ENGINE_SETFAILED:
+   case CURLE_SSL_CERTPROBLEM:
+   case CURLE_SSL_CIPHER:
++#if CURLE_SSL_CACERT != CURLE_SSL_PEER_CERTIFICATE
+   case CURLE_SSL_CACERT:
++#endif
+   case CURLE_FTP_SSL_FAILED:
+   case CURLE_SSL_ENGINE_INITFAILED:
+     return NEWSFEED_ERROR_SSL;

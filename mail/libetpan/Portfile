@@ -21,6 +21,8 @@ checksums               rmd160  9275d20f77a0a4738cadf2c45a973c5eed90de98 \
                         sha256  0ebea6f8d5ab78992f4933c5a35676592ded6584708166c60b9c1ef9f6ce543e \
                         size    6190387
 
+patchfiles              patch-curl-ssl-case-newsfeed_c.diff
+
 depends_build-append    port:autoconf \
                         port:automake \
                         port:libtool
