@@ -3,6 +3,7 @@ PortSystem          1.0
 PortGroup           active_variants 1.1
 PortGroup           wxWidgets 1.0
 PortGroup           github 1.0
+PortGroup           cmake 1.1
 
 name                wxMaxima
 version             18.02.0
@@ -69,23 +70,15 @@ if {[variant_exists wx32] && [variant_isset wx32]} {
 
 depends_lib         port:${wxWidgets.port}
 
-depends_build       path:bin/cmake:cmake
-
 depends_run         bin:maxima:maxima
 
 patch.pre_args      -Np0
 
-use_configure       no
-
-build {
-    system -W ${worksrcpath}       "mkdir ./build"
-    system -W ${worksrcpath}/build "cmake -DwxWidgets_CONFIG_EXECUTABLE:FILEPATH=${wxWidgets.wxconfig} .."
-    system -W ${worksrcpath}/build "cmake --build ."
-}
+configure.args      -DwxWidgets_CONFIG_EXECUTABLE:FILEPATH=${wxWidgets.wxconfig}
 
 destroot {
     xinstall -m 755 -d ${destroot}${applications_dir}
-    file copy ${worksrcpath}/build/wxMaxima.app ${destroot}${applications_dir}
+    file copy ${cmake.build_dir}/wxMaxima.app ${destroot}${applications_dir}
 }
 
 notes "
