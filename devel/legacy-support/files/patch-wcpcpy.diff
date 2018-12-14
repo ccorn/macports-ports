@@ -1,0 +1,178 @@
+diff --git a/README.md b/README.md
+index 613cfa3..76eaa1b 100644
+--- a/README.md
++++ b/README.md
+@@ -13,18 +13,20 @@ into any builds using the wrapped headers. This is handled in [MacPorts](https:/
+ via the legacysupport PortGroup.
+ 
+ Wrapped headers are:
+-```
++
+  - cmath         : Adds declaration of various `long long` methods missing in OSX10.6 and older.
+  - stdio.h       : Adds `getline` and `getdelim` functions missing in OSX10.6 and older.
+  - stdlib.h      : Adds `posix_memalign` functional replacement, missing in OSX10.5 and older.
+  - string.h      : Adds `strnlen`, `strndup` and `memmem` functions missing in OSX10.6 and older.
+  - time.h        : Adds `clock_gettime` function missing in OSX10.11 and older.
+- - wchar.h       : Adds `wcsdup` function missing in OSX10.6 and older.
+- - sys/fcntl.h   : Adds missing `O_CLOEXEC`, `AT_FDCWD`, `AT_EACCESS`, `AT_SYMLINK_NOFOLLOW`, `AT_SYMLINK_FOLLOW`, and `AT_REMOVEDIR` definitions as required.
++ - wchar.h       : Adds `wcsdup` and `wcpcpy` functions missing in OSX10.6 and older.
++ - sys/fcntl.h   : Adds missing `O_CLOEXEC`, `AT_FDCWD`, `AT_EACCESS`, `AT_SYMLINK_NOFOLLOW`,
++                 : `AT_SYMLINK_FOLLOW`, and `AT_REMOVEDIR` definitions as required.
+  - sys/fcntl.h   : Adds `openat` function missing in OSX10.9 and older.
+  - sys/mman.h    : Adds missing `MAP_ANONYMOUS` definition as required.
+  - sys/stdio.h   : Adds `renameat` function missing in OSX10.9 and older.
+  - sys/stat.h    : Adds `fchmodat`, `fstatat`, and `mkdirat` functions missing in OSX10.9 and older.
+                  : Adds "lchmod", missing in OSX10.4.
+- - sys/unistd.h  : Adds `getattrlistat`, `readlinkat`, `faccessat`, `fchownat`, `linkat`, `symlinkat`, and `unlinkat` functions missing in OSX10.9 and older.
+- ```
++ - sys/unistd.h  : Adds `getattrlistat`, `readlinkat`, `faccessat`, `fchownat`, `linkat`, `symlinkat`, 
++                 : and `unlinkat` functions missing in OSX10.9 and older.
++ 
+diff --git a/include/MacportsLegacySupport.h b/include/MacportsLegacySupport.h
+index 2aa611a..cf2ecf6 100644
+--- a/include/MacportsLegacySupport.h
++++ b/include/MacportsLegacySupport.h
+@@ -41,9 +41,13 @@
+ /* wcsdup */
+ #define __MP_LEGACY_SUPPORT_WCSDUP__  __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070
+ 
++/* wcpcpy */
++#define __MP_LEGACY_SUPPORT_WCPCPY__  __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070
++
+ /* llround */
+ #define __MP_LEGACY_SUPPORT_LLROUND__  __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070
+ 
++/* **at */
+ #define __MP_LEGACY_SUPPORT_ATCALLS__  __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 101000
+ 
+ /* lsmod */
+diff --git a/include/time.h b/include/time.h
+index 4aa08f2..da20db1 100644
+--- a/include/time.h
++++ b/include/time.h
+@@ -36,12 +36,19 @@
+ /* #define CLOCK_MONOTONIC_RAW_APPROX 5 */
+ #endif
+ 
++/*
++ * Define a type for the above CLOCK_* values; many OSs use 'enum' for
++ * the values & then typedef the enum to 'clockid_t'; use 'int' for
++ * easy compatibility.
++ */
++typedef int clockid_t;
++
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
+ 
+-extern int clock_gettime( int clk_id, struct timespec *ts );
+-extern int clock_getres ( int clk_id, struct timespec *ts );
++extern int clock_gettime( clockid_t clk_id, struct timespec *ts );
++extern int clock_getres ( clockid_t clk_id, struct timespec *ts );
+   
+ #ifdef __cplusplus
+ }
+diff --git a/include/wchar.h b/include/wchar.h
+index 93e95b8..5fb02ea 100644
+--- a/include/wchar.h
++++ b/include/wchar.h
+@@ -19,20 +19,28 @@
+ #define _MACPORTS_WCHAR_H_
+ 
+ /* Include the primary system wchar.h */
++/* This includes definition of __restrict */
+ #include_next <wchar.h>
+ 
+ /* MP support header */
+ #include "MacportsLegacySupport.h"
+ 
+-/* strnlen */
+-#if __MP_LEGACY_SUPPORT_WCSDUP__
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
++
++/* wcsdup */
++#if __MP_LEGACY_SUPPORT_WCSDUP__
+   extern wchar_t * wcsdup(const wchar_t *s);
++#endif
++
++/* wcpcpy */
++#if __MP_LEGACY_SUPPORT_WCPCPY__
++  extern wchar_t * wcpcpy(wchar_t *__restrict dest, const wchar_t *__restrict src);
++#endif
++
+ #ifdef __cplusplus
+ }
+ #endif
+-#endif
+ 
+ #endif /* _MACPORTS_WCHAR_H_ */
+diff --git a/src/time.c b/src/time.c
+index cc1fabc..0db8dd3 100644
+--- a/src/time.c
++++ b/src/time.c
+@@ -22,7 +22,7 @@
+ #include <sys/time.h>
+ #include <mach/mach_time.h>
+ 
+-int clock_gettime( int clk_id, struct timespec *ts )
++int clock_gettime( clockid_t clk_id, struct timespec *ts )
+ {
+   int ret = -1;
+   if ( ts )
+@@ -48,7 +48,7 @@ int clock_gettime( int clk_id, struct timespec *ts )
+   return ret;
+ }
+ 
+-int clock_getres ( int clk_id, struct timespec *ts )
++int clock_getres ( clockid_t clk_id, struct timespec *ts )
+ {
+   int ret = -1;
+   if ( ts )
+diff --git a/src/wcpcpy.c b/src/wcpcpy.c
+new file mode 100644
+index 0000000..cea3136
+--- /dev/null
++++ b/src/wcpcpy.c
+@@ -0,0 +1,40 @@
++/*
++ * Copyright (c) 2018 Christian Cornelssen
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ *
++ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND
++ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++ * ARE DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE
++ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++ * SUCH DAMAGE.
++ */
++
++// MP support header
++#include "MacportsLegacySupport.h"
++#if __MP_LEGACY_SUPPORT_WCPCPY__
++
++#include <wchar.h>
++
++wchar_t *
++wcpcpy(wchar_t *__restrict dest, const wchar_t *__restrict src)
++{
++    while (*dest = *src) ++dest, ++src; /* copy until L'\0', inclusive */
++    return dest;                        /* point to copied L'\0' */
++}
++
++#endif /*  __MP_LEGACY_SUPPORT_WCPCPY__ */
