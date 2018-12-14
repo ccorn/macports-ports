@@ -1,10 +1,11 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
 
-PortSystem 1.0
+PortSystem      1.0
+PortGroup       app 1.0
 
 name            gmpc
 version         11.8.16
-revision        2
+revision        3
 categories      audio
 platforms       darwin
 license         GPL-2+
@@ -60,6 +61,11 @@ configure.cmd   ./autogen.sh
 #    configure.args-delete --disable-macige
 #    configure.args-append --enable-macige
 # }
+
+app.name                GMPC
+app.icon                pixmaps/icons/Humanity/scalable/apps/gmpc.svg
+app.hide_dock_icon      no
+app.use_launch_script   yes
 
 livecheck.type  regex
 livecheck.url   http://download.sarine.nl/Programs/gmpc/
