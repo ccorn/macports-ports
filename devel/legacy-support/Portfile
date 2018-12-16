@@ -24,7 +24,7 @@ subport ${name} {
 subport ${name}-devel {
     conflicts           ${name}
     github.setup        macports macports-legacy-support 270e8dfee0e670803ad623da44aee679805dd300
-    version             20181215
+    version             20181216
     checksums           rmd160  aecc52e56b4cffde66c2355f38f4b3d6d9ad30fd \
                         sha256  39e136a6d6b84e3b6861fe1a4edc15bb1a6425b0fcb2a140b67a0a87663bd136 \
                         size    12764
