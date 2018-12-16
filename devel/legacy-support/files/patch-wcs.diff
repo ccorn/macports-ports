@@ -1,0 +1,717 @@
+diff --git a/Makefile b/Makefile
+index 2fc2831..260fd04 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,5 +1,4 @@
+-
+-
++# GNU Makefile for MacportsLegacySupport
+ # Copyright (c) 2010 Chris Jones <jonesc@macports.org>
+ #
+ # Permission to use, copy, modify, and distribute this software for any
+@@ -14,54 +13,89 @@
+ # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+ # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ 
+-PREFIX  ?= /usr/local
+-DESTDIR ?= 
++DESTDIR         ?= 
++PREFIX          ?= /usr/local
++INCSUBDIR        = LegacySupport
++PKGINCDIR        = $(PREFIX)/include/$(INCSUBDIR)
++LIBDIR           = $(PREFIX)/lib
++SOEXT            = .dylib
++LIBNAME          = MacportsLegacySupport
++LIBFILE          = lib$(LIBNAME)$(SOEXT)
++LIBPATH          = $(LIBDIR)/$(LIBFILE)
++BUILDLIBDIR      = lib
++BUILDLIBPATH     = $(BUILDLIBDIR)/$(LIBFILE)
++BUILDLIBFLAGS    = -dynamiclib -headerpad_max_install_names \
++                   -install_name @executable_path/../$(BUILDLIBPATH) \
++                   -current_version 1.0 -compatibility_version 1.0
++POSTINSTALL      = install_name_tool
++POSTINSTALLFLAGS = -id $(LIBPATH)
++
++ARCHFLAGS       ?=
++CC              ?= cc $(ARCHFLAGS)
++CFLAGS          ?= -Os -Wall
++CXX             ?= c++ $(ARCHFLAGS)
++CXXFLAGS        ?= -Os -Wall
++LDFLAGS         ?=
++
++MKINSTALLDIRS    = install -d -m 755
++INSTALL_PROGRAM  = install -c -m 755
++INSTALL_DATA     = install -c -m 644
++RM               = rm -f
++RMDIR            = sh -c 'for d; do test ! -d "$d" || rmdir -p "$d"; done' rmdir
+ 
+-CC       ?= cc      # The C compiler.
+-CFLAGS   ?= -Os     # C compilation options which relate to
+-                    # optimization or debugging (usually
+-                    # just -g or -O).  Usually this wouldn't
+-                    # include -I options to specify the
+-                    # include directories, because then you
+-                    # couldn't override it on the command line
+-                    # easily as in the above example.
+-CXX      ?= c++     # The C++ compiler.  (Sometimes "CPP" instead
+-                    # of CXX.)
+-CXXFLAGS ?= -Os     # C++ compilation options related to 
+-                    # optimization or debugging (-O or -g).
+-F77      ?= f77     # The fortran compiler.
+-FFLAGS   ?=         # Optimization flags for fortran.
++SRCDIR           = src
++SRCINCDIR        = include
++ALLHEADERS      := $(wildcard $(SRCINCDIR)/*.h $(SRCINCDIR)/*/*.h $(SRCDIR)/*.h)
++LIBOBJECTS      := $(patsubst %.c,%.o,$(wildcard $(SRCDIR)/*.c))
+ 
+-MPLEGACYSUPPNAME = MacportsLegacySupport
+-MPLEGACYSUPPLIB  = lib$(MPLEGACYSUPPNAME).dylib
+-INSTALLINCDIR    = $(PREFIX)/include/LegacySupport
++TESTDIR          = test
++TESTNAMEPREFIX   = $(TESTDIR)/test_
++TESTRUNPREFIX    = run_
++TESTLIBS         = -L$(BUILDLIBDIR) -l$(LIBNAME)
++TESTSRCS_C      := $(wildcard $(TESTNAMEPREFIX)*.c)
++TESTSRCS_CPP    := $(wildcard $(TESTNAMEPREFIX)*.cpp)
++TESTPRGS_C      := $(patsubst %.c,%,$(TESTSRCS_C))
++TESTPRGS_CPP    := $(patsubst %.cpp,%,$(TESTSRCS_CPP))
++TESTPRGS         = $(TESTPRGS_C) $(TESTPRGS_CPP)
++TESTRUNS        := $(patsubst $(TESTNAMEPREFIX)%,$(TESTRUNPREFIX)%,$(TESTPRGS))
+ 
+-INCDIR           = ${PWD}/include
+-SRCDIR           = ${PWD}/src/
++all: $(BUILDLIBPATH)
+ 
+-LIBOBJECTS      := $(patsubst %.c,%.o,$(wildcard $(SRCDIR)*.c))
+--include $(LIBOBJECTS:.o=.d)
++# Generously marking all header files as potential dependencies
++$(LIBOBJECTS): %.o: %.c $(ALLHEADERS)
++	$(CC) -c -I$(SRCINCDIR) $(CFLAGS) $< -o $@
+ 
+-%.o: %.c
+-	$(CC) -c -I$(INCDIR) $(CFLAGS) -o $*.o $*.c
++$(BUILDLIBPATH): $(LIBOBJECTS)
++	$(MKINSTALLDIRS) $(BUILDLIBDIR)
++	$(CC) $(BUILDLIBFLAGS) $(LDFLAGS) $^ -o $@
+ 
+-# Causes issues with universal builds with some compilers.
+-#	$(CC) -c -I$(INCDIR) $(CFLAGS) -MP -MMD -MT $*.o -MT $*.d -MF $*.d -o $*.o $*.c
++install: install-headers install-lib
+ 
+-$(MPLEGACYSUPPLIB): $(LIBOBJECTS)
+-	$(CC) $(LDFLAGS) -dynamiclib $(LIBOBJECTS) -install_name $(PREFIX)/lib/$(MPLEGACYSUPPLIB) -current_version 1.0 -compatibility_version 1.0 -o $(MPLEGACYSUPPLIB)
++install-headers:
++	$(MKINSTALLDIRS) $(DESTDIR)$(PKGINCDIR)/sys
++	$(MKINSTALLDIRS) $(DESTDIR)$(PKGINCDIR)/xlocale
++	$(INSTALL_DATA) $(wildcard include/*.h include/c*) $(DESTDIR)$(PKGINCDIR)
++	$(INSTALL_DATA) $(wildcard include/sys/*)     $(DESTDIR)$(PKGINCDIR)/sys
++	$(INSTALL_DATA) $(wildcard include/xlocale/*) $(DESTDIR)$(PKGINCDIR)/xlocale
+ 
+-all: $(MPLEGACYSUPPLIB)
++install-lib: $(BUILDLIBPATH)
++	$(MKINSTALLDIRS) $(DESTDIR)$(LIBDIR)
++	$(INSTALL_PROGRAM) $(BUILDLIBPATH) $(DESTDIR)$(LIBDIR)
++	$(POSTINSTALL) $(POSTINSTALLFLAGS) $(DESTDIR)$(LIBPATH)
+ 
+-install: all
+-	@mkdir -p $(DESTDIR)$(PREFIX)/lib $(DESTDIR)$(INSTALLINCDIR) $(DESTDIR)$(INSTALLINCDIR)/sys
+-	install    -m 0755 $(MPLEGACYSUPPLIB)      $(DESTDIR)$(PREFIX)/lib
+-	install -m 0755 $(wildcard include/*.h)    $(DESTDIR)$(INSTALLINCDIR)
+-	install -m 0755 $(wildcard include/c*)     $(DESTDIR)$(INSTALLINCDIR)
+-	install -m 0755 $(wildcard include/sys/*)  $(DESTDIR)$(INSTALLINCDIR)/sys
++test check: $(TESTRUNS)
+ 
+-test_time: $(install)
+-	$(CXX) $(CFLAGS) -I$(DESTDIR)$(INSTALLINCDIR) -L$(DESTDIR)$(PREFIX)/lib -l$(MPLEGACYSUPPNAME) test/test_time.cpp -o test_time.exe
++$(TESTRUNS): $(TESTRUNPREFIX)%: $(TESTNAMEPREFIX)%
++	$<
++
++$(TESTPRGS_C): %: %.c $(BUILDLIBPATH)
++	$(CC) -I$(SRCINCDIR) $(CFLAGS) $< $(TESTLIBS) -o $@
++
++$(TESTPRGS_CPP): %: %.cpp $(BUILDLIBPATH)
++	$(CXX) -I$(SRCINCDIR) $(CXXFLAGS) $< $(TESTLIBS) -o $@
+ 
+ clean:
+-	@rm -fv $(SRCDIR)*.o $(SRCDIR)*.d $(MPLEGACYSUPPLIB) test_time.exe
++	$(RM) $(SRCDIR)/*.o $(SRCDIR)/*.d $(BUILDLIBPATH) $(TESTPRGS)
++	@$(RMDIR) $(BUILDLIBDIR)
++
++.PHONY: all clean install install-headers install-lib test check $(TESTRUNS)
+diff --git a/README.md b/README.md
+index 613cfa3..3b757b3 100644
+--- a/README.md
++++ b/README.md
+@@ -13,18 +13,23 @@ into any builds using the wrapped headers. This is handled in [MacPorts](https:/
+ via the legacysupport PortGroup.
+ 
+ Wrapped headers are:
+-```
++
+  - cmath         : Adds declaration of various `long long` methods missing in OSX10.6 and older.
+  - stdio.h       : Adds `getline` and `getdelim` functions missing in OSX10.6 and older.
+  - stdlib.h      : Adds `posix_memalign` functional replacement, missing in OSX10.5 and older.
+  - string.h      : Adds `strnlen`, `strndup` and `memmem` functions missing in OSX10.6 and older.
+  - time.h        : Adds `clock_gettime` function missing in OSX10.11 and older.
+- - wchar.h       : Adds `wcsdup` function missing in OSX10.6 and older.
+- - sys/fcntl.h   : Adds missing `O_CLOEXEC`, `AT_FDCWD`, `AT_EACCESS`, `AT_SYMLINK_NOFOLLOW`, `AT_SYMLINK_FOLLOW`, and `AT_REMOVEDIR` definitions as required.
++ - wchar.h       : Adds functions `wcsdup`, `wcsnlen`, `wcpcpy`, `wcpncpy`,
++                   `wcscasecmp`, `wcsncasecmp` missing in OSX10.6 and older.
++ - xlocale/\_wchar.h : Adds functions `wcscasecmp_l`, `wcsncasecmp_l`
++                   missing in OSX10.6 and older.
++ - sys/fcntl.h   : Adds missing `O_CLOEXEC`, `AT_FDCWD`, `AT_EACCESS`, `AT_SYMLINK_NOFOLLOW`,
++                 : `AT_SYMLINK_FOLLOW`, and `AT_REMOVEDIR` definitions as required.
+  - sys/fcntl.h   : Adds `openat` function missing in OSX10.9 and older.
+  - sys/mman.h    : Adds missing `MAP_ANONYMOUS` definition as required.
+  - sys/stdio.h   : Adds `renameat` function missing in OSX10.9 and older.
+  - sys/stat.h    : Adds `fchmodat`, `fstatat`, and `mkdirat` functions missing in OSX10.9 and older.
+                  : Adds "lchmod", missing in OSX10.4.
+- - sys/unistd.h  : Adds `getattrlistat`, `readlinkat`, `faccessat`, `fchownat`, `linkat`, `symlinkat`, and `unlinkat` functions missing in OSX10.9 and older.
+- ```
++ - sys/unistd.h  : Adds `getattrlistat`, `readlinkat`, `faccessat`, `fchownat`, `linkat`, `symlinkat`, 
++                 : and `unlinkat` functions missing in OSX10.9 and older.
++ 
+diff --git a/include/MacportsLegacySupport.h b/include/MacportsLegacySupport.h
+index 2aa611a..47c2875 100644
+--- a/include/MacportsLegacySupport.h
++++ b/include/MacportsLegacySupport.h
+@@ -24,32 +24,42 @@
+ /* defines for when legacy support is required for various functions */
+ 
+ /* clock_gettime */
+-#define __MP_LEGACY_SUPPORT_GETTIME__ __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 101200
++#define __MP_LEGACY_SUPPORT_GETTIME__ (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 101200)
+ 
+ /* strnlen */
+-#define __MP_LEGACY_SUPPORT_STRNLEN__ __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070
++#define __MP_LEGACY_SUPPORT_STRNLEN__ (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070)
+ 
+ /* strndup */
+-#define __MP_LEGACY_SUPPORT_STRNDUP__ __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070
++#define __MP_LEGACY_SUPPORT_STRNDUP__ (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070)
+ 
+ /* getline */
+-#define __MP_LEGACY_SUPPORT_GETLINE__ __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070
++#define __MP_LEGACY_SUPPORT_GETLINE__ (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070)
+ 
+ /* memmem */
+-#define __MP_LEGACY_SUPPORT_MEMMEM__  __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070
++#define __MP_LEGACY_SUPPORT_MEMMEM__  (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070)
+ 
+ /* wcsdup */
+-#define __MP_LEGACY_SUPPORT_WCSDUP__  __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070
++#define __MP_LEGACY_SUPPORT_WCSDUP__  (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070)
++
++/* wcsnlen */
++#define __MP_LEGACY_SUPPORT_WCSNLEN__ (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070)
++
++/* wcpcpy, wcpncpy */
++#define __MP_LEGACY_SUPPORT_WCPCPY__  (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070)
++
++/* wcsncasecmp_l, wcscasecmp_l, wcsncasecmp, wcscasecmp */
++#define __MP_LEGACY_SUPPORT_WCSCASECMP__  (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070)
+ 
+ /* llround */
+-#define __MP_LEGACY_SUPPORT_LLROUND__  __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070
++#define __MP_LEGACY_SUPPORT_LLROUND__ (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070)
+ 
+-#define __MP_LEGACY_SUPPORT_ATCALLS__  __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 101000
++/* **at */
++#define __MP_LEGACY_SUPPORT_ATCALLS__ (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 101000)
+ 
+ /* lsmod */
+-#define __MP_LEGACY_SUPPORT_LSMOD__  __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1050
++#define __MP_LEGACY_SUPPORT_LSMOD__   (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1050)
+ 
+ /* posix_memalign */
+-#define __MP_LEGACY_SUPPORT_POSIX_MEMALIGN__  __APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1060
++#define __MP_LEGACY_SUPPORT_POSIX_MEMALIGN__  (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1060)
+ 
+ #endif /* _MACPORTS_LEGACYSUPPORTDEFS_H_ */
+diff --git a/include/time.h b/include/time.h
+index 4aa08f2..da20db1 100644
+--- a/include/time.h
++++ b/include/time.h
+@@ -36,12 +36,19 @@
+ /* #define CLOCK_MONOTONIC_RAW_APPROX 5 */
+ #endif
+ 
++/*
++ * Define a type for the above CLOCK_* values; many OSs use 'enum' for
++ * the values & then typedef the enum to 'clockid_t'; use 'int' for
++ * easy compatibility.
++ */
++typedef int clockid_t;
++
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
+ 
+-extern int clock_gettime( int clk_id, struct timespec *ts );
+-extern int clock_getres ( int clk_id, struct timespec *ts );
++extern int clock_gettime( clockid_t clk_id, struct timespec *ts );
++extern int clock_getres ( clockid_t clk_id, struct timespec *ts );
+   
+ #ifdef __cplusplus
+ }
+diff --git a/include/wchar.h b/include/wchar.h
+index 93e95b8..25233f2 100644
+--- a/include/wchar.h
++++ b/include/wchar.h
+@@ -24,15 +24,34 @@
+ /* MP support header */
+ #include "MacportsLegacySupport.h"
+ 
+-/* strnlen */
+-#if __MP_LEGACY_SUPPORT_WCSDUP__
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
++
++/* wcsdup */
++#if __MP_LEGACY_SUPPORT_WCSDUP__
+   extern wchar_t * wcsdup(const wchar_t *s);
++#endif
++
++/* wcsnlen */
++#if __MP_LEGACY_SUPPORT_WCSNLEN__
++  extern size_t wcsnlen(const wchar_t *, size_t);
++#endif
++
++/* wcpcpy, wcpncpy */
++#if __MP_LEGACY_SUPPORT_WCPCPY__
++  extern wchar_t * wcpcpy(wchar_t *__restrict d, const wchar_t *__restrict s);
++  extern wchar_t *wcpncpy(wchar_t *__restrict d, const wchar_t *__restrict s, size_t n);
++#endif
++
++/* wcsncasecmp, wcscasecmp */
++#if __MP_LEGACY_SUPPORT_WCSCASECMP__
++  extern int  wcscasecmp(const wchar_t *l, const wchar_t *r);
++  extern int wcsncasecmp(const wchar_t *l, const wchar_t *r, size_t n);
++#endif
++
+ #ifdef __cplusplus
+ }
+ #endif
+-#endif
+ 
+ #endif /* _MACPORTS_WCHAR_H_ */
+diff --git a/include/xlocale/_wchar.h b/include/xlocale/_wchar.h
+new file mode 100644
+index 0000000..54ecea3
+--- /dev/null
++++ b/include/xlocale/_wchar.h
+@@ -0,0 +1,39 @@
++
++/*
++ * Copyright (c) 2018 Christian Cornelssen
++ *
++ * Permission to use, copy, modify, and distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++
++#ifndef _MACPORTS_XLOCALE__WCHAR_H_
++#define _MACPORTS_XLOCALE__WCHAR_H_
++
++/* Include the primary system xlocale/_wchar.h */
++#include_next <xlocale/_wchar.h>
++
++/* MP support header */
++#include "MacportsLegacySupport.h"
++
++/* wcsncasecmp_l, wcscasecmp_l */
++#if __MP_LEGACY_SUPPORT_WCSCASECMP__
++#ifdef __cplusplus
++extern "C" {
++#endif
++  extern int wcscasecmp_l(const wchar_t *l, const wchar_t *r, locale_t locale);
++  extern int wcsncasecmp_l(const wchar_t *l, const wchar_t *r, size_t n, locale_t locale);
++#ifdef __cplusplus
++}
++#endif
++#endif
++
++#endif /* _MACPORTS_XLOCALE__WCHAR_H_ */
+diff --git a/src/time.c b/src/time.c
+index cc1fabc..0db8dd3 100644
+--- a/src/time.c
++++ b/src/time.c
+@@ -22,7 +22,7 @@
+ #include <sys/time.h>
+ #include <mach/mach_time.h>
+ 
+-int clock_gettime( int clk_id, struct timespec *ts )
++int clock_gettime( clockid_t clk_id, struct timespec *ts )
+ {
+   int ret = -1;
+   if ( ts )
+@@ -48,7 +48,7 @@ int clock_gettime( int clk_id, struct timespec *ts )
+   return ret;
+ }
+ 
+-int clock_getres ( int clk_id, struct timespec *ts )
++int clock_getres ( clockid_t clk_id, struct timespec *ts )
+ {
+   int ret = -1;
+   if ( ts )
+diff --git a/src/wcpcpy_family.c b/src/wcpcpy_family.c
+new file mode 100644
+index 0000000..3ff9504
+--- /dev/null
++++ b/src/wcpcpy_family.c
+@@ -0,0 +1,37 @@
++
++/*
++ * Copyright (c) 2018 Christian Cornelssen
++ *
++ * Permission to use, copy, modify, and distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++
++// MP support header
++#include "MacportsLegacySupport.h"
++#if __MP_LEGACY_SUPPORT_WCPCPY__
++
++#include <wchar.h>
++
++wchar_t *wcpncpy(wchar_t *__restrict d, const wchar_t *__restrict s, size_t n)
++{
++    wint_t c;
++    while (n && (c = *s)) --n, *d++ = c, ++s;
++    return wmemset(d, 0, n);
++}
++
++wchar_t *wcpcpy(wchar_t *__restrict d, const wchar_t *__restrict s)
++{
++    while (*d = *s) ++d, ++s;
++    return d;
++}
++
++#endif /*  __MP_LEGACY_SUPPORT_WCPCPY__ */
+diff --git a/src/wcscasecmp_family.c b/src/wcscasecmp_family.c
+new file mode 100644
+index 0000000..52fe63d
+--- /dev/null
++++ b/src/wcscasecmp_family.c
+@@ -0,0 +1,65 @@
++
++/*
++ * Copyright (c) 2018 Christian Cornelssen
++ *
++ * Permission to use, copy, modify, and distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++
++// MP support header
++#include "MacportsLegacySupport.h"
++#if __MP_LEGACY_SUPPORT_WCSCASECMP__
++
++#include <wchar.h>
++#include <wctype.h>
++#include <xlocale.h>
++
++#include <limits.h>
++#include <stdint.h>
++#if WCHAR_MAX > INT_MAX
++/* Caution: multiple argument evaluations */
++#define _MP_WCDIFFSIGN(a, b)    (((b) < (a)) - ((a) < (b)))
++#else
++#define _MP_WCDIFFSIGN(a, b)    ((int)(a) - (int)(b))
++#endif
++
++int wcsncasecmp_l(const wchar_t *l, const wchar_t *r, size_t n, locale_t locale)
++{
++    wint_t lc, rc;
++    int d = 0;
++    while (!d && n) {
++        lc = *l++; rc = *r++; --n;
++        if (!(lc && rc)) n = 0;
++        if (lc == rc) continue;
++        lc = towlower_l(lc, locale);
++        rc = towlower_l(rc, locale);
++        d = _MP_WCDIFFSIGN(lc, rc);
++    }
++    return d;
++}
++
++int wcsncasecmp(const wchar_t *l, const wchar_t *r, size_t n)
++{
++    return wcsncasecmp_l(l, r, n, 0);
++}
++
++int wcscasecmp_l(const wchar_t *l, const wchar_t *r, locale_t locale)
++{
++    return wcsncasecmp_l(l, r, -1, locale);
++}
++
++int wcscasecmp(const wchar_t *l, const wchar_t *r)
++{
++    return wcsncasecmp_l(l, r, -1, 0);
++}
++
++#endif /* __MP_LEGACY_SUPPORT_WCSCASECMP__ */
+diff --git a/src/wcsnlen.c b/src/wcsnlen.c
+new file mode 100644
+index 0000000..c42af19
+--- /dev/null
++++ b/src/wcsnlen.c
+@@ -0,0 +1,44 @@
++/*
++ * Adapted for MacportsLegacySupport from:
++ *  https://git.musl-libc.org/cgit/musl/tree/src/string/wcsnlen.c
++ * License text (excerpt below):
++ *  https://git.musl-libc.org/cgit/musl/tree/COPYRIGHT
++ *
++ * musl as a whole is licensed under the following standard MIT license:
++ *
++ * Copyright © 2005-2014 Rich Felker, et al.
++ *
++ * Permission is hereby granted, free of charge, to any person obtaining
++ * a copy of this software and associated documentation files (the
++ * "Software"), to deal in the Software without restriction, including
++ * without limitation the rights to use, copy, modify, merge, publish,
++ * distribute, sublicense, and/or sell copies of the Software, and to
++ * permit persons to whom the Software is furnished to do so, subject to
++ * the following conditions:
++ *
++ * The above copyright notice and this permission notice shall be
++ * included in all copies or substantial portions of the Software.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
++ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
++ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
++ * CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
++ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
++ * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
++ */
++
++// MP support header
++#include "MacportsLegacySupport.h"
++#if __MP_LEGACY_SUPPORT_WCSNLEN__
++
++#include <wchar.h>
++
++size_t wcsnlen(const wchar_t *s, size_t n)
++{
++    const wchar_t *z = wmemchr(s, 0, n);
++    if (z) n = z-s;
++    return n;
++}
++
++#endif /* __MP_LEGACY_SUPPORT_WCSNLEN__ */
+diff --git a/test/test_wcscasecmp.c b/test/test_wcscasecmp.c
+new file mode 100644
+index 0000000..75dc3a9
+--- /dev/null
++++ b/test/test_wcscasecmp.c
+@@ -0,0 +1,182 @@
++
++/*
++ * Copyright (c) 2018 Christian Cornelssen
++ *
++ * Permission to use, copy, modify, and distribute this software for any
++ * purpose with or without fee is hereby granted, provided that the above
++ * copyright notice and this permission notice appear in all copies.
++ *
++ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
++ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
++ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
++ * ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
++ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
++ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
++ * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
++ */
++
++#include <wchar.h>
++#include <assert.h>
++
++int main() {
++    assert (wcscasecmp(L"", L"") == 0);
++    assert (wcscasecmp(L"a", L"") > 0);
++    assert (wcscasecmp(L"", L"a") < 0);
++    assert (wcscasecmp(L"a", L"b") < 0);
++    assert (wcscasecmp(L"b", L"a") > 0);
++    assert (wcscasecmp(L"ab", L"b") < 0);
++    assert (wcscasecmp(L"b", L"ab") > 0);
++    assert (wcscasecmp(L"ab", L"ba") < 0);
++    assert (wcscasecmp(L"ba", L"ab") > 0);
++    assert (wcscasecmp(L"a", L"a") == 0);
++    assert (wcscasecmp(L"A", L"a") == 0);
++    assert (wcscasecmp(L"a", L"A") == 0);
++    assert (wcscasecmp(L"A", L"A") == 0);
++    assert (wcscasecmp(L"A", L"ab") < 0);
++    assert (wcscasecmp(L"a", L"Ab") < 0);
++    assert (wcscasecmp(L"Ab", L"a") > 0);
++    assert (wcscasecmp(L"ab", L"A") > 0);
++    assert (wcscasecmp(L"a", L"B") < 0);
++    assert (wcscasecmp(L"b", L"A") > 0);
++    assert (wcscasecmp(L"Ab", L"b") < 0);
++    assert (wcscasecmp(L"B", L"ab") > 0);
++    assert (wcscasecmp(L"ab", L"Ba") < 0);
++    assert (wcscasecmp(L"ba", L"Ab") > 0);
++    assert (wcscasecmp(L"ab", L"ab") == 0);
++    assert (wcscasecmp(L"aB", L"ab") == 0);
++    assert (wcscasecmp(L"Ab", L"ab") == 0);
++    assert (wcscasecmp(L"AB", L"ab") == 0);
++    assert (wcscasecmp(L"ab", L"Ab") == 0);
++    assert (wcscasecmp(L"aB", L"Ab") == 0);
++    assert (wcscasecmp(L"Ab", L"Ab") == 0);
++    assert (wcscasecmp(L"AB", L"Ab") == 0);
++    assert (wcscasecmp(L"ab", L"aB") == 0);
++    assert (wcscasecmp(L"aB", L"aB") == 0);
++    assert (wcscasecmp(L"Ab", L"aB") == 0);
++    assert (wcscasecmp(L"AB", L"aB") == 0);
++    assert (wcscasecmp(L"ab", L"AB") == 0);
++    assert (wcscasecmp(L"aB", L"AB") == 0);
++    assert (wcscasecmp(L"Ab", L"AB") == 0);
++    assert (wcscasecmp(L"AB", L"AB") == 0);
++
++    assert (wcsncasecmp(L"", L"", 0) == 0);
++    assert (wcsncasecmp(L"a", L"", 1) > 0);
++    assert (wcsncasecmp(L"", L"a", 1) < 0);
++    assert (wcsncasecmp(L"a", L"b", 1) < 0);
++    assert (wcsncasecmp(L"b", L"a", 1) > 0);
++    assert (wcsncasecmp(L"ab", L"b", 2) < 0);
++    assert (wcsncasecmp(L"b", L"ab", 2) > 0);
++    assert (wcsncasecmp(L"ab", L"ba", 2) < 0);
++    assert (wcsncasecmp(L"ba", L"ab", 2) > 0);
++    assert (wcsncasecmp(L"a", L"a", 1) == 0);
++    assert (wcsncasecmp(L"A", L"a", 1) == 0);
++    assert (wcsncasecmp(L"a", L"A", 1) == 0);
++    assert (wcsncasecmp(L"A", L"A", 1) == 0);
++    assert (wcsncasecmp(L"A", L"ab", 2) < 0);
++    assert (wcsncasecmp(L"a", L"Ab", 2) < 0);
++    assert (wcsncasecmp(L"Ab", L"a", 2) > 0);
++    assert (wcsncasecmp(L"ab", L"A", 2) > 0);
++    assert (wcsncasecmp(L"a", L"B", 1) < 0);
++    assert (wcsncasecmp(L"b", L"A", 1) > 0);
++    assert (wcsncasecmp(L"Ab", L"b", 2) < 0);
++    assert (wcsncasecmp(L"B", L"ab", 2) > 0);
++    assert (wcsncasecmp(L"ab", L"Ba", 2) < 0);
++    assert (wcsncasecmp(L"ba", L"Ab", 2) > 0);
++    assert (wcsncasecmp(L"ab", L"ab", 2) == 0);
++    assert (wcsncasecmp(L"aB", L"ab", 2) == 0);
++    assert (wcsncasecmp(L"Ab", L"ab", 2) == 0);
++    assert (wcsncasecmp(L"AB", L"ab", 2) == 0);
++    assert (wcsncasecmp(L"ab", L"Ab", 2) == 0);
++    assert (wcsncasecmp(L"aB", L"Ab", 2) == 0);
++    assert (wcsncasecmp(L"Ab", L"Ab", 2) == 0);
++    assert (wcsncasecmp(L"AB", L"Ab", 2) == 0);
++    assert (wcsncasecmp(L"ab", L"aB", 2) == 0);
++    assert (wcsncasecmp(L"aB", L"aB", 2) == 0);
++    assert (wcsncasecmp(L"Ab", L"aB", 2) == 0);
++    assert (wcsncasecmp(L"AB", L"aB", 2) == 0);
++    assert (wcsncasecmp(L"ab", L"AB", 2) == 0);
++    assert (wcsncasecmp(L"aB", L"AB", 2) == 0);
++    assert (wcsncasecmp(L"Ab", L"AB", 2) == 0);
++    assert (wcsncasecmp(L"AB", L"AB", 2) == 0);
++
++    assert (wcsncasecmp(L"x", L"y", 0) == 0);
++    assert (wcsncasecmp(L"ax", L"y", 1) < 0);
++    assert (wcsncasecmp(L"x", L"ay", 1) > 0);
++    assert (wcsncasecmp(L"ax", L"by", 1) < 0);
++    assert (wcsncasecmp(L"bx", L"ay", 1) > 0);
++    assert (wcsncasecmp(L"abx", L"by", 2) < 0);
++    assert (wcsncasecmp(L"bx", L"aby", 2) > 0);
++    assert (wcsncasecmp(L"abx", L"bay", 2) < 0);
++    assert (wcsncasecmp(L"bax", L"aby", 2) > 0);
++    assert (wcsncasecmp(L"ax", L"ay", 1) == 0);
++    assert (wcsncasecmp(L"Ax", L"ay", 1) == 0);
++    assert (wcsncasecmp(L"ax", L"Ay", 1) == 0);
++    assert (wcsncasecmp(L"Ax", L"Ay", 1) == 0);
++    assert (wcsncasecmp(L"Ax", L"aby", 2) > 0);
++    assert (wcsncasecmp(L"ax", L"Aby", 2) > 0);
++    assert (wcsncasecmp(L"Abx", L"ay", 2) < 0);
++    assert (wcsncasecmp(L"abx", L"Ay", 2) < 0);
++    assert (wcsncasecmp(L"ax", L"By", 1) < 0);
++    assert (wcsncasecmp(L"bx", L"Ay", 1) > 0);
++    assert (wcsncasecmp(L"Abx", L"by", 2) < 0);
++    assert (wcsncasecmp(L"Bx", L"aby", 2) > 0);
++    assert (wcsncasecmp(L"abx", L"Bay", 2) < 0);
++    assert (wcsncasecmp(L"bax", L"Aby", 2) > 0);
++    assert (wcsncasecmp(L"abx", L"aby", 2) == 0);
++    assert (wcsncasecmp(L"aBx", L"aby", 2) == 0);
++    assert (wcsncasecmp(L"Abx", L"aby", 2) == 0);
++    assert (wcsncasecmp(L"ABx", L"aby", 2) == 0);
++    assert (wcsncasecmp(L"abx", L"Aby", 2) == 0);
++    assert (wcsncasecmp(L"aBx", L"Aby", 2) == 0);
++    assert (wcsncasecmp(L"Abx", L"Aby", 2) == 0);
++    assert (wcsncasecmp(L"ABx", L"Aby", 2) == 0);
++    assert (wcsncasecmp(L"abx", L"aBy", 2) == 0);
++    assert (wcsncasecmp(L"aBx", L"aBy", 2) == 0);
++    assert (wcsncasecmp(L"Abx", L"aBy", 2) == 0);
++    assert (wcsncasecmp(L"ABx", L"aBy", 2) == 0);
++    assert (wcsncasecmp(L"abx", L"ABy", 2) == 0);
++    assert (wcsncasecmp(L"aBx", L"ABy", 2) == 0);
++    assert (wcsncasecmp(L"Abx", L"ABy", 2) == 0);
++    assert (wcsncasecmp(L"ABx", L"ABy", 2) == 0);
++
++    assert (wcsncasecmp(L"y", L"x", 0) == 0);
++    assert (wcsncasecmp(L"ay", L"x", 1) < 0);
++    assert (wcsncasecmp(L"y", L"ax", 1) > 0);
++    assert (wcsncasecmp(L"ay", L"bx", 1) < 0);
++    assert (wcsncasecmp(L"by", L"ax", 1) > 0);
++    assert (wcsncasecmp(L"aby", L"bx", 2) < 0);
++    assert (wcsncasecmp(L"by", L"abx", 2) > 0);
++    assert (wcsncasecmp(L"aby", L"bax", 2) < 0);
++    assert (wcsncasecmp(L"bay", L"abx", 2) > 0);
++    assert (wcsncasecmp(L"ay", L"ax", 1) == 0);
++    assert (wcsncasecmp(L"Ay", L"ax", 1) == 0);
++    assert (wcsncasecmp(L"ay", L"Ax", 1) == 0);
++    assert (wcsncasecmp(L"Ay", L"Ax", 1) == 0);
++    assert (wcsncasecmp(L"Ay", L"abx", 2) > 0);
++    assert (wcsncasecmp(L"ay", L"Abx", 2) > 0);
++    assert (wcsncasecmp(L"Aby", L"ax", 2) < 0);
++    assert (wcsncasecmp(L"aby", L"Ax", 2) < 0);
++    assert (wcsncasecmp(L"ay", L"Bx", 1) < 0);
++    assert (wcsncasecmp(L"by", L"Ax", 1) > 0);
++    assert (wcsncasecmp(L"Aby", L"bx", 2) < 0);
++    assert (wcsncasecmp(L"By", L"abx", 2) > 0);
++    assert (wcsncasecmp(L"aby", L"Bax", 2) < 0);
++    assert (wcsncasecmp(L"bay", L"Abx", 2) > 0);
++    assert (wcsncasecmp(L"aby", L"abx", 2) == 0);
++    assert (wcsncasecmp(L"aBy", L"abx", 2) == 0);
++    assert (wcsncasecmp(L"Aby", L"abx", 2) == 0);
++    assert (wcsncasecmp(L"ABy", L"abx", 2) == 0);
++    assert (wcsncasecmp(L"aby", L"Abx", 2) == 0);
++    assert (wcsncasecmp(L"aBy", L"Abx", 2) == 0);
++    assert (wcsncasecmp(L"Aby", L"Abx", 2) == 0);
++    assert (wcsncasecmp(L"ABy", L"Abx", 2) == 0);
++    assert (wcsncasecmp(L"aby", L"aBx", 2) == 0);
++    assert (wcsncasecmp(L"aBy", L"aBx", 2) == 0);
++    assert (wcsncasecmp(L"Aby", L"aBx", 2) == 0);
++    assert (wcsncasecmp(L"ABy", L"aBx", 2) == 0);
++    assert (wcsncasecmp(L"aby", L"ABx", 2) == 0);
++    assert (wcsncasecmp(L"aBy", L"ABx", 2) == 0);
++    assert (wcsncasecmp(L"Aby", L"ABx", 2) == 0);
++    assert (wcsncasecmp(L"ABy", L"ABx", 2) == 0);
++    return 0;
++}
