@@ -117,40 +117,48 @@ switch ${subport_branch} {
     }
     7.0 {
         epoch           2
-        version         7.0.32
+        version         7.0.33
         use_xz          yes
-        checksums       rmd160  4852fe0fda5988ce042bc767f4bb494f2cff603a \
-                        sha256  ff6f62afeb32c71b3b89ecbd42950ef6c5e0c329cc6e1c58ffac47e6f1f883c4 \
-                        size    12030780
+        checksums       rmd160  621c2459c182de0a071f591eec45e4a3c32d8bdd \
+                        sha256  ab8c5be6e32b1f8d032909dedaaaa4bbb1a209e519abb01a52ce3914f9a13d96 \
+                        size    12033040
     }
     7.1 {
         epoch           2
-        version         7.1.24
+        version         7.1.25
         use_xz          yes
-        checksums       rmd160  74cb92296372bcf9d12188440bdb3dd5214837ea \
-                        sha256  e70dcec0ae28b6bc308b78972ec15aa850808819cc765f505aa51e5a7e2fa5d7 \
-                        size    12205112
+        checksums       rmd160  115b6522e718bbe152b8ddb354707ba7783d16af \
+                        sha256  0fd8dad1903cd0b2d615a1fe4209f99e53b7292403c8ffa1919c0f4dd1eada88 \
+                        size    12205972
     }
     7.2 {
         epoch           2
-        version         7.2.12
+        version         7.2.13
         use_xz          yes
-        checksums       rmd160  966a63e879f5c6edac361f3b4d8a18ad9a5e3d0e \
-                        sha256  989c04cc879ee71a5e1131db867f3c5102f1f7565f805e2bb8bde33f93147fe1 \
-                        size    12141472
+        checksums       rmd160  455521b51b541d608d3fa29e1ae58fdf42ee5daa \
+                        sha256  14b0429abdb46b65c843e5882c9a8c46b31dfbf279c747293b8ab950c2644a4b \
+                        size    12116484
     }
     7.3 {
+        epoch           2
+        version         7.3.0
+        use_xz          yes
+        checksums       rmd160  f2852744182cdff213d108f3c05cd63e553a3ea1 \
+                        sha256  7d195cad55af8b288c3919c67023a14ff870a73e3acc2165a6d17a4850a560b5 \
+                        size    11928820
+    }
+    7.4 {
         # When this becomes a stable version, remove the overrides for homepage,
         # master_sites and livecheck, and update php.latest_stable_branch in the
         # php-1.1 portgroup.
-        epoch           1
-        version         7.3.0RC6
+        epoch           0
+        version         7.4.0alpha1
         homepage        https://qa.php.net/
         master_sites    https://downloads.php.net/~cmb/
         use_xz          yes
-        checksums       rmd160  25af0c0dcf5eb7897f64b4c1fa9acf410ae0933d \
-                        sha256  8120b5830e24d5fabc96da693ab924852e6c2a95829ad994d6a5107c69787848 \
-                        size    11918172
+        checksums       rmd160  0 \
+                        sha256  0 \
+                        size    0
         livecheck.url   ${homepage}
         livecheck.regex php-([strsed ${subport_branch} {g/\\./\\./}](?:\\.\[0-9.\]+)*(?:(?:alpha|beta|RC)\\d+|-latest))\\.tar
     }
@@ -1243,7 +1251,6 @@ subport ${php}-snmp {
         5.3.29              {revision 1}
         5.4.45              {revision 1}
         5.5.38              {revision 1}
-        7.0.32              {revision 1}
     }
 
     categories-append       sysutils
