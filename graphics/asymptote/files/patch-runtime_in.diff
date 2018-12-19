@@ -1,0 +1,11 @@
+--- runtime.in.orig	2018-04-08 04:56:45.000000000 +0200
++++ runtime.in	2018-12-19 15:23:41.000000000 +0100
+@@ -86,7 +86,7 @@ stringarray2* => stringArray2()
+ #include "arrayop.h"
+    
+ #ifdef __APPLE__
+-extern "C" int isnan(double);  
++#include <cmath>
+ #endif
+ 
+ #if defined(USEGC) && defined(GC_DEBUG) && defined(GC_BACKTRACE)
