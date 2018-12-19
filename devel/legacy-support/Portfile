@@ -29,7 +29,7 @@ subport ${name}-devel {
     checksums           rmd160  0723d18d075a5c4db8bdc3e06e641d5c425e16f6 \
                         sha256  57d8377310253aafa4f7892f8fc815fd02441defd37696f3a777f165efbc8a4d \
                         size    15241
-    patchfiles          patch-wcs.diff
+    patchfiles          patch-maketest.diff
     patch.pre_args      -p1
 }
 
