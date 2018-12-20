@@ -28,12 +28,6 @@ checksums           rmd160  61487a8c0761f9ab77be08b85e12f39eb5962111 \
                     sha256  ac64f3db193c428c5945a46cad873b9aaa8a0d116749ce5528fde01fbfb5b9f4 \
                     size    826139
 
-platform darwin {
-    if {${os.major} < 10} {
-        patchfiles-append   patch-posix-memalign.diff
-    }
-}
-
 depends_lib-append  port:lz4 \
                     port:zlib \
                     port:zstd
@@ -44,5 +38,3 @@ configure.args-append \
                     -DPREFER_EXTERNAL_ZSTD=ON \
                     -DBUILD_TESTS=OFF \
                     -DBUILD_BENCHMARKS=OFF
-
-cmake.out_of_source yes
