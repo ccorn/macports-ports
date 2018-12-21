@@ -33,12 +33,6 @@ checksums           rmd160  45d1efbd217308ff9a7b3354ccc004f37785a270 \
 
 conflicts-append    ${name}-devel
 
-# math namespace fixes
-patchfiles-append patch-cmath.diff
-
-# see http://savannah.gnu.org/bugs/?48773
-patchfiles-append patch-qscintilla2.diff
-
 # if there is an error bulding octave package, avoid
 #    error: structure has no member 'dir'
 patchfiles-append patch-better_error.diff
