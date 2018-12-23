@@ -7,11 +7,12 @@ PortSystem          1.0
 set building_qt4    1
 PortGroup           qt4 1.0
 PortGroup           xcodeversion 1.0
+PortGroup           compilers 1.0
 PortGroup           compiler_blacklist_versions 1.0
 
 name                qt4-mac
 version             4.8.7
-revision            8
+revision            9
 set branch          [join [lrange [split ${version} .] 0 1] .]
 
 categories          aqua
@@ -350,6 +351,9 @@ patchfiles-append patch-src_corelib_io_qsettings.cpp.diff
 
 patchfiles-append patch-src_gui_text_qfontengine_coretext.mm.diff
 
+# -fconstant-cfstrings is now called -mconstant-cfstrings
+patchfiles-append patch-mconstant-cfstrings.diff
+
 # error out if trying to build on a new OSX version (> 10.14).
 
 platform darwin {
@@ -391,6 +395,15 @@ if {${SDK} eq ""} {
         set SDK ${developer_dir}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX${sdk_version}.sdk
     }
 }
+
+compilers.choose cc cpp cxx objc
+compilers.setup
+if {[info exists cdb([c_variant_name],compiler)]} {
+    configure.compiler.add_deps no
+    configure.compiler  $cdb([c_variant_name],compiler)
+}
+configure.objcxx        ${configure.cxx}
+configure.objcxxflags   ${configure.cxxflags}
 
 post-patch {
     # set ARCHES in configure (per the third patchfile above), for
@@ -519,7 +532,7 @@ post-patch {
 #
 
 compiler.blacklist-append { clang <= 318.0.61 } \
-    gcc-3.3 *gcc-4.0 macports-gcc*
+    gcc-3.3 *gcc-4.0 macports-gcc-4*
 
 # --prefix is not recognized
 
@@ -623,20 +636,6 @@ pre-configure {
 
     compiler.cpath [join ${header_path} :]
     compiler.library_path [join ${library_path} :]
-
-    # for 10.4 or 10.5 32-bit PPC, build as Carbon only, not Cocoa
-
-    if {${MINOR} == 4} {
-
-        configure.args-append -carbon
-
-    } elseif {${MINOR} == 5 &&
-              [llength ${qt_arch_types}] == 1 &&
-              [lsearch -exact ${qt_arch_types} ppc] == 0} {
-
-        configure.args-append -carbon
-
-    }
 
     # set the arch type(s) to use, in Qt-speak
 
@@ -1167,6 +1166,17 @@ variant cxx11 description {Add library support for C++11 (EXPERIMENTAL; does not
 
     configure.args-append -c++11
 
+}
+
+platform darwin {
+    variant carbon description {use Carbon only, not Cocoa} {
+        configure.args-append -carbon
+    }
+
+    # For 10.4, build as Carbon only, not Cocoa
+    if {${MINOR} == 4} {
+        default_variants +carbon
+    }
 }
 
 post-activate {

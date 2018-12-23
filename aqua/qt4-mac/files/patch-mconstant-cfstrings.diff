@@ -1,0 +1,50 @@
+--- ./configure.orig	2018-12-23 15:38:08.000000000 +0100
++++ ./configure	2018-12-23 15:56:21.000000000 +0100
+@@ -3488,9 +3488,9 @@ if "$mactests/library_path/library_path.
+     exit 1
+ fi
+ 
+-# detect required support for -fconstant-cfstrings
++# detect required support for -mconstant-cfstrings
+-if "$mactests/fconstant_cfstrings.test" "$TEST_COMPILER" "$OPT_VERBOSE" "$mactests" ; then
++if false && "$mactests/fconstant_cfstrings.test" "$TEST_COMPILER" "$OPT_VERBOSE" "$mactests" ; then
+-    echo >&2 "error: The compiler ($TEST_COMPILER) does not seem to support the -fconstant-cfstrings flag, which is used extensively by the Qt build system when compiling on Mac OS X."
++    echo >&2 "error: The compiler ($TEST_COMPILER) does not seem to support the -mconstant-cfstrings flag, which is used extensively by the Qt build system when compiling on Mac OS X."
+     exit 1
+ fi
+ 
+@@ -5091,7 +5091,7 @@ if true; then ###[ '!' -f "$outpath/bin/
+             esac
+ 
+             echo "CARBON_LFLAGS =-framework ApplicationServices" >>"$mkfile"
+-            echo "CARBON_CFLAGS =-fconstant-cfstrings" >>"$mkfile"
++            echo "CARBON_CFLAGS =-mconstant-cfstrings" >>"$mkfile"
+             EXTRA_LFLAGS="$EXTRA_LFLAGS \$(CARBON_LFLAGS)"
+             EXTRA_CFLAGS="$EXTRA_CFLAGS \$(CARBON_CFLAGS)"
+             EXTRA_CXXFLAGS="$EXTRA_CXXFLAGS \$(CARBON_CFLAGS)"
+--- ./src/qbase.pri.orig	2018-12-23 15:38:08.000000000 +0100
++++ ./src/qbase.pri	2018-12-23 15:56:32.000000000 +0100
+@@ -67,8 +67,8 @@ mac:!static:contains(QT_CONFIG, qt_frame
+ mac {
+    CONFIG += explicitlib
+    macx-g++ {
+-       QMAKE_CFLAGS += -fconstant-cfstrings
+-       QMAKE_CXXFLAGS += -fconstant-cfstrings
++       QMAKE_CFLAGS += -mconstant-cfstrings
++       QMAKE_CXXFLAGS += -mconstant-cfstrings
+    }
+ }
+ 
+--- ./tools/designer/src/uitools/uitools.pro.orig	2018-12-23 15:38:09.000000000 +0100
++++ ./tools/designer/src/uitools/uitools.pro	2018-12-23 15:56:40.000000000 +0100
+@@ -49,8 +49,8 @@ mac:!static:contains(QT_CONFIG, qt_frame
+ mac {
+    CONFIG += explicitlib
+    macx-g++ {
+-       QMAKE_CFLAGS += -fconstant-cfstrings
+-       QMAKE_CXXFLAGS += -fconstant-cfstrings
++       QMAKE_CFLAGS += -mconstant-cfstrings
++       QMAKE_CXXFLAGS += -mconstant-cfstrings
+    }
+ }
+ 

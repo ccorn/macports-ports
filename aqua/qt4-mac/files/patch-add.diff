@@ -1,0 +1,26 @@
+--- ./config.tests/mac/fconstant_cfstrings.test.orig	2016-11-28 15:27:03.000000000 +0100
++++ ./config.tests/mac/fconstant_cfstrings.test	2018-12-23 15:52:53.000000000 +0100
+@@ -8,8 +8,8 @@ WORKDIR=$3
+ cd $3
+ touch fconstant_cfstrings.c
+ 
+-if "$COMPILER" -fconstant-cfstrings -c fconstant_cfstrings.c 2>/dev/null 1>&2; then
+-    if "$COMPILER" -fconstant-cfstrings -c fconstant_cfstrings.c 2>&1 | grep "unrecognized" >/dev/null ; then
++if $COMPILER -mconstant-cfstrings -c fconstant_cfstrings.c 2>/dev/null 1>&2; then
++    if $COMPILER -mconstant-cfstrings -c fconstant_cfstrings.c 2>&1 | grep "unrecognized" >/dev/null ; then
+         true
+     else
+         FCONSTANT_CFSTRINGS_SUPPORT=yes
+@@ -18,9 +18,9 @@ fi
+ rm -f fconstant_cfstrings.c fconstant_cfstrings.o
+ 
+ if [ "$FCONSTANT_CFSTRINGS_SUPPORT" != "yes" ]; then
+-    [ "$VERBOSE" = "yes" ] && echo "compiler flag -fconstant-cfstrings support not detected"
++    [ "$VERBOSE" = "yes" ] && echo "compiler flag -mconstant-cfstrings support not detected"
+     exit 0
+ else
+-    [ "$VERBOSE" = "yes" ] && echo "compiler flag -fconstant-cfstrings support detected"
++    [ "$VERBOSE" = "yes" ] && echo "compiler flag -mconstant-cfstrings support detected"
+     exit 1
+ fi
+
