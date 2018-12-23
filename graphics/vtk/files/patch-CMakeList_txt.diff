@@ -1,0 +1,13 @@
+--- CMakeLists.txt.orig	2018-05-11 16:34:24.000000000 +0200
++++ CMakeLists.txt	2018-12-22 14:49:45.000000000 +0100
+@@ -293,8 +293,8 @@ if(APPLE)
+     )
+ 
+   if (CMAKE_OSX_DEPLOYMENT_TARGET AND
+-      CMAKE_OSX_DEPLOYMENT_TARGET VERSION_LESS 10.7)
+-    message(FATAL_ERROR "Minimum OS X deployment target is 10.7, please update CMAKE_OSX_DEPLOYMENT_TARGET.")
++      CMAKE_OSX_DEPLOYMENT_TARGET VERSION_LESS 10.4)
++    message(FATAL_ERROR "Minimum OS X deployment target is 10.4, please update CMAKE_OSX_DEPLOYMENT_TARGET.")
+   endif ()
+ endif()
+

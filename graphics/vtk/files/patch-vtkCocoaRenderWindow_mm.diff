@@ -1,0 +1,198 @@
+--- Rendering/OpenGL2/vtkCocoaRenderWindow.mm.orig	2018-05-11 16:34:24.000000000 +0200
++++ Rendering/OpenGL2/vtkCocoaRenderWindow.mm	2018-12-23 08:24:58.000000000 +0100
+@@ -28,6 +28,7 @@ PURPOSE.  See the above copyright notice
+ #import "vtkRendererCollection.h"
+ #import "vtkCocoaGLView.h"
+ 
++#import "nsconvert.h"
+ #import <sstream>
+ 
+ vtkStandardNewMacro(vtkCocoaRenderWindow);
+@@ -185,7 +186,7 @@ vtkStandardNewMacro(vtkCocoaRenderWindow
+   NSRect viewRect = [view frame];
+ 
+   // Convert from points to pixels.
+-  NSRect backingViewRect = [view convertRectToBacking:viewRect];
++  NSRect backingViewRect = _convertRectToBacking(view, viewRect);
+ 
+   int newWidth = static_cast<int>(NSWidth(backingViewRect));
+   int newHeight = static_cast<int>(NSHeight(backingViewRect));
+@@ -484,8 +485,10 @@ const char* vtkCocoaRenderWindow::Report
+   [pixelFormat getValues: &pfd forAttribute: NSOpenGLPFAAccelerated forVirtualScreen: currentScreen];
+   strm  << "  hardware acceleration:  " << (pfd == 0 ? "No" : "Yes") << endl;
+ 
++#if MAC_OS_X_VERSION_MIN_REQUIRED >= 1070
+   [pixelFormat getValues: &pfd forAttribute: NSOpenGLPFAOpenGLProfile forVirtualScreen: currentScreen];
+   strm  << "  profile version:  0x" << std::hex << pfd << endl;
++#endif
+ 
+   delete[] this->Capabilities;
+ 
+@@ -534,7 +537,7 @@ void vtkCocoaRenderWindow::SetSize(int x
+ 
+         // Convert the given new size from pixels to points.
+         NSSize backingNewSize = NSMakeSize((CGFloat)x, (CGFloat)y);
+-        NSSize newSize = [theView convertSizeFromBacking:backingNewSize];
++        NSSize newSize = _convertSizeFromBacking(theView, backingNewSize);
+ 
+         // Update the view's frame (in points) keeping the bottom-left
+         // corner in the same place.
+@@ -558,7 +561,7 @@ void vtkCocoaRenderWindow::SetSize(int x
+ 
+         // Convert the given new size from pixels to points.
+         NSRect backingNewRect = NSMakeRect(0.0, 0.0, (CGFloat)x, (CGFloat)y);
+-        NSRect newRect = [window convertRectFromBacking:backingNewRect];
++        NSRect newRect = _convertRectFromBacking(window, backingNewRect);
+         [window setContentSize:newRect.size];
+ 
+         resizing = false;
+@@ -620,7 +623,7 @@ void vtkCocoaRenderWindow::SetPosition(i
+ 
+         // Convert the given new position from pixels to points.
+         NSPoint backingNewPosition = NSMakePoint((CGFloat)x, (CGFloat)y);
+-        NSPoint newPosition = [theView convertPointFromBacking:backingNewPosition];
++        NSPoint newPosition = _convertPointFromBacking(theView, backingNewPosition);
+ 
+         // Update the view's frameOrigin (in points) keeping the bottom-left
+         // corner in the same place.
+@@ -645,7 +648,7 @@ void vtkCocoaRenderWindow::SetPosition(i
+ 
+         // Convert the given new position from pixels to points.
+         NSRect backingNewPosition = NSMakeRect(0.0, 0.0, (CGFloat)x, (CGFloat)y);
+-        NSRect newPosition = [window convertRectFromBacking:backingNewPosition];
++        NSRect newPosition = _convertRectFromBacking(window, backingNewPosition);
+ 
+         [window setFrameOrigin:newPosition.origin];
+ 
+@@ -713,11 +716,12 @@ void vtkCocoaRenderWindow::CreateAWindow
+   // SetRootWindow() and SetWindowId() so that a window is not created here.
+   if (!this->GetRootWindow() && !this->GetWindowId() && !this->GetParentId())
+   {
++#if MAC_OS_X_VERSION_MIN_REQUIRED >= 1060
+     // Ordinarily, only .app bundles get proper mouse and keyboard interaction,
+     // but here we change the 'activation policy' to behave as if we were a
+     // .app bundle (which we may or may not be).
+     (void)[app setActivationPolicy:NSApplicationActivationPolicyRegular];
+-
++#endif
+     NSWindow* theWindow = nil;
+ 
+     // Get the screen's size (in points).  (If there's no mainScreen, the
+@@ -726,7 +730,7 @@ void vtkCocoaRenderWindow::CreateAWindow
+     NSRect screenRect = [screen frame];
+ 
+     // Convert from points to pixels.
+-    NSRect backingScreenRect = [screen convertRectToBacking:screenRect];
++    NSRect backingScreenRect = _convertRectToBacking(screen, screenRect);
+ 
+     if (this->FullScreen && screen)
+     {
+@@ -767,7 +771,7 @@ void vtkCocoaRenderWindow::CreateAWindow
+       NSRect contentRect;
+       if (screen)
+       {
+-        contentRect = [screen convertRectFromBacking:backingContentRect];
++        contentRect = _convertRectFromBacking(screen, backingContentRect);
+       }
+       else
+       {
+@@ -829,7 +833,7 @@ void vtkCocoaRenderWindow::CreateAWindow
+                                           (CGFloat)this->Position[1],
+                                           (CGFloat)this->Size[0],
+                                           (CGFloat)this->Size[1]);
+-      NSRect viewRect = [window convertRectFromBacking:backingViewRect];
++      NSRect viewRect = _convertRectFromBacking(window, backingViewRect);
+ 
+       CGFloat width = NSWidth(viewRect);
+       CGFloat height = NSHeight(viewRect);
+@@ -867,7 +871,7 @@ void vtkCocoaRenderWindow::CreateAWindow
+       // Convert from points to pixels.
+       NSWindow *window = (NSWindow*)this->GetRootWindow();
+       assert(window);
+-      NSRect viewRect = [window convertRectFromBacking:backingViewRect];
++      NSRect viewRect = _convertRectFromBacking(window, backingViewRect);
+ 
+       // Create a vtkCocoaGLView.
+       vtkCocoaGLView *glView = [[vtkCocoaGLView alloc] initWithFrame:viewRect];
+@@ -928,6 +932,7 @@ void vtkCocoaRenderWindow::CreateAWindow
+ //----------------------------------------------------------------------------
+ void vtkCocoaRenderWindow::CreateGLContext()
+ {
++#if MAC_OS_X_VERSION_MIN_REQUIRED >= 1070
+   // If the deployment target is at least 10.10, prefer the 'OpenGL 4.1 Core
+   // Implementation', otherwise we'll fall back to the 'OpenGL 3.2 Core
+   // Implementation' (available since 10.7).
+@@ -937,6 +942,7 @@ void vtkCocoaRenderWindow::CreateGLConte
+ #else
+   profileVersion = NSOpenGLProfileVersion3_2Core;
+ #endif
++#endif
+ 
+   // Prefer hardware acceleration
+   NSOpenGLPixelFormatAttribute hardware = NSOpenGLPFAAccelerated;
+@@ -948,8 +954,10 @@ void vtkCocoaRenderWindow::CreateGLConte
+     int i = 0;
+     NSOpenGLPixelFormatAttribute attribs[20];
+ 
++#if MAC_OS_X_VERSION_MIN_REQUIRED >= 1070
+     attribs[i++] = NSOpenGLPFAOpenGLProfile;
+     attribs[i++] = profileVersion;
++#endif
+ 
+     attribs[i++] = NSOpenGLPFADepthSize;
+     attribs[i++] = (NSOpenGLPixelFormatAttribute)32;
+@@ -987,12 +995,15 @@ void vtkCocoaRenderWindow::CreateGLConte
+ 
+     if (pixelFormat == nil)
+     {
++#if MAC_OS_X_VERSION_MIN_REQUIRED >= 1070
+       if (profileVersion != NSOpenGLProfileVersion3_2Core)
+       {
+         // Try falling back to the 3.2 Core Profile
+         profileVersion = NSOpenGLProfileVersion3_2Core;
+       }
+-      else if (hardware == NSOpenGLPFAAccelerated)
++      else
++#endif
++      if (hardware == NSOpenGLPFAAccelerated)
+       {
+         // Try falling back to the software renderer
+         hardware = 0;
+@@ -1128,7 +1139,7 @@ int *vtkCocoaRenderWindow::GetSize()
+     NSRect viewRect = [view frame];
+ 
+     // Convert from points to pixels.
+-    NSRect backingViewRect = [view convertRectToBacking:viewRect];
++    NSRect backingViewRect = _convertRectToBacking(view, viewRect);
+ 
+     this->Size[0] = static_cast<int>(NSWidth(backingViewRect));
+     this->Size[1] = static_cast<int>(NSHeight(backingViewRect));
+@@ -1156,7 +1167,7 @@ int *vtkCocoaRenderWindow::GetScreenSize
+   NSRect screenRect = [screen frame];
+ 
+   // Convert from points to pixels.
+-  NSRect backingScreenRect = [screen convertRectToBacking:screenRect];
++  NSRect backingScreenRect = screenRect;
+ 
+   this->Size[0] = static_cast<int>(NSWidth(backingScreenRect));
+   this->Size[1] = static_cast<int>(NSHeight(backingScreenRect));
+@@ -1183,8 +1194,8 @@ int *vtkCocoaRenderWindow::GetPosition()
+     NSRect viewRect = [view frame];
+ 
+     // Convert from points to pixels.
+-    NSRect backingParentRect = [parent convertRectToBacking:parentRect];
+-    NSRect backingViewRect = [view convertRectToBacking:viewRect];
++    NSRect backingParentRect = _convertRectToBacking(parent, parentRect);
++    NSRect backingViewRect = _convertRectToBacking(view, viewRect);
+ 
+     this->Position[0] = static_cast<int>(NSMinX(backingViewRect));
+     this->Position[1] = static_cast<int>(NSHeight(backingParentRect)
+@@ -1204,7 +1215,7 @@ int *vtkCocoaRenderWindow::GetPosition()
+       NSRect windowRect = [window frame];
+ 
+       // Convert from points to pixels.
+-      NSRect backingWindowRect = [window convertRectToBacking:windowRect];
++      NSRect backingWindowRect = _convertRectToBacking(window, windowRect);
+ 
+       this->Position[0] = static_cast<int>(NSMinX(backingWindowRect));
+       this->Position[1] = static_cast<int>(NSMinY(backingWindowRect));

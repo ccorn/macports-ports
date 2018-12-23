@@ -36,6 +36,24 @@ mpi.setup
 
 patchfiles-append   patch-python37.diff
 
+platform darwin {
+    if {${os.major} < 11} {
+        # Officially not supported, but not far gone yet
+        post-extract {
+            copy ${filespath}/nsconvert.h ${worksrcpath}/Rendering/OpenGL2/
+        }
+        patchfiles-append   patch-CMakeList_txt.diff
+        patchfiles-append   patch-vtkCocoaMacOSXSDKCompatibility_h.diff
+        patchfiles-append   patch-vtkCocoaRenderWindow_mm.diff
+        patchfiles-append   patch-vtkCocoaGLView_mm.diff
+        #configure.cxxflags-append       -DNSVIEW_CONVERT_SCREEN=1
+    }
+}
+
+if {![string match *clang* ${configure.compiler}]} {
+    configure.cxxflags-append   {"'-D__has_feature(x)=(__cpp_##x>0)'"}
+}
+
 configure.args-delete \
                     -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
 
@@ -59,6 +77,7 @@ variant qt4 description {Add Qt4 support.} {
     PortGroup           qt4 1.0
     configure.args-append \
                         -DQT_QMAKE_EXECUTABLE:PATH=${qt_qmake_cmd} \
+                        -DVTK_QT_VERSION:STRING=4 \
                         -DVTK_Group_Qt:BOOL=ON
 }
 

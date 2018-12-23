@@ -1,0 +1,46 @@
+--- Rendering/OpenGL2/vtkCocoaGLView.mm.orig	2018-05-11 16:34:24.000000000 +0200
++++ Rendering/OpenGL2/vtkCocoaGLView.mm	2018-12-23 08:47:15.000000000 +0100
+@@ -20,6 +20,7 @@
+ #import "vtkCocoaRenderWindow.h"
+ #import "vtkCocoaRenderWindowInteractor.h"
+ #import "vtkCommand.h"
++#import "nsconvert.h"
+ 
+ //----------------------------------------------------------------------------
+ // Private
+@@ -202,7 +203,7 @@ static const char *vtkMacKeyCodeToKeySym
+   // first responder.
+   NSPoint windowLoc = [[self window] mouseLocationOutsideOfEventStream];
+   NSPoint viewLoc = [self convertPoint:windowLoc fromView:nil];
+-  NSPoint backingLoc = [self convertPointToBacking:viewLoc];
++  NSPoint backingLoc = _convertPointToBacking(self, viewLoc);
+ 
+   NSUInteger flags = [theEvent modifierFlags];
+   int shiftDown = ((flags & NSEventModifierFlagShift) != 0);
+@@ -302,7 +303,7 @@ static const char *vtkMacKeyCodeToKeySym
+   // left corner. Since this is a mouse event, we can use locationInWindow.
+   NSPoint windowLoc = [theEvent locationInWindow];
+   NSPoint viewLoc = [self convertPoint:windowLoc fromView:nil];
+-  NSPoint backingLoc = [self convertPointToBacking:viewLoc];
++  NSPoint backingLoc = _convertPointToBacking(self, viewLoc);
+ 
+   NSUInteger flags = [theEvent modifierFlags];
+   int shiftDown = ((flags & NSEventModifierFlagShift) != 0);
+@@ -334,7 +335,7 @@ static const char *vtkMacKeyCodeToKeySym
+   // left corner. Since this is a mouse event, we can use locationInWindow.
+   NSPoint windowLoc = [theEvent locationInWindow];
+   NSPoint viewLoc = [self convertPoint:windowLoc fromView:nil];
+-  NSPoint backingLoc = [self convertPointToBacking:viewLoc];
++  NSPoint backingLoc = _convertPointToBacking(self, viewLoc);
+ 
+   int clickCount = static_cast<int>([theEvent clickCount]);
+   int repeatCount = ((clickCount > 1) ? clickCount - 1 : 0);
+@@ -515,7 +516,7 @@ static const char *vtkMacKeyCodeToKeySym
+ {
+   if (window)
+   {
+-    CGFloat backingScaleFactor = [window backingScaleFactor];
++    CGFloat backingScaleFactor = _backingScaleFactor(window);
+     assert(backingScaleFactor >= 1.0);
+ 
+     vtkCocoaRenderWindow *renderWindow = [self getVTKRenderWindow];
