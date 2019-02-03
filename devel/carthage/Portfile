@@ -3,14 +3,14 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        Carthage Carthage 0.30.1
+github.setup        Carthage Carthage 0.31.2
 name                carthage
 categories          devel
 platforms           darwin
 
 universal_variant   no
 license             MIT
-maintainers         {sean @seanfarley} openmaintainer
+maintainers         {saagarjha.com:saagarjha @saagarjha} openmaintainer
 
 description         A simple, decentralized dependency manager for Cocoa
 long_description    ${description}

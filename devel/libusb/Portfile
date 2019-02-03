@@ -10,11 +10,11 @@ description     library for USB device access
 long_description \
     library for use by user level applications to \
     access USB devices regardless of OS
-homepage        http://libusb.info/
+homepage        https://libusb.info/
 
 platforms       darwin
 license         LGPL-2.1+
-maintainers     {michaelld @michaelld}
+maintainers     {michaelld @michaelld} openmaintainer
 
 use_parallel_build no
 
@@ -42,21 +42,26 @@ if {${subport} eq ${name}} {
     long_description ${long_description} \
         This port provides devel version of ${name}, updated weekly to monthly.
 
-    github.setup   libusb libusb 270bef4002e3a34e234bda12915c1da2b1e9af88
-    version        20181022
-    checksums      rmd160 de98d85c2d773ddff06d239d988a721740cf8e5d \
-                   sha256 af29e18d12bf211c70b2117fd6a65e799d9fc759403dd06e92367ed62cf2be02 \
-                   size   380861
+    github.setup   libusb libusb 8cfcc63f4f970ca3bbdd9bf77b3bb20d78b9e855
+    version        20190124
+    checksums      rmd160 59262cb6a7fb4361b0b9741f02f1539b994fbc00 \
+                   sha256 8a9739c3b6cb8a57b54e3a23097a2e16256c0f2c3a4b1ba19531428991d8c19e \
+                   size   384034
+    revision       0
 
     conflicts      libusb
 
     # see https://trac.macports.org/ticket/56156
-    # this will likely be fixed in trunk soon
-    patchfiles-append    patch-10.7-nospeedsuper.diff
+    # this will hopefully be fixed in trunk soon
+    patchfiles-append patch-10.7-nospeedsuper.diff
+
+    # temporary fix to revert internal version bump that breaks ABI
+    # version from current; remove this patch with the next release so
+    # that the ABI breaks for both of them at the same time & we can
+    # thus rev-bump dependencies all at the same time!
+    patchfiles-append patch-revert_version.devel.diff
 
 }
-
-homepage         http://libusb.info/
 
 depends_build    port:libtool \
                  port:automake \

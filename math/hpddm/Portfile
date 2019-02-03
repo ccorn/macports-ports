@@ -7,9 +7,10 @@ PortGroup             linear_algebra 1.0
 PortGroup             cxx11          1.1
 PortGroup             muniversal     1.0
 
-github.setup          hpddm hpddm 58158b54b1ff9f916b85f897adfb6993093d220f
-# see ${worksrcpath}/include/HPDDM.hpp
-version               993
+github.setup          hpddm hpddm a3721b95909d61a6995ce7e2bc4aa401f21e07e7
+# see ${worksrcpath}/include/hpddm/HPDDM.hpp
+version               994
+revision              0
 categories            math science
 license               LGPL-3+
 maintainers           {mcalhoun @MarcusCalhoun-Lopez} openmaintainer
@@ -18,9 +19,9 @@ description           a framework for high-performance domain decomposition meth
 long_description      \
     HPDDM is an efficient implementation of various domain decomposition methods.
 
-checksums             rmd160  38f92cca0a91f8d94852cd160c8bc0fa6f583552 \
-                      sha256  4499193e0127d6968bccec68666b96c0268d3b21e971a1cec50eed21b512c2f9 \
-                      size    248106
+checksums             rmd160  2b98646af78c6a73d94c7856c7ce57d23868e50f \
+                      sha256  7c8b11610a7768bf14b373510e8174490244b1783ec38983b2f5426a896611c6 \
+                      size    248318
 
 mpi.setup             require require_fortran
 

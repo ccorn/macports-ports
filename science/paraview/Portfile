@@ -1,71 +1,80 @@
 # -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
-PortSystem      1.0
-# Our cmake settings differ, no use for the portgroup cmake
-#PortGroup      cmake 1.0
-PortGroup       qt4 1.0
-PortGroup       compilers 1.0
 
-categories      science graphics
-name            paraview
-version         4.1.0
-revision        4
+PortSystem          1.0
 
-description     data analysis and visualization application
-long_description        \
-                ParaView is an open-source, multi-platform data analysis and \
-                visualization application. ParaView users can quickly build \
-                visualizations to analyze their data using qualitative and \
-                quantitative techniques. The data exploration can be done \
-                interactively in 3D or programmatically using ParaView’s \
-                batch processing capabilities.
-homepage        http://paraview.org
-master_sites	http://www.paraview.org/paraview-downloads/download.php?submit=Download&version=v4.1&type=source&os=all&downloadFile=
-maintainers	nomaintainer
-worksrcdir	ParaView-v${version}
-distname	${worksrcdir}-source
-extract.suffix	.tar.gz
-checksums	ParaView-v4.1.0-source.tar.gz \
-    md5 1bcdc7abfccee8f0a59db8ae916bfac2 \
-    sha1 866ec0428c3de4dbb3d3050c56375813fcdc9640 \
-    rmd160 2da9c792008493f05dd344fe48f78e2a0028b32c \
-    sha224 479d9e8cac1b0fb636ae7e5dff0c4dafb98919964cf5903311836297 \
-    sha256 80ef898c158d7fd9ceb0bcd83be1f679eef06ce4f20514a2435330cc97a3fdf3
-# std::min(unsigned,signed) arg type deduction problem fix
-patchfiles      patch_VTK_Rendering_FreeType_vtkFreeTypeTools_cxx.diff \
-                patch-VTK_CMake_gcc_version.diff
+PortGroup           cmake 1.0
+PortGroup           qt5 1.0
+PortGroup           mpi 1.0
 
-# Removed depends_lib port:jsoncpp
-# because of build/compatibility problems.
-# Using versions shipped with ParaView.
-depends_build   port:cmake
-depends_lib     port:expat \
-                port:freetype \
-                port:hdf5-18 \
-                port:jpeg \
-                port:libxml2 \
-                port:netcdf-cxx \
-                port:libogg port:libtheora \
-                port:libpng \
-                port:qt4-mac \
-                port:qt4-mac-sqlite3-plugin \
-                port:tiff \
-                port:zlib
+name                paraview
+version             5.5.2
+revision            1
 
-# Some packages have problems with +universal, e.g. hdf5, python
-universal_variant       no
-# Taken from cmake portgroup
-configure.ccache        no
-configure.distcc        no
-# Parallel build should speed up things
-use_parallel_build      yes
+categories          science graphics
+platforms           darwin
+license             BSD
 
-# Need out-of-source-tree build
-configure.dir   ${workpath}/build
-build.dir       ${workpath}/build
-destroot.dir    ${workpath}/build
+set branch          [join [lrange [split ${version} .] 0 1] .]
 
-post-extract {
-    file mkdir ${build.dir}
+maintainers         {gmail.com:jjstickel @jjstickel} {dstrubbe @dstrubbe} openmaintainer
+
+description         3D data analysis and visualization application
+
+long_description    An open-source, multi-platform data \
+    analysis and visualization application. ParaView users can quickly \
+    build visualizations to analyze their data using qualitative and \
+    quantitative techniques. The data exploration can be done \
+    interactively in 3D or programmatically using ParaView's batch \
+    processing capabilities.
+
+homepage            http://www.paraview.org/
+master_sites        ${homepage}/files/v${branch}/
+
+distname            ParaView-v${version}
+
+checksums           sha256  64561f34c4402b88f3cb20a956842394dde5838efd7ebb301157a837114a0e2d \
+                    rmd160  b8bb2f50615e9db85dc986e108531ffffad1c96e \
+                    size    51418473
+
+depends_build-append    port:readline \
+    port:netcdf \
+    port:qt5-sqlite-plugin port:qt5-qttools 
+
+patchfiles patch-incomplete-types.patch
+
+cmake.out_of_source yes
+
+configure.pre_args-delete\
+    -DCMAKE_INSTALL_PREFIX=${prefix}
+
+configure.args-delete \
+    -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
+    -DCMAKE_INSTALL_RPATH=${prefix}/lib \
+    -DCMAKE_INSTALL_NAME_DIR=${prefix}/lib
+
+# ${destroot} needs to be part of MACOSX_APP_INSTALL_PREFIX; see further
+# comments below, JJS 12/21/15
+configure.args-append \
+    -DBUILD_TESTING:BOOL=OFF \
+    -DMACOSX_APP_INSTALL_PREFIX=${destroot}${applications_dir} \
+    -DBUILD_SHARED_LIBS:BOOL=ON \
+    -DPARAVIEW_QT_VERSION=5 \
+    -DQt5_DIR=${qt_dir} \
+    -DQT_HELP_GENERATOR=${qt_bins_dir}/qhelpgenerator \
+    -DQT_XMLPATTERNS_EXECUTABLE=${qt_bins_dir}/xmlpatterns
+
+pre-configure {
+    configure.args-append -DCMAKE_CXX_COMPILER=${configure.cxx} \
+        -DCMAKE_C_COMPILER=${configure.cc}
+
+       if {[mpi_variant_isset]} {
+           configure.args-append  \
+               -DPARAVIEW_USE_MPI:BOOL=ON \
+               -DMPI_C_COMPILER=${mpi.cc} \
+               -DMPI_CXX_COMPILER=${mpi.cxx} \
+               -DMPIEXEC=${mpi.exec} \
+               -DMPI_Fortran_COMPILER=${mpi.fc}
+       }
 }
 
 # Recent C++ required

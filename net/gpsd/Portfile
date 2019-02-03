@@ -32,6 +32,7 @@ if {${subport} eq ${name}} {
     checksums           rmd160  08f95b51218f11f7b07c1a5046cead366216fdc8 \
                         sha256  5cb1e6d880ec9a52c62492dd0e3d77451b7c7ad625895bd652f6354215aec23e \
                         size    9031595
+    revision            0
 
     master_sites        savannah
 
@@ -55,16 +56,15 @@ if {${subport} eq ${name}} {
     # devel
     conflicts           gpsd
 
-    version             20181204
-    set commit          0dd4c269e818cb0cb554510bbf0dc4168d660b29
-    checksums           rmd160 9573034e99872f87251c44680f8744b2df944947 \
-                        sha256 d966c3759c28f90ec32da4d68b46fa9c5b539d543c53d1c06f4851458ac7e2d7 \
-                        size   10074573
+    revision            0
+    version             20190129
+    set commit          71bd775bb579b8aabccfb6cd36a17a8281070829
+    checksums           rmd160 ed0adf537c8b88dd49eb28ce2b73be04fb38d87c \
+                        sha256 4186c3034d9bc8c5c3de3d2f05daa52fbf35f90e7fd808e3b8793861577adab2 \
+                        size   10097533
 
     master_sites        http://git.savannah.gnu.org/cgit/gpsd.git/snapshot
     distname            ${name}-${commit}
-
-    # This upstream version is completely patch-free
 
     livecheck.type          regex
     livecheck.version       ${commit}

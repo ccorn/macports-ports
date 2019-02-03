@@ -1,6 +1,6 @@
---- spyder/config/main.py.orig	2018-12-17 09:30:34.000000000 -0500
-+++ spyder/config/main.py	2018-12-17 09:30:50.000000000 -0500
-@@ -666,7 +666,7 @@
+--- spyder/config/main.py.orig	2019-01-31 08:47:43.000000000 -0500
++++ spyder/config/main.py	2019-02-01 08:41:56.000000000 -0500
+@@ -677,7 +677,7 @@
              ('lsp-server', {
                  'python': {
                      'index': 0,

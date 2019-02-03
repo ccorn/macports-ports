@@ -4,12 +4,12 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           python 1.0
 
-github.setup        django django 2.1.3
+github.setup        django django 2.1.5
 name                py-django
 categories-append   www
 platforms           darwin
 license             BSD
-maintainers         {danchr @danchr} {mojca @mojca} openmaintainer
+maintainers         {mojca @mojca} openmaintainer
 
 description         Django is a high-level Python Web framework
 long_description    Django is a high-level Python Web framework that \
@@ -23,17 +23,17 @@ supported_archs     noarch
 
 if {${name} ne ${subport}} {
     if {${python.version} == 27} {
-        github.setup    django django 1.11.16
+        github.setup    django django 1.11.18
 
-        checksums       rmd160  b6f63b057d8b3a693748be5db7191df1cadbe29f \
-                        sha256  bc2963c402806f23040f1d73cbefe2e038d68f53e52f8be0f6cc1774e7341b4f \
-                        size    7894144
+        checksums       rmd160  22899804f235250ab880587e6cb0d2789cd4897f \
+                        sha256  39612cbb663288f788be9a17e4e2fe4fb236879b2fcc21438e8ac854b86a89e1 \
+                        size    7894280
 
         github.livecheck.regex  {(1\..+?)}
     } else {
-        checksums       rmd160  3ac8c0219cab687a6564d3dd011cce34eff119b0 \
-                        sha256  3a6ae0dde2fe9c659f11c71270fede9b5d625f85b3c0fb51efb4ff9733787e6a \
-                        size    8654948
+        checksums       rmd160  a1eb7547b70239d23c081bafa551355c8246399c \
+                        sha256  32175ca575f81ea9fc90a86f87986bad34c16cbf698b7816ed96ad2ddf34c3b8 \
+                        size    8658362
 
         livecheck.type  none
     }

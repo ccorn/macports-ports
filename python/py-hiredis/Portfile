@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-hiredis
-version             0.3.0
+version             1.0.0
 revision            0
 categories-append   devel databases
 platforms           darwin
@@ -22,9 +22,9 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  4ca0dce0df3a0af3eafcbe15ffc2c2a3d5f3be9d \
-                    sha256  0c8cff472d579434c667e4c8243efe1a7f598b1f616f08d12c06770f8e4171c0 \
-                    size    52177
+checksums           rmd160  8cb06c2dd5de9ac1ac77759c8bb3890cc67f69be \
+                    sha256  e97c953f08729900a5e740f1760305434d62db9f281ac351108d6c4b5bf51795 \
+                    size    54407
 
 if {${name} ne ${subport}} {
     livecheck.type      none

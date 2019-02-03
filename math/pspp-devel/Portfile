@@ -5,10 +5,10 @@ PortGroup           app 1.0
 PortGroup           active_variants 1.1
 
 name                pspp-devel
-set buildstamp      20181203030501
-set buildhash       ga8799b
+set buildstamp      20190128081529
+set buildhash       g385b10
 version             1.2.0
-revision            4
+revision            9
 # depends_test port:p${perl5.major}-text-diff
 categories          math
 license             GPL-3+
@@ -44,9 +44,9 @@ depends_lib-append  path:lib/pkgconfig/cairo.pc:cairo \
 
 depends_build-append    port:pkgconfig
 
-checksums           rmd160  44822761fdf58af84bb0d23dedeaa15b1aefac75 \
-                    sha256  1950a59ba3eb1df486b7e2501a3b82be7bcfecb3ec0adff4db02a7bfa8b7099e \
-                    size    7211542
+checksums           rmd160  b42f20b046e8d7b4de2282c3248cd8593a3b90ac \
+                    sha256  ae57362f2bab2b165087f030e6f80f4e59b1706fe11e97c0394355241ed665b1 \
+                    size    7308192
 
 post-extract {
     if {[variant_isset gui]} {
@@ -155,6 +155,6 @@ app.name            PSPP
 app.executable      ${worksrcpath}/PSPP
 app.icon            ${filespath}/logo.png
 
-livecheck.url               http://pspp.benpfaff.org/~blp/pspp-master/latest/i386/
+livecheck.url               http://pspp.benpfaff.org/~blp/pspp-master/latest/x86_64/
 livecheck.regex             <td>dist_version<\\/td><td>(.*)<\\/td>
 livecheck.version           ${version}-${buildhash}

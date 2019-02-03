@@ -5,7 +5,7 @@ PortGroup           muniversal 1.0
 PortGroup           active_variants 1.1
 
 name                rust
-version             1.30.1
+version             1.32.0
 categories          lang devel
 platforms           darwin
 supported_archs     i386 x86_64
@@ -25,9 +25,10 @@ long_description    Rust is a curly-brace, block-structured expression \
 
 homepage            https://www.rust-lang.org/
 
-set ruststd_version 1.29.2
-set rustc_version   1.29.2
-set cargo_version   0.30.0
+# Get from src/stage0.txt
+set ruststd_version 1.31.1
+set rustc_version   1.31.1
+set cargo_version   0.32.0
 set llvm_version    6.0
 
 # can use cmake or cmake-devel; default to cmake.
@@ -66,37 +67,38 @@ foreach arch ${architectures} {
 }
 
 checksums           ${distname}${extract.suffix} \
-                    rmd160  9b8bda1fb32573e9b4160393d2031ff5e06df2f7 \
-                    sha256  36a38902dbd9a3e1240d46ab0f2ca40d2fd07c2ab6508ed7970c6c4c036b5b29 \
-                    size    149474922
+                    rmd160  a6780274c27c78722e0615a5daee71f471690c7f \
+                    sha256  4c594c7712a0e7e8eae6526c464bf6ea1d82f77b4f61717c3fc28fb27ba2224a \
+                    size 158503827 \
+
 
 checksums-append \
                     rust-std-${ruststd_version}-i686-apple-${os.platform}${extract.suffix} \
-                    rmd160  f3f3ce75da15fa436e0bc97eaf1ce3d352e26b28 \
-                    sha256  ad6813a6ede805b0eb508877e04c519b94fb878f891f7dfbfe213788da3abf7d \
-                    size    57955341 \
+                    rmd160  8f2e8545a58a5ff2488cbb6e94bc7b8af061397d \
+                    sha256  cb491799850cdf73a92f33eb8dbad84a8340d3da9f389b5d9278bf5fc6265916 \
+                    size 61971130 \
                     rustc-${rustc_version}-i686-apple-${os.platform}${extract.suffix} \
-                    rmd160  c65c40ea0c0f2a61e54ef359b15942d885d7d6ea \
-                    sha256  2f1de5212764d33fe1b010fc18b00bea3a696097b6278a10fef7f08dde1b63ce \
-                    size    77715636 \
+                    rmd160  e64b7f46a0c0873b515223cae7b3b0e683ecc383 \
+                    sha256  12350d834b63339446431a69b8359b6cee0b6439164e8532b30b7bc07d93378a \
+                    size 83594476 \
                     cargo-${cargo_version}-i686-apple-${os.platform}${extract.suffix} \
-                    rmd160  c2aa8866807254af6bdefe0c17baa47b5e21ff32 \
-                    sha256  fb3fa6127387c7f633d7e6747038c4f854056f78f87e509df37118979b0064a0 \
-                    size    4615715
+                    rmd160  f3731dedc60b5be5765263416bc2ae531fe9c47b \
+                    sha256  b7c3e615a50ce502399fa5edcedec67b4f70ba17913f76695013754c76535337 \
+                    size 5026113
 
 checksums-append \
                     rust-std-${ruststd_version}-x86_64-apple-${os.platform}${extract.suffix} \
-                    rmd160  9c4a2a2ec906a0b8d71adc3619f76ce71f310716 \
-                    sha256  72cd953cb8ea05667f5d58f5c4ba615a564611a86303c0f8f9235e7a53852692 \
-                    size    59230589 \
+                    rmd160  3720e893daa003532a3df322f4c206a3368efc7f \
+                    sha256  91c3b12614f9795ef2e0092010f247a38d09c95d4089f75b44fad14679bd1cfb \
+                    size    63481869 \
                     rustc-${rustc_version}-x86_64-apple-${os.platform}${extract.suffix} \
-                    rmd160  d2d1c571ed033e28d673dc62f649ef9b8579aae5 \
-                    sha256  d9c0dd8127ed632e27d751f051bca933578317ffe891e39155ae721bc1d3ec05 \
-                    size    79908332 \
+                    rmd160  42a13c96457fdcce0ac052e648c1d10e9150cb49 \
+                    sha256  e3f9c5ccd0e6e09da8012f30ee9a1880efebc0c039cc1f3866cf50c984be16a7 \
+                    size 86252327 \
                     cargo-${cargo_version}-x86_64-apple-${os.platform}${extract.suffix} \
-                    rmd160  451d01878d742d20e12979a68db5ff109d5593d2 \
-                    sha256  defc1ba047f09219a50ff39032b5d7aaf26563f6bed528b93055622eedfddabf \
-                    size    4948131
+                    rmd160  51dd78c02e30874bf829be8184e3eda7884e3fe5 \
+                    sha256  1b4859322e731d90209a4f30cc63df10525ae77d7b7d964c09e3f7e6f0ae3b95 \
+                    size 5225638
 
 pre-fetch {
     if {${os.platform} eq "darwin" && ${os.major} < 11} {

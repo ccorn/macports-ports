@@ -31,7 +31,8 @@ depends_lib             port:libsdl \
                         port:libzip \
                         port:fontconfig
 depends_run             port:freedink-data
-patchfiles              patch-src-paths.c.diff
+patchfiles              patch-configure.diff \
+                        patch-src-paths.c.diff
 
 post-patch {
         reinplace s|@PREFIX@|${prefix}|g ${worksrcpath}/src/paths.c

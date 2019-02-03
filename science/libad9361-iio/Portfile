@@ -13,16 +13,17 @@ long_description    ${description}. This is a simple library used for userspace,
 license             LGPL-2+
 platforms           darwin
 
-github.setup analogdevicesinc libad9361-iio 77e947eb8f1cb4526cd397d0e3c452f67cf07826
-version             20181124
-revision            1
-checksums           rmd160 d95c19f9e8b4eb7ca2858dcc8ae3455351a9b4d9 \
-                    sha256 a14be5c7242fcb9952939df9cff52e6addcede7ad9910db5cc6f3a90838d46df \
-                    size   160970
+github.setup analogdevicesinc libad9361-iio f392caf60c82979b02a5d2a6416e1e78012acd61
+version   20190114
+checksums rmd160 f68c1c0982d2897a996b85dd465bcf3bcc725dd6 \
+          sha256 6c21fff86bfec3f2ca2c2795f2d8096956455abe47aef47f2c71874f6d6bf7ec \
+          size   167727
+revision  0
 
 # patch to fix install IIO header inclusion
 
 patchfiles-append patch-fix_build.diff
+patch.pre_args -p1
 
 depends_lib-append   port:libiio
 
@@ -46,7 +47,7 @@ configure.args-append \
 
 post-destroot {
     # link from ad9361.framework to normal
-    set ad9361_framework_version 0.1
+    set ad9361_framework_version 0.2
     set ad9361_framework_top ${frameworks_dir}/ad9361.framework/Versions/${ad9361_framework_version}
     set ad9361_dr_framework_top ${destroot}${ad9361_framework_top}
     set ad9361_framework ${ad9361_framework_top}/ad9361

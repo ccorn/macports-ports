@@ -1,0 +1,406 @@
+diff --git a/Makefile b/Makefile
+index 422fa57..5cf2900 100644
+--- a/Makefile
++++ b/Makefile
+@@ -68,6 +68,7 @@ SLIBOBJS        := $(patsubst %.c,%$(SLIBOBJEXT),$(LIBSRCS))
+ TESTDIR          = test
+ TESTNAMEPREFIX   = $(TESTDIR)/test_
+ TESTRUNPREFIX    = run_
++TESTDEFS         = -include $(TESTDIR)/testdefs.h
+ TESTLDFLAGS      = -L$(BUILDDLIBDIR) $(LDFLAGS)
+ TESTLIBS         = -l$(LIBNAME)
+ TESTSRCS_C      := $(wildcard $(TESTNAMEPREFIX)*.c)
+@@ -91,10 +92,10 @@ $(SLIBOBJS): %$(SLIBOBJEXT): %.c $(ALLHEADERS)
+ 	$(CC) -c -I$(SRCINCDIR) $(CFLAGS) $(SLIBCFLAGS) $< -o $@
+ 
+ $(TESTOBJS_C): %.o: %.c $(ALLHEADERS)
+-	$(CC) -c -I$(SRCINCDIR) $(CFLAGS) $< -o $@
++	$(CC) -c -I$(SRCINCDIR) $(TESTDEFS) $(CFLAGS) $< -o $@
+ 
+ $(TESTOBJS_CPP): %.o: %.cpp $(ALLHEADERS)
+-	$(CXX) -c -I$(SRCINCDIR) $(CXXFLAGS) $< -o $@
++	$(CXX) -c -I$(SRCINCDIR) $(TESTDEFS) $(CXXFLAGS) $< -o $@
+ 
+ $(BUILDDLIBPATH): $(DLIBOBJS)
+ 	$(MKINSTALLDIRS) $(BUILDDLIBDIR)
+diff --git a/include/MacportsLegacyGlobalDefs.h b/include/MacportsLegacyGlobalDefs.h
+new file mode 100644
+index 0000000..0b0c55c
+--- /dev/null
++++ b/include/MacportsLegacyGlobalDefs.h
+@@ -0,0 +1,3 @@
++/* This shall do nothing unless specific macros are defined and nonzero */
++#include "MacPortsLegacyWrappers/realpath.h"
++#include "MacPortsLegacyWrappers/sysconf.h"
+diff --git a/include/MacportsLegacySupport.h b/include/MacportsLegacySupport.h
+index bf29f3b..e6853db 100644
+--- a/include/MacportsLegacySupport.h
++++ b/include/MacportsLegacySupport.h
+@@ -59,19 +59,15 @@
+ /* posix_memalign */
+ #define __MP_LEGACY_SUPPORT_POSIX_MEMALIGN__  (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1060)
+ 
+-/*  realpath() wrap */
+-#define __MP_LEGACY_SUPPORT_REALPATH_WRAP__   (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1060      \
+-                                                         && !defined(__DISABLE_MP_LEGACY_SUPPORT_REALPATH_WRAP__)    \
+-                                                         && !defined(__DISABLE_ALL_MACPORTS_FUNCTION_WRAPPING__) )
++/*  realpath() wrap availability */
++# define __MP_LEGACY_SUPPORT_REALPATH_WRAP__  (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1060)
+ 
+ /* lsmod */
+ #define __MP_LEGACY_SUPPORT_LSMOD__           (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1050)
+ 
+-/*  sysconf() wrap */
+-#define __MP_LEGACY_SUPPORT_SYSCONF_WRAP__    (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1050      \
+-                                                         && !defined(__DISABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__)      \
+-                                                         && !defined(__DISABLE_ALL_MACPORTS_FUNCTION_WRAPPING__) )
+-
++/*  sysconf() wrap availability */
++# define __MP_LEGACY_SUPPORT_SYSCONF_WRAP__   (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1050)
++ 
+ /* arc4random */
+ #define __MP_LEGACY_SUPPORT_ARC4RANDOM__      (__APPLE__ && __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ < 1070)
+ 
+diff --git a/include/MacportsLegacyWrappers/realpath.h b/include/MacportsLegacyWrappers/realpath.h
+new file mode 100644
+index 0000000..6a59fc1
+--- /dev/null
++++ b/include/MacportsLegacyWrappers/realpath.h
+@@ -0,0 +1,15 @@
++/* Deliberately left without multi-inclusion guard */
++
++/* This shall do nothing unless specific macros are defined and nonzero */
++
++#if __DISABLE_MP_LEGACY_SUPPORT_REALPATH_WRAP__
++  #undef realpath
++#elif __ENABLE_MP_LEGACY_SUPPORT_REALPATH_WRAP__
++  #include "../MacportsLegacySupport.h"
++
++  #if __MP_LEGACY_SUPPORT_REALPATH_WRAP__
++    /* Only renaming. Everything else left to the <stdlib.h> wrapper */
++    #undef realpath
++    #define realpath macports_legacy_realpath
++  #endif /* __MP_LEGACY_SUPPORT_REALPATH_WRAP__ */
++#endif /* __*ABLE_MP_LEGACY_SUPPORT_REALPATH_WRAP__ */
+diff --git a/include/MacportsLegacyWrappers/sysconf.h b/include/MacportsLegacyWrappers/sysconf.h
+new file mode 100644
+index 0000000..f332dad
+--- /dev/null
++++ b/include/MacportsLegacyWrappers/sysconf.h
+@@ -0,0 +1,15 @@
++/* Deliberately left without multi-inclusion guard */
++
++/* This shall do nothing unless specific macros are defined and nonzero */
++
++#if __DISABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__
++  #undef sysconf
++#elif __ENABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__
++  #include "../MacportsLegacySupport.h"
++
++  #if __MP_LEGACY_SUPPORT_SYSCONF_WRAP__
++    /* Only renaming. Everything else left to the <unistd.h> wrapper */
++    #undef sysconf
++    #define sysconf macports_legacy_sysconf
++  #endif /* __MP_LEGACY_SUPPORT_SYSCONF_WRAP__ */
++#endif /* __*ABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__ */
+diff --git a/include/stdlib.h b/include/stdlib.h
+index 9260caf..f33219f 100644
+--- a/include/stdlib.h
++++ b/include/stdlib.h
+@@ -22,25 +22,15 @@
+ /* MP support header */
+ #include "MacportsLegacySupport.h"
+ 
+-/* realpath wrap */
+-#if __MP_LEGACY_SUPPORT_REALPATH_WRAP__
+-
+-/* we are going to move the old realpath definition out of the way */
+-#undef realpath
+-#define realpath(a,b) realpath_macports_original(a,b)
++#include "MacportsLegacyWrappers/realpath.h"
++/* realpath may or may not have been redefined to macports_legacy_realpath */
+ 
+-#endif /*__MP_LEGACY_SUPPORT_REALPATH_WRAP__*/
+-
+-/* Include the primary system stdlib.h */
++#define macports_legacy_realpath realpath_orig
+ #include_next <stdlib.h>
++#undef macports_legacy_realpath
+ 
+-/* realpath wrap */
+ #if __MP_LEGACY_SUPPORT_REALPATH_WRAP__
+ 
+-/* and now define realpath as our new wrapped function */
+-#undef realpath
+-#define realpath(a,b) macports_legacy_realpath(a,b)
+-
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
+diff --git a/include/unistd.h b/include/unistd.h
+index e06ac82..7f74d30 100644
+--- a/include/unistd.h
++++ b/include/unistd.h
+@@ -1,26 +1,17 @@
+ /* MP support header */
+ #include "MacportsLegacySupport.h"
+ 
++#include "MacportsLegacyWrappers/sysconf.h"
++/* sysconf may or may not have been redefined to macports_legacy_sysconf */
+ 
+-#if __MP_LEGACY_SUPPORT_SYSCONF_WRAP__
+-
+-/* redefine the original sysconf */
+-#undef sysconf
+-#define sysconf(a) sysconf_orig(a)
+-
+-#endif /*__MP_LEGACY_SUPPORT_SYSCONF_WRAP__*/
+-
+-
+-
++#define macports_legacy_sysconf sysconf_orig
+ #include_next <unistd.h>
+-
+-
++#undef macports_legacy_sysconf
+ 
+ #if __MP_LEGACY_SUPPORT_SYSCONF_WRAP__
+ 
+-/* and now define sysconf as our new wrapped function */
+-#undef sysconf
+-#define sysconf(a) macports_legacy_sysconf(a)
++#if __ENABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__
++/* Define the following even if __DISABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__ */
+ 
+ #ifndef _SC_NPROCESSORS_CONF
+ #define _SC_NPROCESSORS_CONF 57
+@@ -30,6 +21,8 @@
+ #define _SC_NPROCESSORS_ONLN 58
+ #endif
+ 
++#endif /* __ENABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__ */
++
+ #ifdef __cplusplus
+ extern "C" {
+ #endif
+diff --git a/src/macports_legacy_realpath.c b/src/macports_legacy_realpath.c
+index d187fe9..892daa1 100644
+--- a/src/macports_legacy_realpath.c
++++ b/src/macports_legacy_realpath.c
+@@ -20,8 +20,8 @@
+ /* realpath wrap */
+ #if __MP_LEGACY_SUPPORT_REALPATH_WRAP__
+ 
+-/* we need this blocker so as to not get caught in our own wrap */
+-#define __DISABLE_MP_LEGACY_SUPPORT_REALPATH_WRAP__
++/* Make sure we get to see the unwrapped realpath */
++#define __DISABLE_MP_LEGACY_SUPPORT_REALPATH_WRAP__ 1
+ 
+ #include <limits.h>
+ #include <stdlib.h>
+diff --git a/src/macports_legacy_sysconf.c b/src/macports_legacy_sysconf.c
+index bf4c0c0..e68b3d5 100644
+--- a/src/macports_legacy_sysconf.c
++++ b/src/macports_legacy_sysconf.c
+@@ -17,27 +17,20 @@
+ /* MP support header */
+ #include "MacportsLegacySupport.h"
+ 
+-/* sysconf wrap, 10.4 */
++/* sysconf wrap */
+ #if __MP_LEGACY_SUPPORT_SYSCONF_WRAP__
+ 
+-/* we need this blocker so as to not get caught in our own wrap */
+-#define __DISABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__
++/* Make sure we get to see the unwrapped sysconf */
++#define __DISABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__ 1
+ 
++/* But request the additional _SC_* constants nevertheless */
++#define __ENABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__ 1
+ 
+ #include <sys/types.h>
+ #include <sys/sysctl.h>
+ 
+ #include <unistd.h>
+ 
+-#ifndef _SC_NPROCESSORS_CONF
+-#define _SC_NPROCESSORS_CONF 57
+-#endif
+-
+-#ifndef _SC_NPROCESSORS_ONLN
+-#define _SC_NPROCESSORS_ONLN 58
+-#endif
+-
+-
+ /* emulate two commonly used but missing selectors from sysconf() on 10.4 */
+ 
+ long macports_legacy_sysconf(int name){
+@@ -79,5 +72,4 @@ long macports_legacy_sysconf(int name){
+       return (long)sysconf(name);
+ }
+ 
+-
+ #endif /*__MP_LEGACY_SUPPORT_SYSCONF_WRAP__*/
+diff --git a/test/test_realpath.c b/test/test_realpath.c
+index 603b72a..2353981 100644
+--- a/test/test_realpath.c
++++ b/test/test_realpath.c
+@@ -15,14 +15,65 @@
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
++/*
++ * Deliberately declaring some potentially redefined names
++ * before including the associated header file, to test robustness.
++ * Requires predefinitions e.g. by means of the following cc options:
++ *
++ *  -D__ENABLE_MP_LEGACY_SUPPORT_REALPATH_WRAP__
++ *  -include /path/to/MacportsLegacyGlobalDefs.h
++ */
++
++/* Wrapper should work not only with calls, but with references as well */
++/* __restrict not needed here (and remember: nothing included yet) */
++typedef char * (*strfunc_t)(const char *, char *);
++
++/* Renaming different objects should not affect functionality */
++typedef struct { char *realpath; } rpv_t;
++typedef struct { strfunc_t realpath; } rpf_t;
++
+ #include <stdlib.h>
+ #include <stdio.h>
++#include <string.h>
++#include <assert.h>
+ 
+ int main() {
++    /* Test with direct function call */
+     const char *p = realpath(".", NULL);	/* bus error up to 10.5 */
+     if (!p) return 1;
+-    printf("%s\n", p);
+-    printf("realpath supports NULL pointer\n");
++    printf("cwd = %s\n", p);
++    printf("realpath(path, NULL) supported.\n");
++
++    /* Test with name (reference) only */
++    {
++        strfunc_t f = realpath;
++        const char *q = f(".", NULL);
++        if (!q) return 1;
++        assert (!strcmp(q, p));
++        printf("f = realpath, f(path, NULL) supported.\n");
++        free((void*)q);
++    }
++
++    /* Test with function macro disabler */
++    {
++        const char *q = (realpath)(".", NULL);
++        if (!q) return 1;
++        assert (!strcmp(q, p));
++        printf("(realpath)(path, NULL) supported.\n");
++        free((void*)q);
++    }
++
++    /* Test with same-named fields */
++    {
++        rpf_t rpf = { realpath };
++	rpv_t rpv;
++        rpv.realpath = rpf.realpath(".", NULL);
++        if (!rpv.realpath) return 1;
++        assert (!strcmp(rpv.realpath, p));
++        printf("rpv.realpath = rpf.realpath(path, NULL) supported.\n");
++        free((void*)rpv.realpath);
++    }
++
+     free((void*)p);
+     return 0;
+ }
+diff --git a/test/test_sysconf.c b/test/test_sysconf.c
+index 7bb159b..ee86c76 100644
+--- a/test/test_sysconf.c
++++ b/test/test_sysconf.c
+@@ -15,17 +15,57 @@
+  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+  */
+ 
++/*
++ * Deliberately declaring some potentially redefined names
++ * before including the associated header file, to test robustness.
++ * Requires predefinitions e.g. by means of the following cc options:
++ *
++ *  -D__ENABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__
++ *  -include /path/to/MacportsLegacyGlobalDefs.h
++ */
++
++/* Wrapper should work not only with calls, but with references as well */
++typedef long (*itol_t)(int);
++
++/* Renaming different objects should not affect functionality */
++typedef struct { long sysconf; } scv_t;
++typedef struct { itol_t sysconf; } scf_t;
++
+ #include <unistd.h>
+ #include <stdio.h>
+ #include <assert.h>
+ 
+ int main() {
+-	long nconf = sysconf(_SC_NPROCESSORS_CONF);
+-	long nonln = sysconf(_SC_NPROCESSORS_ONLN);
+-	printf("nconf = %ld; nonln = %ld\n", nconf, nonln);
+-	assert(nconf > 0);
+-	assert(nonln > 0);
++    /* Test with direct function call */
++    long nconf = sysconf(_SC_NPROCESSORS_CONF);
++    long nonln = sysconf(_SC_NPROCESSORS_ONLN);
++    printf("nconf = %ld; nonln = %ld\n", nconf, nonln);
++    assert (nconf > 0);
++    assert (nonln > 0);
++    printf("sysconf(_SC_NPROCESSORS_XXXX) supported.\n");
+ 
+-    return 0;
++    /* Test with name (reference) only */
++    {
++        itol_t f = sysconf;
++        assert (f(_SC_NPROCESSORS_CONF) == nconf);
++        assert (f(_SC_NPROCESSORS_ONLN) == nonln);
++        printf("f = sysconf, f(_SC_NPROCESSORS_XXXX) supported.\n");
++    }
+ 
++    /* Test with function macro disabler */
++    assert ((sysconf)(_SC_NPROCESSORS_CONF) == nconf);
++    assert ((sysconf)(_SC_NPROCESSORS_ONLN) == nonln);
++    printf("(sysconf)(_SC_NPROCESSORS_XXXX) supported.\n");
++
++    /* Test with same-named fields */
++    {
++        scf_t scf = { sysconf };
++        scv_t scv;
++        scv.sysconf = scf.sysconf(_SC_NPROCESSORS_CONF);
++        assert (scv.sysconf == nconf);
++        scv.sysconf = scf.sysconf(_SC_NPROCESSORS_ONLN);
++        assert (scv.sysconf == nonln);
++        printf("scv.sysconf = scf.sysconf(_SC_NPROCESSORS_XXXX) supported.\n");
++    }
++    return 0;
+ }
+diff --git a/test/testdefs.h b/test/testdefs.h
+new file mode 100644
+index 0000000..25dc243
+--- /dev/null
++++ b/test/testdefs.h
+@@ -0,0 +1,17 @@
++/* To be included from cc command line by means of -include */
++
++/*
++ * This simulates a Macports port's configure.cppflags changes resulting from
++ *
++ *  PortGroup   legacysupport 1.x
++ *  legacy.wrap realpath sysconf
++ */
++
++/* Request realpath wrapper (if necessary) */
++#define __ENABLE_MP_LEGACY_SUPPORT_REALPATH_WRAP__ 1
++
++/* Request sysconf wrapper (if necessary) */
++#define __ENABLE_MP_LEGACY_SUPPORT_SYSCONF_WRAP__ 1
++
++/* Do the enabled global renamings */
++#include <MacportsLegacyGlobalDefs.h>

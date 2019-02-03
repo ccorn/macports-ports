@@ -77,18 +77,21 @@ if {${subport} eq ${name}} {
                             -DWITH_XC_HTTP=ON
 } else {
     # devel
-    github.setup            keepassxreboot keepassxc a67cac1322d4545c72c75cedb06059b9009aa7ae
-    version                 20181125
+    github.setup            keepassxreboot keepassxc b21936f94d81df1c34abd3310600f67a548308ee
+    version                 20190122
 
     conflicts               KeePassXC
 
-    checksums               rmd160  6c551f964752ab335a7efa027bf78242dfbfad83 \
-                            sha256  bad7b4e8dff41a2419d83df95bc13ef5c1ae4d5ab56d65d6a7ab1c787a244809 \
-                            size    4886891
+    checksums               rmd160  09bfcfdafaedc23e4d03795471fdf9917dcdb458 \
+                            sha256  b194b2e47fd96c9ab353da37fdb8b1d22f0071c89ae67aa8ba23d5bdf9f94936 \
+                            size    4897376
 
     patchfiles              devel/patch-no-deployqt.diff
 
-    depends_lib-append      port:qrencode
+    depends_lib-append      port:qrencode \
+                            port:quazip
+
+    qt5.depends_component   qtsvg
 
     # In the future the Touch ID feature may require Darwin 17 (10.13)
     # https://github.com/keepassxreboot/keepassxc/issues/2484
@@ -96,6 +99,18 @@ if {${subport} eq ${name}} {
         configure.pre_args-append \
                                 -DWITH_XC_TOUCHID=ON
     }
+
+    configure.pre_args-append   -DWITH_XC_KEESHARE=ON \
+                                -DWITH_XC_KEESHARE_SECURE=ON
+
+    # KeePassXC now requires a compiler with C++ defect report 253 (DR 253)
+    # corrected[1]. AppleClang 8.0.0 is known to be broken[2] and
+    # AppleClang 9.0.0 is known to work[3].
+    # [1] https://stackoverflow.com/a/47368753/3786245
+    # [2] https://build.macports.org/builders/ports-10.11_x86_64-builder/builds/77570/steps/install-port/logs/stdio
+    # [3] https://build.macports.org/builders/ports-10.12_x86_64-builder/builds/82949/steps/install-port/logs/stdio
+    # TODO: merge this with the main blacklist when the next version of KeePassXC is out
+    compiler.blacklist-append {clang < 900}
 }
 
 if {${configure.cxx_stdlib} eq "libstdc++"} {
@@ -118,6 +133,12 @@ post-destroot {
              LICENSE.CC0 LICENSE.GPL-2 LICENSE.GPL-3 LICENSE.LGPL-2.1 \
              LICENSE.LGPL-3 LICENSE.NOKIA-LGPL-EXCEPTION \
              ${destroot}${prefix}/share/doc/${name}
+
+    # devel
+    if {${subport} ne ${name}} {
+        ln -s ${applications_dir}/KeePassXC.app/Contents/MacOS/keepassxc-cli \
+            ${destroot}${prefix}/bin/keepassxc-cli
+    }
 }
 
 test.run        yes

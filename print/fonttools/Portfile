@@ -5,7 +5,7 @@ PortGroup           python 1.0
 PortGroup           github 1.0
 
 name                fonttools
-github.setup        fonttools fonttools 3.34.2
+github.setup        fonttools fonttools 3.37.0
 description         XML<->TrueType/OpenType Converter
 long_description    TTX is a tool to convert OpenType and TrueType fonts to \
                     and from XML. FontTools is a library for manipulating \
@@ -16,9 +16,9 @@ categories          print
 license             MIT
 maintainers         {amake @amake} openmaintainer
 
-checksums           rmd160  0426c6a846367bd65cd967c0038ad5027da18083 \
-                    sha256  921cf465b10c8ae409fee9f5260b8e7299976696b912b828a23635943577f3b9 \
-                    size    1436399
+checksums           rmd160  3f83836d93e7270f3042b33fe873d61d4c75a1f5 \
+                    sha256  a2ef77fa3a26775d6a974dcc5a1c1037ce76d5bd308602e7cc206c0e45037c40 \
+                    size    1452862
 
 python.default_version 37
 

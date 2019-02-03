@@ -4,10 +4,11 @@ PortSystem          1.0
 PortGroup           python 1.0
 PortGroup           bitbucket 1.0
 
-bitbucket.setup     ruamel yaml 0.15.81
-checksums           rmd160 00b308a462d179dc2389d039992c916b83ac4dee \
-                    sha256 59de4918fc848ec2936e5a77068448f92a20d7abd73eba91ab175d9da3e296fb \
-                    size   393478
+bitbucket.setup     ruamel yaml 0.15.87
+checksums           rmd160 f74a46566cceedf791693820049b226508362ab8 \
+                    sha256 e875b57d932be80823a651b89b02bf9c7ff602989c95f3342a77928b896d6915 \
+                    size   396176
+revision            0
 
 name                py-ruamel-yaml
 license             MIT

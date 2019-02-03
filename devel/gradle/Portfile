@@ -3,7 +3,7 @@
 PortSystem          1.0
 
 name                gradle
-version             5.0
+version             5.1.1
 categories          devel java groovy
 license             Apache-2
 maintainers         {amake @amake} openmaintainer
@@ -20,9 +20,9 @@ platforms           darwin
 distname            ${name}-${version}-bin
 master_sites        https://services.gradle.org/distributions
 
-checksums           rmd160  ef40cb2acd8ebc28fc45152410f4a7b68561b75d \
-                    sha256  6157ac9f3410bc63644625b3b3e9e96c963afd7910ae0697792db57813ee79a6 \
-                    size    85491215
+checksums           rmd160  df6f0f2ba7be7ee7f1be1748fb0dbd7f03cb848b \
+                    sha256  4953323605c5d7b89e97d0dc7779e275bccedefcdac090aec123375eae0cc798 \
+                    size    85771326
 
 worksrcdir          ${name}-${version}
 

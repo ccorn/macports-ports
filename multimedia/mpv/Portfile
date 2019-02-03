@@ -3,6 +3,7 @@
 PortSystem              1.0
 PortGroup               github 1.0
 PortGroup               waf 1.0
+PortGroup               legacysupport 1.0
 
 # Please revbump mpv whenever ffmpeg{,-devel} is updated!
 github.setup            mpv-player mpv 0.29.1 v
@@ -51,7 +52,18 @@ depends_lib             path:lib/libavcodec.dylib:ffmpeg \
 
 universal_variant       no
 
-default_variants        +bundle +network +osd +rubberband +opengl +dvd +audiocd +libarchive
+default_variants        +network +osd +opengl +dvd +audiocd +libarchive
+
+if {${os.platform} eq "darwin" && ${os.major} > 10} {
+    # current macOS bundle errors on < 10.7 due to unhandled -psn_* argument
+    default_variants-append +bundle
+}
+
+# at this moment in time (20190127) rubberband does not build on PPC
+platform darwin i386 {
+    default_variants-append +rubberband
+}
+
 
 # Current waf doesn't support --nocache anymore. Set by PortGroup.
 configure.args-delete   --nocache
@@ -194,7 +206,8 @@ platform darwin {
     # https://github.com/mpv-player/mpv/pull/6214
     patchfiles-append   patch-fix-swift-detection.diff
 
-    if {${os.major} < 14} {
+    # swift build tools test fails on 10.10 now
+    if {${os.major} < 15} {
         configure.args-replace  --enable-swift \
                                 --disable-swift
     }
@@ -223,29 +236,37 @@ platform darwin {
     # Shared build fixes for 10.6 and 10.7.
     if {${os.major} < 12} {
         patchfiles-append   patch-misc-import-CoreVideo.diff
+        patchfiles-append   patch-waftools-detection-compiler-py-no-tautological.diff
     }
+
+    # fix typo in restricted block. This patch can disappear after next update as this
+    # fix has been merged upstream 20190126
+    patchfiles-append   patch-osdep-macosx_compat-h-typo.diff
 
     # Make mpv work as good as possible on 10.6 and below. No Cocoa support, instead concentrate
     # on getting the OpenGL output to work via X11.
     # Also fix some other minor compile issues only manifesting on 10.6 and below along the way.
     if {${os.major} < 11} {
-        patchfiles-append   patch-wscript-support-older-GCC.diff \
-                            patch-misc-add-strnlen.diff \
-                            patch-waftools_detections_compiler.py-support-older-GCC.diff \
-                            patch-audio_out_ao_coreaudio_exclusive.c-compile-fix.diff \
-                            patch-video_out_opengl_video.c-fix-compile-warnings.diff \
-                            patch-audio_out_ao_coreaudio_utils.c-add-missing-header-for-getpid.diff \
-                            patch-video_out_opengl_common.h-guard-GL3-stuff.diff \
-                            patch-video_out_vo_opengl.c-guard-GL3-and-backport-old-behavior.diff \
-                            patch-video_out_opengl_common.c-hide-GL320-section.diff \
-                            patch-video_out_opengl_common.c-hide-GL3-timer-functions.diff \
-                            patch-video_out_opengl_video.c-remove-timer-functionality.diff \
-                            patch-video_out_opengl_video.c-hide-pbo-texture-upload.diff
+        patchfiles-append   patch-audio_out_ao_coreaudio_utils.c-add-missing-header-for-getpid.diff
+        patchfiles-append   patch-waftools_detections_compiler.py-support-older-GCC.diff
 
         notes-append {
                         On systems older than Lion (10.7) or on architectures other than x86_64, Cocoa output support is not available.
 
                         The X11 backend should have been enabled automatically.
+        }
+    }
+
+    # coreaudio does not build on < 10.6 so use pulseaudio instead (tested and works).
+    if {${os.major} < 10} {
+        configure.args-delete   --enable-coreaudio
+        configure.args-append   --disable-coreaudio
+
+        default_variants-append +pulseaudio
+        notes-append {
+                        On systems older than SnowLeopard (10.6), coreaudio output support is not available.
+
+                        The pulseaudio backend should have been enabled automatically.
         }
     }
 
@@ -282,9 +303,13 @@ platform darwin {
 
 
 # Shameless copy from ipe-tools.
-set python.versions         {27 36}
-# Remove after 07-30-2018.
-dict set python.legacy_versions 35 36
+set python.versions         {27 37}
+dict set python.legacy_versions 36 37
+# After Python 3.8 is released, and mpv can be built with it,
+# replace with the above lines with the following:
+#set python.versions         {27 38}
+#dict set python.legacy_versions 37 38
+
 set python.default_version  27
 set python.version          ""
 
@@ -427,17 +452,6 @@ variant libarchive description {Enable transparent handling of Zip files and oth
     depends_lib-append      port:libarchive
     configure.args-replace  --disable-libarchive \
                             --enable-libarchive
-}
-
-# Remove after 07-30-2018
-variant enca requires uchardet description {Legacy compatibility variant for enable encoding support via ENCA. Will be removed soon.} {
-    notes-append {
-                    You have enabled the legacy enca variant.
-
-                    Upstream removed support for ENCA in version 0.23.0 in favor of uchardet.
-
-                    The uchardet variant has been enabled automatically.
-    }
 }
 
 variant rubberband description {Enable support for the Rubber Band library, adding audio pitch and speed control} {

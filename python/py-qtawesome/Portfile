@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 PortGroup           github 1.0
 
-github.setup        spyder-ide qtawesome 0.5.3 v
+github.setup        spyder-ide qtawesome 0.5.6 v
 name                py-qtawesome
 
 license             MIT
@@ -16,9 +16,9 @@ description         Iconic Fonts in PyQt and PySide applications.
 long_description    QtAwesome enables iconic fonts such as Font Awesome and \
                     Elusive Icons in PyQt and PySide applications.
 
-checksums           rmd160  e031f8276c3d237d8420f11b7309036bb61b74f7 \
-                    sha256  7d0fdfa3e1b7b497cb88b0a7e18b01319fbd8142a9127bc9af65bd83d1ab84fe \
-                    size    662676
+checksums           rmd160  6d938369e8ca3ba8705466b249b01400ef4a8f69 \
+                    sha256  a1196d40b9633298e01c9e4231f29041c996ebe94a6ff4e69ebaa5510f87cdf4 \
+                    size    683685
 
 python.versions     27 34 35 36 37
 
@@ -32,10 +32,12 @@ if {${name} ne ${subport}} {
     pre-test {
         reinplace "s|python|${python.bin}|g" ${worksrcpath}/qtawesome/tests/test_qtawesome.py
     }
-    depends_test-append     port:py${python.version}-pytest
+    depends_test-append     port:py${python.version}-pytest \
+                            port:py${python.version}-pytest-qt
     test.run                yes
     test.cmd                py.test-${python.branch}
     test.target
+    test.env                PYTHONPATH=${worksrcpath}/build/lib
 
     post-destroot {
         set docdir ${prefix}/share/doc/${subport}

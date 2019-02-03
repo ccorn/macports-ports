@@ -3,7 +3,7 @@
 PortSystem 1.0
 PortGroup       github 1.0
 
-github.setup    micronaut-projects micronaut-core 1.0.1 v
+github.setup    micronaut-projects micronaut-core 1.0.4 v
 name            micronaut
 categories      java
 platforms       darwin
@@ -37,13 +37,13 @@ long_description Micronaut is developed by the creators of the Grails framework 
                 \n* Minimal use of proxies \
                 \n* Easy Unit Testing
 
-homepage        http://micronaut.io
+homepage        https://micronaut.io
 github.tarball_from releases
 distname        ${name}-${version}
 
-checksums       rmd160  807c0558ff858466f0ab0f3bf3d2ec6de3f48a67 \
-                sha256  960c744565bbf6b7dc34b2fbaaa8273b13c5f2f7c1b31d922de1ccd25c9295dc \
-                size    12687600
+checksums       rmd160  74ff2db67abeeb47426bd3194427c14c26b2f829 \
+                sha256  d537a774ba1e073dbeca14611a0fc9fc296e1231e128d9f62577537f46373151 \
+                size    12758784
 
 use_zip         yes
 use_configure   no
