@@ -29,7 +29,7 @@ subport ${name}-devel {
     checksums           rmd160  2b878ea60772a2147ea49319ef7434900ca320a4 \
                         sha256  1a668ce9ca49b646e4a1b14a5ed7350728e8b64dc3ad053906cd50ce1d24fd15 \
                         size    22536
-    patchfiles          patch-globaldefs.diff
+    patchfiles          patch-asm-wrap.diff
     patch.pre_args      -p1
 }
 
