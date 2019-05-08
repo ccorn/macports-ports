@@ -5,8 +5,8 @@ PortGroup           muniversal 1.0
 PortGroup           github 1.0
 PortGroup           compiler_blacklist_versions 1.0
 
-github.setup        01org tbb 2019_U3
-revision            1
+github.setup        intel tbb 2019_U6
+revision            0
 categories          devel
 platforms           darwin
 maintainers         nomaintainer
@@ -21,9 +21,9 @@ long_description    ${description} \
 
 homepage            https://www.threadingbuildingblocks.org/
 
-checksums           rmd160  1109bcf4105ccc0ba5e824a62b751e23bdfd4088 \
-                    sha256  fe3282988202331c232672993fe5e8f06dbaa0e2d8da9eefe82768f311b1c13e \
-                    size    2543510
+checksums           rmd160  ac1acd5b299e91afa6f69d0c423c47953e7c9403 \
+                    sha256  626006afacdb0eefee833b8012ae2c5de3c716b4158a51139a326ab239f48df1 \
+                    size    2553759
 
 github.livecheck.regex {(\d+(?:\_U)+(?:\d+)*)}
 

@@ -4,8 +4,8 @@ PortSystem          1.0
 PortGroup           select 1.0
 
 name                ruby25
-version             2.5.3
-revision            2
+version             2.5.5
+revision            0
 
 categories          lang ruby
 maintainers         {kimuraw @kimuraw} openmaintainer
@@ -26,10 +26,10 @@ use_bzip2           yes
 distname            ruby-${version}
 dist_subdir         ruby25
 
-checksums           md5 49aea0bf56d25351ccaf938c642400df \
-                    rmd160 c711c721143ece0f412676e573f09c13f1218b6a \
-                    sha1 d47ede7dab79de25fcc274dfcad0f92f389a4313 \
-                    sha256 228a787ba68a7b20ac6e1d5af3d176d36e8ed600eb754d6325da341c3088ed76
+checksums           md5 8f41b5cb683d48b5cb6cdfe03d135d6b \
+                    rmd160 a4f9a7c962f2364401b11b2b5917fe4d558aa37a \
+                    sha1 1932db85ace80ecdbc5cfc7aada5b5123f7ad739 \
+                    sha256 1f2567a55dad6e50911ce42fcc705cf686924b897f597cabf803d88192024dcb
 
 use_parallel_build  no
 

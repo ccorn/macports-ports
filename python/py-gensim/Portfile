@@ -2,9 +2,10 @@
 
 PortSystem          1.0
 PortGroup           python 1.0
+PortGroup           github 1.0
 
+github.setup        RaRe-Technologies gensim 3.7.3
 name                py-gensim
-version             3.7.0
 categories-append   textproc
 platforms           darwin
 license             LGPL-2+
@@ -22,12 +23,9 @@ long_description    Gensim is a Python library for topic modelling, document \
 
 homepage            http://radimrehurek.com/gensim/
 
-master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
-distname            ${python.rootname}-${version}
-
-checksums           rmd160  11766fec40ba48c755821abc881df47cf7f5c5d5 \
-                    sha256  3edbfe71bcf4a33eb5a95ae7a930c00480fa19a07ff449d2ab2124f0e019240e \
-                    size    23400094
+checksums           rmd160  9ffb58f3e3161f25ad7d8e9d656e02ab807d587f \
+                    sha256  576a59251d790aa076aff9be1ba24eb31589718d59f73bc18c45c4f90e784bb7 \
+                    size    42999344
 
 if {${name} ne ${subport}} {
     depends_build-append \

@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-redis
-version             3.1.0
+version             3.2.1
 revision            0
 categories-append   devel
 platforms           darwin
@@ -23,9 +23,9 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  8b5a11b09e0bbcd1684ad0eaa6451c3d1af692ee \
-                    sha256  7ba8612bbfd966dea8c62322543fed0095da2834dbd5a7c124afbc617a156aa7 \
-                    size    120318
+checksums           rmd160  6fda32dfdeb87abb79594650996ce791bcd49f53 \
+                    sha256  8ca418d2ddca1b1a850afa1680a7d2fd1f3322739271de4b704e0d4668449273 \
+                    size    124692
 
 if {${name} ne ${subport}} {
     depends_build-append \

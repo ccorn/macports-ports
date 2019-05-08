@@ -4,12 +4,11 @@ PortSystem          1.0
 PortGroup           conflicts_build 1.0
 
 name                notmuch
-version             0.28
-revision            1
+version             0.28.4
 categories          mail
 platforms           darwin
 license             GPL-3+
-maintainers         nomaintainer
+maintainers         {seichter.de:macports @rseichter} openmaintainer
 description         The mail indexer
 long_description    \"Not much mail\" is what Notmuch thinks about your email \
                     collection, even if you receive 12000 messages per month or have on the \
@@ -20,13 +19,19 @@ long_description    \"Not much mail\" is what Notmuch thinks about your email \
 homepage            https://notmuchmail.org
 master_sites        ${homepage}/releases/
 
-checksums           rmd160  9a413645c3f9cf7e16007d7937a7220492ef2672 \
-                    sha256  acca75cec91651ccd2a7e31f7004e2ae14eff4ae38e375b8a88414c464cd0a37 \
-                    size    921069
+checksums           rmd160  7b15b0ba3d1cda8f90b9b1083e14fd39b7040aae \
+                    sha256  bab1cabb0542ce2bd4b41a15b84a8d81c8dc3332162705ded6f311dd898656ca \
+                    size    922364
 
 depends_build       port:pkgconfig \
                     port:python37 \
-                    port:py37-sphinx
+                    port:py37-sphinx \
+                    port:py37-sphinxcontrib-applehelp \
+                    port:py37-sphinxcontrib-devhelp \
+                    port:py37-sphinxcontrib-htmlhelp \
+                    port:py37-sphinxcontrib-jsmath \
+                    port:py37-sphinxcontrib-qthelp \
+                    port:py37-sphinxcontrib-serializinghtml
 
 depends_lib         port:gmime \
                     port:talloc \

@@ -3,8 +3,8 @@
 PortSystem              1.0
 
 name                    matio
-version                 1.5.13
-revision                1
+version                 1.5.15
+revision                0
 set branch              [join [lrange [split ${version} .] 0 1] .]
 maintainers             {mps @Schamschula} openmaintainer
 license                 LGPL-2.1
@@ -20,9 +20,9 @@ long_description        Matio is a library for reading and writing Matlab \
 homepage                http://sourceforge.net/projects/matio
 master_sites            sourceforge:project/matio/matio/${version}/
 
-checksums               rmd160  7d0b1d888ab0e38afaac393309085547f8c5ce2c \
-                        sha256  feadb2f54ba7c9db6deba8c994e401d7a1a8e7afd0fe74487691052b8139e5cb \
-                        size    10037903
+checksums               rmd160  51e1fc7634864c08efbb9acab1120b1f80a8ae92 \
+                        sha256  21bf4587bb7f0231dbb4fcc88728468f1764c06211d5a0415cd622036f09b1cf \
+                        size    10048152
 
 depends_lib             path:lib/libhdf5.dylib:hdf5 \
                         port:zlib

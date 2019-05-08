@@ -48,13 +48,13 @@ configure.args      --disable-silent-rules \
                     --without-cython
 
 subport libimobiledevice-devel {
-    github.setup    libimobiledevice libimobiledevice 92c5462adef87b1e577b8557b6b9c64d5a089544
-    version         20181030
+    github.setup    libimobiledevice libimobiledevice eea4f1be9107c8ab621fd71460e47d0d38e55d71
+    version         20190404
     revision        0
 
-    checksums       rmd160  8ea7c0da17f775b35d1356763533d57e4e82ef64 \
-                    sha256  3b2e20a5689032a44dde60ac05a7d9e50ecff69b5a79414ad540bb9aa8436105 \
-                    size    236074
+    checksums       rmd160  3d9c96c763dd9ef18a2fc608ea24b063fbcb9bae \
+                    sha256  f3f22b17d26edadd0ccfd306c1fe1d5745a80ef7b1c45eff3f80c599058c9537 \
+                    size    237149
 
     depends_lib-delete port:libusbmuxd
     depends_lib-append port:libusbmuxd-devel

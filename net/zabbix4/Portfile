@@ -3,8 +3,8 @@ PortSystem          1.0
 PortGroup           active_variants 1.1
 
 name                zabbix4
-version             4.0.3
-revision            1
+version             4.0.7
+revision            0
 categories          net
 maintainers         {eborisch @eborisch} openmaintainer
 platforms           darwin
@@ -22,7 +22,7 @@ long_description    Zabbix is the ultimate open source availability and \
 
 distname            zabbix-${version}
 livecheck.name      zabbix
-livecheck.regex     "Stable\/(4\[0-9.\]+)\/"
+livecheck.regex     "Stable\/(4\.0\.\[0-9\]+)\/"
 livecheck.url \
     http://sourceforge.net/projects/zabbix/files/ZABBIX%20Latest%20Stable/
 homepage            http://www.zabbix.com/
@@ -32,11 +32,12 @@ master_sites \
 dist_subdir         zabbix4
 
 checksums \
-    rmd160  2cc2462c7e1cf9e109f44ef9239b92f6b71fe8de \
-    sha256  6b3d3b23c72a7af1958dc0938a566be03f0424cb44df5b2a9f487428f32d0463 \
-    size    18019170
+    rmd160  6fa1b9eb6e4294f40c26348c9dd9ab8aa3296d79 \
+    sha256  c2eadece82865f281015dcd51fda8534d98ff3d80ded76b81368e528b87309e3 \
+    size    17175571
 
-patchfiles          log_and_pid_locations.patch
+patchfiles          log_and_pid_locations.patch \
+                    ZBX-15935.patch
 
 universal_variant   no
 
@@ -85,6 +86,9 @@ if { ${subport} eq "zabbix4-agent" } {
     supported_archs         noarch
     depends_run-append      port:apache2
 
+    variant nls description "Include translation files." {
+    }
+
     foreach php {php56 php70 php71} {
         variant ${php} description "Use ${php}" "
             depends_run-append      port:${php} \
@@ -109,11 +113,12 @@ if { ${subport} eq "zabbix4-agent" } {
     conflicts               zabbix zabbix2 zabbix3
 
     depends_lib-append      port:curl \
-                            port:libssh2 \
-                            port:net-snmp \
                             port:OpenIPMI \
+                            port:libssh2 \
                             port:libxml2 \
-                            port:zlib	
+                            port:net-snmp \
+                            port:openssl \
+                            port:zlib
 
     depends_run-append      port:fping
 
@@ -274,9 +279,20 @@ post-destroot {
         delete ${destroot}${prefix}/etc/zabbix4/zabbix_agentd.conf
     } elseif { ${subport} eq "zabbix4-frontend" } {
 # Copy the front end files
-        file mkdir ${destroot}${prefix}/share/zabbix/frontends/
-        file copy ${worksrcpath}/frontends/php/ \
-            ${destroot}${prefix}/share/zabbix/frontends/
+        set fedir ${destroot}${prefix}/share/zabbix/frontends
+        file mkdir ${fedir}
+        file copy ${worksrcpath}/frontends/php/ ${fedir}
+
+        system -W ${fedir} "find . -type f -name *.po -delete"
+
+        if {![variant_isset nls]} {
+            system -W ${fedir}/php/locale \
+                "find . -type f -name *.mo ! -path */en_US/* -delete"
+            reinplace "/display/s/true/false/" \
+                ${fedir}/php/include/locales.inc.php
+            reinplace "/en_US/s/false/true/" \
+                ${fedir}/php/include/locales.inc.php
+        }
 
 # Set permissions for etc (protect passwords) and the frontend
         system "chown -R www:www ${destroot}${prefix}/share/zabbix/frontends/*"
@@ -300,10 +316,6 @@ post-destroot {
         #file copy ${worksrcpath}/upgrades \
         #    ${destroot}${prefix}/share/zabbix/
 
-        xinstall -d -m 755 -d \
-            ${destroot}${prefix}/share/zabbix/zabbix_agent_win32
-        xinstall -m 755 ${worksrcpath}/bin/win32/zabbix_agentd.exe \
-            ${destroot}${prefix}/share/zabbix/zabbix_agent_win32
         # Set permissions for etc (protect passwords) 
         system "chmod ug+rwX,o-rwx ${destroot}${prefix}/etc/zabbix4/*"
         system "chown -R zabbix:zabbix ${destroot}${prefix}/etc/zabbix4"
@@ -337,7 +349,7 @@ if { ${subport} eq "zabbix4-agent" } {
 #### End ZABBIX4 agent installation section ####
 ####                                        ####
 "
-} elseif { ${subport} eq "zabbix4-agent" } {
+} elseif { ${subport} eq "zabbix4-frontend" } {
     notes "
 ####                                              ####
 #### Begin ZABBIX4 frontend installastion section ####
@@ -409,11 +421,7 @@ if { ${subport} eq "zabbix4-agent" } {
     sudo port load zabbix4
 
 
-5) A Win32 agent is in ${prefix}/share/zabbix/zabbix_agent_win32 for\
-   installation on Windows.
-
-
-6) Read the fine manual at http://www.zabbix.com/documentation/
+5) Read the fine manual at http://www.zabbix.com/documentation/
 
 
 #### End ZABBIX4 local server installation section   ####

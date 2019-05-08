@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           github 1.0
 PortGroup           python 1.0
 
-github.setup        ioam holoviews 1.11.2 v
+github.setup        pyviz holoviews 1.12.2 v
 revision            0
 categories-append   science
 license             BSD
@@ -16,9 +16,9 @@ long_description    ${description} With HoloViews, you can usually express what 
                     are trying to explore and convey, not on the process of plotting.
 platforms           darwin
 
-checksums           rmd160  6e79e33de02c80b76587847794f4e333528ca45d \
-                    sha256  d98fa7ddb42bb5937fa1b7a237d29e972865fc748f6a20dadf26a84f744f2206 \
-                    size    4628716
+checksums           rmd160  05c2fbd563afc0fe28efed32bc5236d2267b3289 \
+                    sha256  600b5d5564715b54f59c8dbe8604acf2426a79bab74ee874afb9c9f1ce958e2a \
+                    size    4661811
 
 python.versions     36 37
 
@@ -39,3 +39,5 @@ variant python37 conflicts python36 description {Use Python 3.7} {
 if {![variant_isset python36] && ![variant_isset python37]} {
     default_variants +python37
 }
+
+github.livecheck.regex  {(\d\.\d+(\.\d+)?(?!a))}

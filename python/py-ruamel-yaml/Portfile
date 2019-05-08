@@ -4,10 +4,10 @@ PortSystem          1.0
 PortGroup           python 1.0
 PortGroup           bitbucket 1.0
 
-bitbucket.setup     ruamel yaml 0.15.87
-checksums           rmd160 f74a46566cceedf791693820049b226508362ab8 \
-                    sha256 e875b57d932be80823a651b89b02bf9c7ff602989c95f3342a77928b896d6915 \
-                    size   396176
+bitbucket.setup     ruamel yaml 0.15.94
+checksums           rmd160 2e0ff14d3afaf0e47479c6685eace0125cd762eb \
+                    sha256 c670cbdf09dee89fc714cb95b04be24917d25a1a4d51b0100555aebaf7663532 \
+                    size   398392
 revision            0
 
 name                py-ruamel-yaml

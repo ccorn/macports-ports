@@ -2,6 +2,7 @@
 
 PortSystem          1.0
 PortGroup           github 1.0
+PortGroup           legacysupport 1.0
 
 name                zmq
 categories          devel sysutils net
@@ -58,11 +59,11 @@ subport zmq22 {
 }
 
 subport zmq-devel {
-    github.setup zeromq libzmq 4d8e5fb2e90aabf1c123b551be7bad087c34078b
-    version      20190201
-    checksums    rmd160 2bdf0996f236dae4473e15ca6de6795b03ede944 \
-                 sha256 6b72b2ea059c4b075b1a1828c92e42775b5602bf711c567af17cc7166c404294 \
-                 size   788869
+    github.setup zeromq libzmq 8c8110a1364b0e4f6a7b30459169e1b8f65a68ad
+    version      20190502-[string range ${github.version} 0 7]
+    checksums    rmd160 67f36ea6e20017044daf3722075b7f00b66c12db \
+                 sha256 f5314461847e30243377ffacda105756a11973af88fddcdfe5f78ebe8765f9b8 \
+                 size   810358
     revision     0
 
     conflicts    zmq zmq22 zmq3

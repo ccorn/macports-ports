@@ -4,7 +4,8 @@ PortSystem              1.0
 PortGroup               compiler_blacklist_versions 1.0
 
 name                    nodejs6
-version                 6.16.0
+version                 6.17.1
+revision                1
 
 categories              devel net
 platforms               darwin
@@ -18,23 +19,22 @@ long_description        Node's goal is to provide an easy way to build scalable 
                         Machine or Python's Twisted. Node takes the event model a bit further-it \
                         presents the event loop as a language construct instead of as a library.
 
-conflicts               nodejs4 nodejs5 nodejs7 nodejs8 nodejs9 nodejs10 nodejs11
+conflicts               nodejs8 nodejs10 nodejs11 nodejs12
 
 homepage                https://nodejs.org/
 master_sites            ${homepage}dist/v${version}
 use_xz                  yes
 
-checksums               rmd160  8b83f7693b794fad82485806a328e85865b2a857 \
-                        sha256  0d0882a9da1ccc217518d3d1a60dd238da9f52bed0c7daac42b8dc3d83bd7546 \
-                        size    15854256
+checksums               rmd160  4ffd2cf98e98329a1c4bdf7174242a15b599a22f \
+                        sha256  6f6dc9624656a008513b7608bfc105dd92ceea5d7b4516edeca7e6b19d2edd94 \
+                        size    15858444
 
 distname                node-v${version}
 
 depends_build           port:pkgconfig
 
 depends_lib             port:icu \
-                        port:python27 \
-                        path:lib/libssl.dylib:openssl
+                        port:python27
 
 proc rec_glob {basedir pattern} {
     set files [glob -directory $basedir -nocomplain -type f $pattern]
@@ -48,6 +48,11 @@ configure.python ${prefix}/bin/python2.7
 
 patchfiles              patch-common.gypi.diff \
                         patch-tools-gyp-pylib-gyp-generator-make.py.diff
+
+if { ${configure.cxx_stdlib} eq "libc++" } {
+    # libc++ headers don't put this in <tr1/>
+    patchfiles-append   patch-nodejs6-old-tr1-calls.diff
+}
 
 post-patch {
     foreach f [concat ${worksrcpath}/configure \
@@ -65,11 +70,14 @@ post-patch {
     reinplace "s|/usr/bin/env node|${prefix}/bin/node|" ${worksrcpath}/tools/doc/node_modules/marked/bin/marked
 }
 
+# We'll use the system libuv instead, as it is fixed for older systems
+if { ${os.platform} eq "darwin" && ${os.major} < 11 } {
+    depends_lib-append    path:lib/libuv.dylib:libuv
+    configure.args-append --shared-libuv
+}
+
 configure.args-append   --without-npm
 configure.args-append   --with-intl=system-icu
-configure.args-append   --shared-openssl
-configure.args-append   --shared-openssl-includes=${prefix}/include/openssl
-configure.args-append   --shared-openssl-libpath=${prefix}/lib
 
 # V8 only supports ARM and IA-32 processors
 supported_archs         i386 x86_64
@@ -203,13 +211,6 @@ destroot {
         LICENSE \
         README.md \
         ${docdir}
-}
-
-if {${os.major} < 11} {
-    pre-fetch {
-        ui_error "${name} ${version} requires Mac OS X 10.7 or greater."
-        return -code error "incompatible Mac OS X version"
-    }
 }
 
 livecheck.url       ${homepage}dist/

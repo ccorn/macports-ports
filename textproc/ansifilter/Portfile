@@ -4,7 +4,7 @@ PortSystem      1.0
 PortGroup       cxx11 1.1
 
 name            ansifilter
-version         2.11
+version         2.14
 categories      textproc
 maintainers     {evermeet.cx:tessarek @tessus} openmaintainer
 platforms       darwin
@@ -20,9 +20,9 @@ homepage        http://www.andre-simon.de/doku/ansifilter/en/ansifilter.php
 master_sites    http://www.andre-simon.de/zip/
 use_bzip2       yes
 
-checksums       rmd160  c90b58a2b244d98ed6946d3ee4635285885d6ca6 \
-                sha256  51e79ea56ba0e5a6cd564bd66e050f366be0e61c71a2b5800a3a213f8b39a9ca \
-                size    437154
+checksums       rmd160  3e73d7aa45466141efb234bcb981dba1c0b6a039 \
+                sha256  e2eee3912718b226d3217e2848e5c5a447bf30b7fbb9f0ebc8dd4ddfeb4797af \
+                size    441884
 
 use_configure   no
 

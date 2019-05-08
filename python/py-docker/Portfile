@@ -4,7 +4,8 @@ PortSystem          1.0
 PortGroup           python 1.0
 PortGroup           github 1.0
 
-github.setup        docker docker-py 3.5.1
+github.setup        docker docker-py 3.7.2
+revision            0
 name                py-docker
 categories-append   devel
 platforms           darwin
@@ -15,9 +16,9 @@ maintainers         nomaintainer
 description         An API client for docker written in Python
 long_description    $description
 
-checksums           rmd160  392e3c33730011c870bc167f16b53e03ea6f36c7 \
-                    sha256  c36e4cdfffcf2620a3dd92e1aa4937e0370ae2fc052bfde33b61ad66063a15f4 \
-                    size    209425
+checksums           rmd160  80e85effed3d191b85755733305a23b611d05fb0 \
+                    sha256  836cdf45c4cc82460fe38001c4a7a9a41e1263a71ff7501f0ee43577e3572506 \
+                    size    221311
 
 python.versions     27 34 35 36 37
 
@@ -36,6 +37,12 @@ if {${subport} ne ${name}} {
     }
     if {${python.version} eq 27} {
         depends_lib-append  port:py${python.version}-ipaddress
+    }
+
+    post-destroot {
+        xinstall -m 0755 -d ${destroot}${prefix}/share/doc/${subport}
+        xinstall -m 0644 -W ${worksrcpath} CONTRIBUTING.md LICENSE \
+            MAINTAINERS README.md ${destroot}${prefix}/share/doc/${subport}
     }
 
     livecheck.type  none

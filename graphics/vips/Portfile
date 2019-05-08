@@ -5,6 +5,7 @@ PortGroup           github 1.0
 PortGroup           gobject_introspection 1.0
 
 github.setup        libvips libvips 8.7.4 v
+revision            1
 name                vips
 distname            vips-${version}
 description         VIPS is an image processing library.
@@ -18,7 +19,8 @@ homepage            https://libvips.github.io/libvips/
 github.tarball_from releases
 
 checksums           rmd160  01a3bcbc13467a998c4e22c3fa4b814661eb22cd \
-                    sha256  ce7518a8f31b1d29a09b3d7c88e9852a5a2dcb3ee1501524ab477e433383f205
+                    sha256  ce7518a8f31b1d29a09b3d7c88e9852a5a2dcb3ee1501524ab477e433383f205 \
+                    size    15173851
 
 depends_build       port:gtk-doc \
                     port:pkgconfig
@@ -67,7 +69,7 @@ variant python27 description {Install Python 2.7 interface} {
     # Include vips7 legacy API
     configure.args-append   --enable-pyvips7 \
                             am_cv_python_pyexecdir='${frameworks_dir}/Python.framework/Versions/2.7/lib/python2.7/site-packages'
-    configure.env-append    PYTHON='${prefix}/bin/python2.7'
+    configure.env-append    PYTHON=${prefix}/bin/python2.7
 }
 variant python34 description {Install Python 3.4 interface} {
     depends_lib-append      port:py34-gobject3

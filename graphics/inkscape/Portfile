@@ -10,6 +10,7 @@ cmake.generator     Ninja
 name                inkscape
 conflicts           inkscape-devel inkscape-gtk3-devel
 version             0.92.4
+revision            3
 license             GPL-2 LGPL-2.1
 maintainers         {devans @dbevans}
 categories          graphics gnome
@@ -64,9 +65,11 @@ depends_lib-append  port:desktop-file-utils \
                     port:py${python_version}-lxml \
                     port:py${python_version}-numpy
 
-patchfiles          patch-no-data-member.diff \
-                    patch-use-cxxutil-h.diff \
-                    patch-src-2geom-svg-path-writer-cpp.diff
+# Probably outdated
+#patchfiles          patch-no-data-member.diff \
+#                    patch-use-cxxutil-h.diff \
+#                    patch-src-2geom-svg-path-writer-cpp.diff
+patchfiles          patch-poppler-0.76.diff
 
 post-patch {
     copy ${filespath}/cxxutil.h ${worksrcpath}/src/cxxutil.h

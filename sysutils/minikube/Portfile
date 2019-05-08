@@ -3,7 +3,7 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        kubernetes minikube 0.30.0 v
+github.setup        kubernetes minikube 1.0.0 v
 categories          sysutils
 platforms           darwin
 supported_archs     x86_64
@@ -19,9 +19,9 @@ long_description    Minikube runs a single-node Kubernetes cluster inside a VM \
 github.tarball_from releases
 distfiles           minikube-darwin-amd64
 checksums           minikube-darwin-amd64 \
-                    rmd160  20bb06262c6e58ad308b67a568f5232070139903 \
-                    sha256  e09789c4eb751969f712947a43effd79cf73488163563e79d98bc3d15d06831e \
-                    size    42069872
+                    rmd160  cfc711129cb2ba0824246fa096817d626a0ada15 \
+                    sha256  865bd3a13c1ad3b7732b2bea35b26fef150f2b3cbfc257c5d1835527d1b331e9 \
+                    size    40032744 \
 dist_subdir         ${name}/${version}
 
 depends_lib         port:kubectl
@@ -32,9 +32,9 @@ default_variants    +hyperkit
 variant hyperkit description {Install Hyperkit driver} {
     distfiles-append    docker-machine-driver-hyperkit
     checksums-append    docker-machine-driver-hyperkit \
-                        rmd160  98aea855c8df932b6d1a9f74dd76c87c2e936d33 \
-                        sha256  94b3def318938ddfeed3f8e753665b8b44db0b7044613b287e640d960312f605 \
-                        size    27219380
+                        rmd160  c714ca70f87afa11834a1d7f8701b1fbc713055b \
+                        sha256  35bcf3420acfcc8ec9cce5bdab7f078c2679dec7df7bb39116239f6801fc829f \
+                        size    27784436
 }
 
 build {

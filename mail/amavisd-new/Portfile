@@ -8,7 +8,7 @@ version             2.11.0
 revision            1
 categories          mail
 license             GPL-2
-maintainers         {pixilla @pixilla} openmaintainer
+maintainers         nomaintainer
 platforms           darwin
 supported_archs     noarch
 
@@ -19,7 +19,7 @@ long_description    ${description} It is written in Perl for maintainability, wi
                     helper programs. Best with Postfix, fine with dual-sendmail setup and Exim v4, \
                     works with sendmail/milter, or with any MTA as a SMTP relay. For Courier and \
                     qmail MTA integration there is a patch in the distributed package.
-homepage            http://www.ijs.si/software/amavisd/
+homepage            https://amavis.org
 master_sites        ${homepage}
 
 use_xz              yes
@@ -31,7 +31,6 @@ checksums           rmd160  cd06768a530fb86371f171e16b7f8c13c019b525 \
 perl5.require_variant   yes
 perl5.conflict_variants yes
 perl5.branches          5.26 5.28
-perl5.default_branch    5.26
 perl5.create_variants   ${perl5.branches}
 
 set daemon_user     _amavisd
@@ -43,18 +42,18 @@ depends_run         port:p${perl5.major}-archive-zip \
                     port:p${perl5.major}-berkeleydb \
                     port:p${perl5.major}-convert-tnef \
                     port:p${perl5.major}-convert-uulib \
+                    port:p${perl5.major}-dbd-mysql \
                     port:p${perl5.major}-digest-md5 \
                     port:p${perl5.major}-io-compress \
                     port:p${perl5.major}-io-stringy \
                     port:p${perl5.major}-mail-dkim \
+                    port:p${perl5.major}-mail-spamassassin \
                     port:p${perl5.major}-mailtools \
-                    port:p${perl5.major}-mime-tools \
                     port:p${perl5.major}-mime-base64 \
+                    port:p${perl5.major}-mime-tools \
                     port:p${perl5.major}-net-server \
                     port:p${perl5.major}-time-hires \
-                    port:p${perl5.major}-unix-syslog \
-                    port:p${perl5.major}-mail-spamassassin \
-                    port:p${perl5.major}-dbd-mysql
+                    port:p${perl5.major}-unix-syslog
 
 variant clamav description {Enable run-time support for clamav} {
     depends_run-append \

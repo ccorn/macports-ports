@@ -42,11 +42,11 @@ if {${subport} eq ${name}} {
     long_description ${long_description} \
         This port provides devel version of ${name}, updated weekly to monthly.
 
-    github.setup   libusb libusb 8cfcc63f4f970ca3bbdd9bf77b3bb20d78b9e855
-    version        20190124
-    checksums      rmd160 59262cb6a7fb4361b0b9741f02f1539b994fbc00 \
-                   sha256 8a9739c3b6cb8a57b54e3a23097a2e16256c0f2c3a4b1ba19531428991d8c19e \
-                   size   384034
+    github.setup   libusb libusb f1e385390213aab96d2a40e4858ff0d019a1b0b7
+    version        20190408-[string range ${github.version} 0 7]
+    checksums      rmd160 76084a0e91ef18d9df2b2e217467832e1f1753f8 \
+                   sha256 fa9a9447178e1c15d5101e09f15eb4d3a5e5e6f14ea58e6e0471ed28a6529795 \
+                   size   392274
     revision       0
 
     conflicts      libusb

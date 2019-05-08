@@ -14,7 +14,7 @@ license             {LGPL-2.1 LGPL-3}
 maintainers         {michaelld @michaelld} openmaintainer
 description         Cross Platform Multimedia API used by KDE4
 platforms           darwin
-homepage            http://phonon.kde.org
+homepage            https://phonon.kde.org
 master_sites        kde:stable/${name}/${version}
 use_xz              yes
 distname            phonon-${version}
@@ -181,4 +181,4 @@ configure.ldflags-append -F${qt_frameworks_dir}
 
 livecheck.type      regex
 livecheck.url       http://mirrors.mit.edu/kde/stable/${name}/
-livecheck.regex     ">(\[0-9.\]+)<"
+livecheck.regex     ">(\[0-9.\]+)/<"

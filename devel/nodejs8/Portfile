@@ -4,7 +4,7 @@ PortSystem              1.0
 PortGroup               compiler_blacklist_versions 1.0
 
 name                    nodejs8
-version                 8.15.0
+version                 8.16.0
 categories              devel net
 platforms               darwin
 license                 {MIT BSD}
@@ -17,15 +17,15 @@ long_description        Node's goal is to provide an easy way to build scalable 
                         Machine or Python's Twisted. Node takes the event model a bit further-it \
                         presents the event loop as a language construct instead of as a library.
 
-conflicts               nodejs4 nodejs5 nodejs6 nodejs7 nodejs9 nodejs10 nodejs11
+conflicts               nodejs6 nodejs10 nodejs11 nodejs12
 
 homepage                https://nodejs.org/
 master_sites            ${homepage}dist/v${version}
 use_xz                  yes
 
-checksums               rmd160  5afc4135e8a264c005a8cafefbed382352a3e061 \
-                        sha256  968523333947cc3f769d73dedc6c9c60580826d8714bc0e62ca4589de6a7c633 \
-                        size    18499412
+checksums               rmd160  5c624bd7c865dc5f9e3a0d54af700d91d7351ec6 \
+                        sha256  3515e8e01568a5dc4dff3d91a76ebc6724f5fa2fbb58b4b0c5da7b178a2f7340 \
+                        size    18515392
 
 distname                node-v${version}
 

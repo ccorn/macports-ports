@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           perl5 1.0
 
 perl5.branches      5.26 5.28
-perl5.setup         libwww-perl 6.36 ../../authors/id/E/ET/ETHER
+perl5.setup         libwww-perl 6.39 ../../authors/id/O/OA/OALDERS
 maintainers         nomaintainer
 license             {Artistic-1 GPL}
 supported_archs     noarch
@@ -22,9 +22,9 @@ long_description    The libwww-perl collection is a set of Perl \
                     and even classes that help you implement \
                     simple HTTP servers.
 
-checksums           rmd160  f137c794cd20e492ba1caf6e847de3f7003724a7 \
-                    sha256  75c034ab4b37f4b9506dc644300697505582cf9545bcf2e2079e7263f675290a \
-                    size    168245
+checksums           rmd160  d95674f29df5dfe5f73dc6b00d8897c3817bce29 \
+                    sha256  9a8d7747938aa75d7d524c71574ae7f99ca66a5dac8255a7f7759f373e7774d5 \
+                    size    172113
 
 platforms           darwin
 

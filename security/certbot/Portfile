@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                certbot
-version             0.30.2
+version             0.34.2
 revision            0
 categories          security
 license             Apache-2
@@ -16,11 +16,19 @@ platforms           darwin
 homepage            https://certbot.eff.org/
 master_sites        pypi:c/certbot
 
-checksums           rmd160  6d1d320325de56d5d6dc78faf5fcd50577a916c3 \
-                    sha256  534487cb552ced8e47948ba3d2e7ca12c3a439133fc609485012b1a02fc7776e \
-                    size    333414
+checksums           rmd160  101c7bca9055f8991a004e111fa4d0c098f11d8e \
+                    sha256  30732ddcb10ccd8b8410c515a76ae0429ad907130b8bf8caa58b73826d0ec9bb \
+                    size    342657
 
-python.versions     27 36 37
+if {[variant_isset python37]} {
+    python.default_version 37
+} elseif {[variant_isset python36]} {
+    python.default_version 36
+} else {
+    python.default_version 27
+}
+
+depends_build       port:py${python.version}-setuptools
 
 depends_lib         port:py${python.version}-acme \
                     port:py${python.version}-configargparse \
@@ -40,24 +48,18 @@ depends_lib         port:py${python.version}-acme \
                     port:py${python.version}-zopehookable
 
 post-patch {
-    reinplace "s|/etc/|${prefix}/etc/|" ${worksrcpath}/certbot/compat.py
-    reinplace "s|/var/lib/|${prefix}/var/db/|" ${worksrcpath}/certbot/compat.py
-    reinplace "s|/var/log/|${prefix}/var/log/|" ${worksrcpath}/certbot/compat.py
+    reinplace "s|/etc/|${prefix}/etc/|" ${worksrcpath}/certbot/compat/misc.py
+    reinplace "s|/var/lib/|${prefix}/var/db/|" ${worksrcpath}/certbot/compat/misc.py
+    reinplace "s|/var/log/|${prefix}/var/log/|" ${worksrcpath}/certbot/compat/misc.py
 }
 
 variant python27 conflicts python36 python37 description {Use Python 2.7} {
-    python.default_version 27
-
     depends_lib-append  port:py${python.version}-python2-pythondialog
 }
 
-variant python36 conflicts python27 python37 description {Use Python 3.6} {
-    python.default_version 36
-}
+variant python36 conflicts python27 python37 description {Use Python 3.6} {}
 
-variant python37 conflicts python27 python36 description {Use Python 3.7} {
-    python.default_version 37
-}
+variant python37 conflicts python27 python36 description {Use Python 3.7} {}
 
 if {![variant_isset python36] && ![variant_isset python37]} {
     default_variants +python27

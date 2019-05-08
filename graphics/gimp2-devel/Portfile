@@ -7,10 +7,9 @@ PortGroup           cxx11 1.1
 name                gimp2-devel
 conflicts           gimp2 gimp3-devel
 set git_name        gimp
-set git_commit      6f61a7d431e46b3fa985c22124e6640ce42143b2
-set git_date        20181115
-version             2.10.9-${git_date}
-revision            3
+set git_commit      d1d002250040ddacda39b1e802d5194a2805ed4a
+set git_date        20190415
+version             2.10.11-${git_date}
 license             GPL-3+
 categories          graphics
 maintainers         {devans @dbevans}
@@ -31,9 +30,9 @@ distname            ${git_name}-${git_commit}
 
 use_bzip2           yes
 
-checksums           rmd160  44961affa5c1d5940bd46d777845956099c4c1ba \
-                    sha256  c43e0af066f31c0ffb44fa74c8d3467b3cb12fda6136d686e5b57f1b55bc3932 \
-                    size    82059689
+checksums           rmd160  cbd04b62b0b24a66f72cd68be436d663f07151a5 \
+                    sha256  23b0d9630b2e49eccd76559140c2b26093165b4b8f3fdd7cc5a66a1e0c28f325 \
+                    size    82511261
 
 set perl_version    5.28
 
@@ -92,7 +91,7 @@ use_parallel_build  no
 # redefinition of typedef is invalid in C [-Wtypedef-redefinition] (#50329)
 # as of version 2.10.0 requires a C++14 compatible compiler to configure
 
-compiler.blacklist *gcc-3.* *gcc-4.* {clang < 700}
+compiler.blacklist-append *gcc-3.* *gcc-4.* {clang < 700}
 
 patchfiles          patch-configure.ac.diff \
                     patch-etc-gimprc.in.diff \
@@ -137,7 +136,6 @@ configure.cmd       ./autogen.sh
 
 configure.args      --build=${configure.build_arch}-apple-${os.platform}${os.version} \
                     --enable-mp \
-                    --enable-binreloc-threads \
                     --with-bug-report-url=https://guide.macports.org/#project.tickets \
                     --with-pdbgen \
                     --with-x \
@@ -147,6 +145,7 @@ configure.args      --build=${configure.build_arch}-apple-${os.platform}${os.ver
                     --disable-python \
                     --without-alsa \
                     --without-gudev \
+                    --without-libheif \
                     --without-webkit \
                     ac_cv_path_INTLTOOL_PERL=${configure.perl}
 

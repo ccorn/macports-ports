@@ -4,8 +4,7 @@ PortSystem          1.0
 
 set my_name         gnupg
 name                ${my_name}2
-version             2.2.12
-revision            1
+version             2.2.15
 categories          mail security
 maintainers         {jann @roederja} {ionic @Ionic} openmaintainer
 license             GPL-3+
@@ -24,9 +23,9 @@ master_sites        ${my_name}:${my_name}
 
 use_bzip2           yes
 
-checksums           rmd160  4da4303a12a55111de9cd100ab0fdb30b28a4e00 \
-                    sha256  db030f8b4c98640e91300d36d516f1f4f8fe09514a94ea9fc7411ee1a34082cb \
-                    size    6682303
+checksums           rmd160  c0c865319502a7497755e8ec8c6e26c0b5f71718 \
+                    sha256  cb8ce298d7b36558ffc48aec961b14c830ff1783eef7a623411188b5e0f5d454 \
+                    size    6705912
 
 platform darwin {
     if {![variant_isset pinentry] && ![variant_isset pinentry_mac]} {

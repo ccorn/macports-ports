@@ -4,7 +4,8 @@ PortSystem          1.0
 PortGroup           python 1.0
 PortGroup           github 1.0
 
-github.setup        spyder-ide qtpy 1.5.2 v
+github.setup        spyder-ide qtpy 1.7.0 v
+revision            0
 name                py-qtpy
 
 categories-append   devel
@@ -21,9 +22,9 @@ long_description    QtPy (pronounced 'cutie pie') is a small abstraction layer \
                     using the Qt5 layout (where the QtGui module has been split \
                     into QtGui and QtWidgets).
 
-checksums           rmd160  eeef2be5c79b37aa22b8c3b042c2e6c4b98227df \
-                    sha256  da18dac7b81e250451108efa4846cf29bbe1b13f6c6c48b4c27e92aeece148ad \
-                    size    32003
+checksums           rmd160  240a2e6ee3a73fc1355fddda369eba80a0b963c6 \
+                    sha256  322f83ee9eb29ea1f624c1865f99824d60ab18b369054c3e3c19ef02e24dbd66 \
+                    size    32219
 
 python.versions     27 34 35 36 37
 

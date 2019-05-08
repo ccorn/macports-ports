@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-wand
-version             0.5.0
+version             0.5.3
 revision            0
 categories-append   graphics
 platforms           darwin
@@ -23,9 +23,9 @@ master_sites        pypi:W/Wand
 
 distname            Wand-${version}
 
-checksums           rmd160  4573ad472dc6aab7e5de25b91c999d4289eee67b \
-                    sha256  52763dbf65d00cf98d7bc910b49329eea15896249c5555d47e169f2b6efbe166 \
-                    size    83613
+checksums           rmd160  28c7ae0eed46726c2131882a0da4a3bfe43d4098 \
+                    sha256  a2c318993791fab4fcfd460045415176f81d42f8c6fd8a88fb8d74d2f0f34b97 \
+                    size    99392
 
 if {${name} ne ${subport}} {
     depends_build-append \

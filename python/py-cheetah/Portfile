@@ -5,10 +5,11 @@ PortGroup           python 1.0
 
 name                py-cheetah
 
-version             3.1.0
-checksums           rmd160 803f2b0e201b05d51c6cbc145b13ed80760da976 \
-                    sha256 293f8776a5dea7c3dffd26fce8495c2daf912b9cb46cc49c41cb50da597a0ac6 \
-                    size   872411
+version             3.2.2
+checksums           rmd160 363d38c3b27d39e22ccb6ca635c2fa2364166851 \
+                    sha256 d86c08848082f0e3426ff9c2712052955bd9b969613b12d6a87be75d75e06c53 \
+                    size   294457
+revision            0
 
 categories-append   www
 platforms           darwin
@@ -29,9 +30,10 @@ homepage            http://www.cheetahtemplate.org/
 master_sites        pypi:C/Cheetah3/
 distname            Cheetah3-${version}
 
-python.versions     27 34 35 36
+python.versions     27 34 35 36 37
 
 if {${name} ne ${subport}} {
+    depends_build-append    port:py${python.version}-setuptools
 
     post-destroot {
         xinstall -m 644 -W ${worksrcpath} \

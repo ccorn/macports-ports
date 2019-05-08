@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-psutil
-version             5.5.0
+version             5.6.2
 revision            0
 categories-append   devel sysutils
 platforms           darwin
@@ -29,9 +29,9 @@ master_sites        pypi:[string index ${python.rootname} 0]/${python.rootname}
 
 distname            ${python.rootname}-${version}
 
-checksums           rmd160  8da25680def3ceb4b29aafd4bc6e28de4e373fe7 \
-                    sha256  1aba93430050270750d046a179c5f3d6e1f5f8b96c20399ba38c596b28fc4d37 \
-                    size    425058
+checksums           rmd160  5450a028ad787d3e274a2c0e11c127bf5cd7e9da \
+                    sha256  828e1c3ca6756c54ac00f1427fdac8b12e21b8a068c3bb9b631a1734cada25ed \
+                    size    432907
 
 if {${name} ne ${subport}} {
     livecheck.type      none

@@ -4,12 +4,13 @@ PortSystem          1.0
 PortGroup           python 1.0
 
 name                py-pbr
-version             5.1.1
+version             5.2.0
+revision            0
 categories-append   devel
 platforms           darwin
 supported_archs     noarch
 license             Apache-2
-maintainers         nomaintainer
+maintainers         {reneeotten @reneeotten} openmaintainer
 
 description         Python Build Reasonableness
 long_description    A library for managing setuptools packaging needs \
@@ -25,13 +26,22 @@ homepage            https://docs.openstack.org/pbr/latest/
 master_sites        pypi:p/pbr
 distname            pbr-${version}
 
-checksums           rmd160  8fa5deed40f49d5146be94b522e72ad8aa4d23b6 \
-                    sha256  f59d71442f9ece3dffc17bc36575768e1ee9967756e6b6535f0ee1f0054c3d68 \
-                    size    113476
+checksums           rmd160  bb17fbdd17ea48ed5e0a0991416d31e2e68c5b3e \
+                    sha256  d950c64aeea5456bbd147468382a5bb77fe692c13c9f00f0219814ce5b642755 \
+                    size    115260
 
 python.versions     27 34 35 36 37
 
 if {${subport} ne ${name}} {
     depends_lib-append  port:py${python.version}-setuptools
+
+    post-destroot {
+        set docdir ${prefix}/share/doc/${subport}
+        xinstall -d ${destroot}${docdir}
+        xinstall -m 0644 -W ${worksrcpath} README.rst LICENSE \
+            CONTRIBUTING.rst ChangeLog AUTHORS \
+            ${destroot}${docdir}
+    }
+
     livecheck.type      none
 }

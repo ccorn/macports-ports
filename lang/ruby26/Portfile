@@ -4,7 +4,7 @@ PortSystem          1.0
 PortGroup           select 1.0
 
 name                ruby26
-version             2.6.1
+version             2.6.3
 revision            0
 
 categories          lang ruby
@@ -26,10 +26,10 @@ use_bzip2           yes
 distname            ruby-${version}
 dist_subdir         ruby26
 
-checksums           md5 73d19ac478db1a178be5ae2f2fb8c9ec \
-                    rmd160 499d7051851cbef77e78910501176fe2057718ba \
-                    sha1 d4c92d9b0057473238df2fd4792454b43976fda3 \
-                    sha256 82c9402920eac9ce777beb3f34eeadc2a3f3ce80f25004bbf54b5ed1280ba099
+checksums           md5 52e609b756735115814b9c8463f185e2 \
+                    rmd160 54e239c1836284ffd0f7b99587a974eacf1aebf0 \
+                    sha1 aed3bd3c5346b3b85a6b184bb320465d98994fe3 \
+                    sha256 dd638bf42059182c1d04af0d5577131d4ce70b79105231c4cc0a60de77b14f2e
 
 use_parallel_build  no
 
@@ -61,6 +61,20 @@ configure.args      --enable-shared \
                     --with-opt-dir="${prefix}" \
                     --program-suffix=2.6 \
                     --with-rubylibprefix="${prefix}/lib/ruby2.6"
+
+platform darwin 11 {
+    # Build requires 10.8 SDK, even when targeting 10.7
+    # https://trac.macports.org/ticket/57986
+    set ten_eight_sdkpath ${developer_dir}/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk
+    if {[file exists $ten_eight_sdkpath]} {
+        configure.sdkroot $ten_eight_sdkpath
+    } else {
+        pre-fetch {
+            error "Building $name @${version} on Mac OS X 10.7 requires the MacOSX10.8.sdk to be present in ${developer_dir}/Platforms/MacOSX.platform/Developer/SDKs"
+        }
+    }
+}
+
 
 platform darwin {
     if {${os.major} < 10} {

@@ -3,11 +3,12 @@
 PortSystem          1.0
 PortGroup           github 1.0
 
-github.setup        jgaeddert liquid-dsp 4d851ee0282644f465626180e3ec93292ee81cba
-version             20181205
-checksums           rmd160 b1c79af2c0f6ed58b8ffbffe92ec3894dbe8518c \
-                    sha256 fbbba7516e45407072ecf3d2fa84c592b0c77aac5230715a36cccfe96701e460 \
-                    size   1088471
+github.setup        jgaeddert liquid-dsp be24d2b821426faa942155e360cea44b34a73297
+version             20190501-[string range ${github.version} 0 7]
+checksums           rmd160 cd27390c1f5b54d4ee6b365c23bbda150711173b \
+                    sha256 333f7bda83eb49ecce7c02abc3747964c8c9005bed30a708294bd6f4621efd5e \
+                    size   1112105
+revision            0
 
 maintainers         {michaelld @michaelld} openmaintainer
 
@@ -16,7 +17,7 @@ long_description    ${description} Its purpose is to provide a set of extensible
 
 categories          science comms
 homepage            http://www.liquidsdr.org/
-license             GPL-3
+license             MIT
 platforms           darwin macosx
 
 depends_build-append \
@@ -38,11 +39,17 @@ pre-configure {
 }
 
 # make sure MP programs are used
-
+if {[vercmp [macports_version] 2.5.99] >= 0} {
+configure.env-append \
+    SED=${prefix}/bin/gsed \
+    GREP=${prefix}/bin/ggrep \
+    "EGREP=${prefix}/bin/ggrep -E"
+} else {
 configure.env-append \
     SED=${prefix}/bin/gsed \
     GREP=${prefix}/bin/ggrep \
     EGREP="${prefix}/bin/ggrep -E"
+}
 
 # remove top-level include path, such that internal headers are used
 # instead of any already-installed ones.

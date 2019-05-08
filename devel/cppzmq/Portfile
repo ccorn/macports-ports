@@ -22,6 +22,7 @@ if {${subport} eq ${name}} {
     checksums       rmd160 2841b8395b290cd895885881864b34e399be7d10 \
                     sha256 5634462ee21a9dad3baf0db68812a8ac1262353d2039e2af402ff2d356b26ca2 \
                     size   22897
+    revision        0
 
     # bump the epoch because I moved the version from 20170720 to 4.2.2
 
@@ -35,11 +36,11 @@ if {${subport} eq ${name}} {
 
     # devel
 
-    github.setup    zeromq cppzmq 663944180fbe8554575b81163f20ad6e9f61fdeb
-    version         20190129
-    checksums       rmd160 6771532bb69a3357c0212b41409b9df256e47de4 \
-                    sha256 b18179af2078d5752ec7d219b6c5962e9a9563b1008a77c08b19d35719bfe478 \
-                    size   22286
+    github.setup    zeromq cppzmq 35ba5bea3b51f5fed810b685ade92c33e2401787
+    version         20190502-[string range ${github.version} 0 7]
+    checksums       rmd160 a115fb28d96d20c9e3a113351888383bd99fedaa \
+                    sha256 56fd5a5cf11d74bf187be1c4dcb9d1fbee02012101df9675bc6ff2e157e2d0ea \
+                    size   25727
     revision        0
 
     conflicts       ${name}

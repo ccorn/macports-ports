@@ -8,7 +8,7 @@ name                libvpx
 if {${os.platform} eq "darwin" && ${os.major} < 10} {
     version             1.4.0
 } else {
-    version             1.7.0
+    version             1.8.0
 }
 categories          multimedia
 maintainers         {devans @dbevans} openmaintainer
@@ -54,7 +54,8 @@ if {[string match "*86*" [get_canonical_archs]]} {
 
 patchfiles          patch-build-make-configure.sh.diff \
                     patch-configure.diff \
-                    patch-Makefile.diff
+                    patch-Makefile.diff \
+                    patch-lib.mk.diff
 
 # clang 425.0.28 with libvpx-1.4.0:
 # vp9/common/x86/vp9_subpixel_8t_intrin_avx2.c:77:16: error: assigning to '__m256i' from incompatible type 'int'
@@ -70,7 +71,15 @@ compiler.blacklist  *gcc-3.* *gcc-4.* {clang < 800} macports-clang-3.3 macports-
 # as the first, and thus selected, fallback option (even though it has been blacklisted earlier).
 compiler.fallback-append macports-clang-3.9
 
-license_noconflict  clang-3.9
+# on Leopard clang-3.9.1 fails, but newer clangs succeed (5.0 tested)
+# vpx/src/vpx_image.c.o vpx/src/vpx_image.c clang: error: unable to execute command: Bus error
+if { ${os.platform} eq "darwin" && ${os.major} < 10 } {
+    compiler.blacklist-append macports-clang-3.9
+    compiler.fallback-delete macports-clang-3.9
+    compiler.fallback-append macports-clang-5.0 macports-clang-6.0 macports-clang-7.0
+}
+
+license_noconflict  clang-3.9 clang-5.0 clang-6.0 clang-7.0
 
 # As of 1.7.0: builds both static and shared libraries
 # doesn't install docs or examples correctly, so disable them.
@@ -82,14 +91,13 @@ configure.args      --enable-vp8 \
                     --enable-multithread \
                     --enable-runtime-cpu-detect \
                     --enable-experimental \
-                    --enable-spatial-svc \
                     --enable-shared \
                     --disable-install-docs \
                     --disable-debug-libs \
                     --disable-examples \
                     --disable-unit-tests
 
-configure.env       LD="${configure.cc}"
+configure.env       LD=${configure.cc}
 
 # add in when docs are installed correctly
 #variant docs description {Build documentation} {
@@ -148,7 +156,7 @@ if {![variant_isset universal]} {
 # shared library uses relative path in install name
 # override with absolute path
 post-destroot {
-    set libname ${prefix}/lib/${name}.5.dylib
+    set libname ${prefix}/lib/${name}.6.dylib
     system "install_name_tool -id ${libname} ${destroot}${libname}"
 }
 

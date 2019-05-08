@@ -12,7 +12,7 @@ categories-append   math science
 license             LGPL-3+
 platforms           darwin
 supported_archs     noarch
-maintainers         {sean @seanfarley} openmaintainer
+maintainers         nomaintainer
 
 description         FEniCS Form Compiler
 long_description    FFC works as a compiler for multilinear forms by generating \
@@ -39,11 +39,19 @@ if {${subport} ne ${name}} {
                     port:boost
 
     pre-build {
+        if {[vercmp [macports_version] 2.5.99] >= 0} {
+        build.env-append CXXFLAGS=${configure.cxxflags}
+        } else {
         build.env-append CXXFLAGS="${configure.cxxflags}"
+        }
     }
 
     pre-destroot {
+        if {[vercmp [macports_version] 2.5.99] >= 0} {
+        destroot.env-append CXXFLAGS=${configure.cxxflags}
+        } else {
         destroot.env-append CXXFLAGS="${configure.cxxflags}"
+        }
     }
 
     post-fetch {

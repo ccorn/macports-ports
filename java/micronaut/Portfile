@@ -3,7 +3,7 @@
 PortSystem 1.0
 PortGroup       github 1.0
 
-github.setup    micronaut-projects micronaut-core 1.0.4 v
+github.setup    micronaut-projects micronaut-core 1.1.0 v
 name            micronaut
 categories      java
 platforms       darwin
@@ -41,9 +41,9 @@ homepage        https://micronaut.io
 github.tarball_from releases
 distname        ${name}-${version}
 
-checksums       rmd160  74ff2db67abeeb47426bd3194427c14c26b2f829 \
-                sha256  d537a774ba1e073dbeca14611a0fc9fc296e1231e128d9f62577537f46373151 \
-                size    12758784
+checksums       rmd160  49f1fc2d97d1bbbf9f1f03cb30ff8054c4012c78 \
+                sha256  21595867692f61317a20c8222c88c86a6599663461b2bed1d1922e6643cc84b9 \
+                size    12803339
 
 use_zip         yes
 use_configure   no

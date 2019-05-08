@@ -3,7 +3,8 @@
 PortSystem          1.0
 
 name                i3
-version             4.16
+version             4.16.1
+revision            0
 categories          x11
 license             BSD
 platforms           darwin
@@ -19,9 +20,9 @@ master_sites        ${homepage}downloads/
 
 use_bzip2           yes
 
-checksums           rmd160  c1087d29758592d911c5a83c8d2cfb263c1b5e95 \
-                    sha256  cc60a5f518c5e37b4143b644a840bb2ad2a63ea7a771954c332cd5637db655b4 \
-                    size    1213251
+checksums           rmd160  4455278dd0f9290283a35bbd99c3256c959bb546 \
+                    sha256  ab65c25c06acbdc67cba3ff23e2a82ea17911def65f4fd0200bb6f9382378576 \
+                    size    1211532
 
 patchfiles          patch-configure-libiconv.diff \
                     patch-Makefile.in.diff
@@ -30,7 +31,7 @@ patchfiles          patch-configure-libiconv.diff \
 # other stuff might not be required
 depends_build       port:asciidoc \
                     port:docbook-xml-4.5 \
-                    port:p5.26-pod-simple \
+                    port:p5.28-pod-simple \
                     port:pkgconfig \
                     port:xmlto
 
@@ -45,7 +46,7 @@ depends_lib         path:lib/pkgconfig/cairo.pc:cairo \
                     port:libxkbcommon-x11 \
                     path:lib/pkgconfig/pango.pc:pango \
                     port:pcre \
-                    port:perl5.26 \
+                    port:perl5.28 \
                     port:startup-notification \
                     port:xorg-libxcb \
                     port:xorg-xcb-util \

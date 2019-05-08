@@ -8,8 +8,8 @@ PortGroup           linear_algebra 1.0
 PortGroup           muniversal     1.0
 
 name                gmsh
-conflicts           gmsh-devel
-version             4.1.3
+version             4.3.0
+revision            0
 categories          science
 platforms           darwin
 license             GPL-2+
@@ -27,9 +27,9 @@ master_sites        http://gmsh.info/src/
 distname            gmsh-${version}-source
 extract.suffix      .tgz
 
-checksums           rmd160  5132642c201e71d3c52203974f4d1afea50d0d64 \
-                    sha256  bd4e4108437a25bd7a917570a6d3801d23eea49df7c78937a90c7a1637f54d5d \
-                    size    12689442
+checksums           rmd160  10b773fb0d1f0d8205afa6ce9a729a290c53cdb8 \
+                    sha256  54a236f5708bc105d5b60ddb2b95ea7062537ccd2720860377994c1a9bb86429 \
+                    size    13102102
 
 patchfiles          patch-CMakeLists.txt.diff
 
@@ -43,8 +43,6 @@ depends_lib-append  \
     port:jpeg \
     port:gmm \
     path:lib/pkgconfig/cairo.pc:cairo \
-    port:petsc \
-    port:slepc \
     port:libANN \
     port:cgnslib \
     port:metis \
@@ -79,10 +77,6 @@ configure.args-append \
     -DENABLE_MMG3D=OFF \
     -DENABLE_GETDP=OFF
 
-configure.args-append \
-    -DPETSC_DIR=${prefix}/lib/petsc \
-    -DSLEPC_DIR=${prefix}/lib/slepc
-
 configure.env-append \
     CASROOT=${prefix}
 
@@ -107,18 +101,34 @@ variant getdp description {Enable GetDP solver} {
     configure.args-delete -DENABLE_GETDP=OFF
 }
 
-subport gmsh-devel {
-    conflicts           gmsh
+variant petsc description {Enable PETSc linear solvers and SLEPc eigensolvers} {
+    depends_lib-append  \
+        port:petsc \
+        port:slepc
 
-    fetch.type          git
-    git.url             https://gitlab.onelab.info/gmsh/gmsh.git
-    git.branch          edc5fa3fbb0a25b520b28bd2b9406cd4dce38a82
-    # see https://gitlab.onelab.info/gmsh/gmsh/blob/master/CMakeLists.txt
-    version             4.1.4
-    revision            0
+    configure.args-append \
+        -DENABLE_PETSC=ON \
+        -DENABLE_SLEPC=ON \
+        -DPETSC_DIR=${prefix}/lib/petsc \
+        -DSLEPC_DIR=${prefix}/lib/slepc
+}
 
-    livecheck.type     regexm
-    livecheck.url      https://gitlab.onelab.info/gmsh/gmsh
-    livecheck.version  ${git.branch}
-    livecheck.regex    "/gmsh/gmsh/commit/(\[a-zA-Z0-9\]+)"
+variant openmp description {enable support for OpenMP} {
+    configure.args-append \
+        -DENABLE_OPENMP=ON
+
+    # blacklist all system compilers, which do not support OpenMP
+    # use whatever compilers cxx11 PG deems acceptable
+    compiler.blacklist-append \
+        clang \
+        llvm-gcc-4.2 \
+        gcc-4.2 \
+        gcc-4.0 \
+        apple-gcc-4.2
+}
+
+# please remove on 2020-03-16
+subport ${name}-devel {
+    replaced_by ${name}
+    PortGroup   obsolete 1.0
 }
