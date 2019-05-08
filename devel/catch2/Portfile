@@ -1,0 +1,34 @@
+# -*- coding: utf-8; mode: tcl; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:ft=tcl:et:sw=4:ts=4:sts=4
+
+PortSystem      1.0
+PortGroup       cmake 1.0
+PortGroup       github 1.0
+PortGroup       cxx11 1.1
+
+github.setup    catchorg Catch2 2.7.2 v
+revision        0
+name            catch2
+categories      devel
+maintainers     nomaintainer
+license         Boost-1
+supported_archs noarch
+
+description     modern C++11 header-only test framework for TDD and BDD
+
+long_description \
+                Catch2 stands for C++ Automated Test Cases in a Header\
+                and is a multi-paradigm test framework for C++ which also\
+                supports Objective-C (and maybe C).
+
+checksums       rmd160 3e691b459e74cacf488944603326cbea40e497c8
+
+# cxx11 default for older platforms does not suffice
+if {${configure.compiler} eq "macports-gcc-6"} {
+    configure.compiler macports-gcc-7
+}
+
+cmake.out_of_source     yes
+configure.args-append  -DCATCH_ENABLE_WERROR:BOOL=OFF
+
+test.run    yes
+test.target test
