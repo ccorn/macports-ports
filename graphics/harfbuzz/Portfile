@@ -2,6 +2,7 @@
 
 PortSystem          1.0
 
+PortGroup           muniversal 1.0
 # https://github.com/harfbuzz/harfbuzz/issues/1642
 PortGroup           cxx11 1.1
 
@@ -23,6 +24,7 @@ long_description    HarfBuzz is an ${description}.
 homepage            https://www.freedesktop.org/wiki/Software/HarfBuzz/
 master_sites        https://www.freedesktop.org/software/harfbuzz/release/
 use_bzip2           yes
+universal_variant   yes
 
 depends_build       port:pkgconfig
 
